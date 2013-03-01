@@ -15,6 +15,9 @@ namespace Libra.Graphics
             // SharpDX のドキュメントによると、unsafe での sizeof と等価。
             // なお、sizeof は、ジェネリクス型を指定するとコンパイル不能。
 
+            // sizeof および Marshal.SizeOf について。
+            // http://www.codeproject.com/Articles/97711/sizeof-vs-Marshal-SizeOf
+
             return SDXUtilities.SizeOf<T>();
         }
     }
