@@ -57,6 +57,8 @@ namespace Libra.Games
 
         Game game;
 
+        IGraphicsFactory graphicsFactory;
+
         int preferredBackBufferWidth;
 
         int preferredBackBufferHeight;
@@ -69,9 +71,9 @@ namespace Libra.Games
 
         public DeviceProfile Profile { get; set; }
 
-        public Device Device { get; private set; }
+        public IDevice Device { get; private set; }
 
-        public SwapChain SwapChain { get; private set; }
+        public ISwapChain SwapChain { get; private set; }
 
         public int PreferredBackBufferWidth
         {
@@ -142,6 +144,10 @@ namespace Libra.Games
 
         public void Initialize()
         {
+            // ファクトリの取得。
+            var gamePlatform = game.Services.GetRequiredService<IGamePlatform>();
+            graphicsFactory = gamePlatform.GraphicsFactory;
+
             InitializeDevice();
             InitializeSwapChain();
 
@@ -156,7 +162,7 @@ namespace Libra.Games
 
             var adapter = ResolveAdapter();
 
-            Device = new Device(adapter, settings, profiles);
+            Device = graphicsFactory.CreateDevice(adapter, settings, profiles);
             Device.Disposing += OnDeviceDisposing;
 
             OnDeviceCreated(this, EventArgs.Empty);
@@ -200,23 +206,23 @@ namespace Libra.Games
             };
 
             // スワップ チェーンの初期化。
-            SwapChain = new SwapChain(Device, settings);
+            SwapChain = graphicsFactory.CreateSwapChain(Device, settings);
         }
 
-        protected virtual Adapter ResolveAdapter()
+        protected virtual IAdapter ResolveAdapter()
         {
             // デフォルト実装ではデフォルト アダプタを利用。
             // 推奨設定に見合う表示モードをデフォルト アダプタが提供できるか否かを考慮しない。
 
-            return Adapter.DefaultAdapter;
+            return graphicsFactory.DefaultAdapter;
         }
 
-        protected virtual DisplayMode ResolveOutputMode(Device device)
+        protected virtual DisplayMode ResolveOutputMode(IDevice device)
         {
             // デフォルト実装では、デフォルト アダプタの主モニタを対象に、
             // デスクトップへの出力に相応しいモードを検索。
 
-            var output = Adapter.DefaultAdapter.PrimaryOutput;
+            var output = graphicsFactory.DefaultAdapter.PrimaryOutput;
 
             // 主モニタよりデスクトップ サイズを取得。
             var desktopBounds = output.DesktopCoordinates;
@@ -236,7 +242,7 @@ namespace Libra.Games
             return resolvedMode;
         }
 
-        protected virtual DisplayMode ResolveFullScreenBackBufferMode(Device device)
+        protected virtual DisplayMode ResolveFullScreenBackBufferMode(IDevice device)
         {
             // デフォルト実装では、推奨設定に最も適合する表示モードを、
             // DXGI の機能により主モニタの表示モードから自動選択。

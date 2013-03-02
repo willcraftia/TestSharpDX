@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Libra.Graphics;
 
-using SDXTimerTick = SharpDX.TimerTick;
-
 #endregion
 
 namespace Libra.Games
@@ -88,7 +86,7 @@ namespace Libra.Games
 
         GameTime gameTime;
 
-        SDXTimerTick timer;
+        IGameTimer timer;
 
         UpdateCountHistory updateCountHistory;
 
@@ -160,9 +158,9 @@ namespace Libra.Games
             set { inactiveSleepTime = value; }
         }
 
-        public Device Device { get; private set; }
+        public IDevice Device { get; private set; }
 
-        public SwapChain SwapChain { get; private set; }
+        public ISwapChain SwapChain { get; private set; }
 
         public Game()
         {
@@ -176,7 +174,6 @@ namespace Libra.Games
             Services = new GameServiceContainer();
 
             gameTime = new GameTime();
-            timer = new SDXTimerTick();
             updateCountHistory = new UpdateCountHistory();
             isFixedTimeStep = true;
 
@@ -242,7 +239,7 @@ namespace Libra.Games
 
             timer.Tick();
 
-            var elapsedTime = timer.ElapsedAdjustedTime;
+            var elapsedTime = timer.ElapsedTime;
 
             if (shouldResetElapsedTime)
             {
@@ -346,12 +343,14 @@ namespace Libra.Games
             gamePlatform.Activated += OnActivated;
             gamePlatform.Deactivated += OnDeactivated;
             gamePlatform.Exiting += OnExiting;
-            gamePlatform.CreateWindow();
+            gamePlatform.Initialize();
             
             // ウィンドウの取得。
-            var gameWindowService = Services.GetRequiredService<IGameWindowService>();
-            Window = gameWindowService.Window;
+            Window = gamePlatform.Window;
             Window.ClientSizeChanged += OnWindowClientSizeChanged;
+
+            // タイマーの取得。
+            timer = gamePlatform.GameTimer;
 
             // デバイスの初期化。
             graphicsManager = Services.GetRequiredService<IGraphicsManager>();

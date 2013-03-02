@@ -2,11 +2,6 @@
 
 using System;
 
-using DXGIDisplayModeScaling = SharpDX.DXGI.DisplayModeScaling;
-using DXGIDisplayModeScanlineOrder = SharpDX.DXGI.DisplayModeScanlineOrder;
-using DXGIFormat = SharpDX.DXGI.Format;
-using DXGIModeDescription = SharpDX.DXGI.ModeDescription;
-
 #endregion
 
 namespace Libra.Graphics
@@ -39,40 +34,6 @@ namespace Libra.Graphics
             Format = format;
             ScanlineOrdering = DisplayModeScanlineOrder.Unspecified;
             Scaling = DisplayModeScaling.Unspecified;
-        }
-
-        internal static void FromDXGIModeDescription(ref DXGIModeDescription dxgiMode, out DisplayMode result)
-        {
-            result = new DisplayMode
-            {
-                Width = dxgiMode.Width,
-                Height = dxgiMode.Height,
-                RefreshRate =
-                {
-                    Numerator = dxgiMode.RefreshRate.Numerator,
-                    Denominator = dxgiMode.RefreshRate.Denominator
-                },
-                Format = (SurfaceFormat) dxgiMode.Format,
-                ScanlineOrdering = (DisplayModeScanlineOrder) dxgiMode.ScanlineOrdering,
-                Scaling = (DisplayModeScaling) dxgiMode.Scaling
-            };
-        }
-
-        internal void ToDXGIModeDescription(out DXGIModeDescription result)
-        {
-            result = new DXGIModeDescription
-            {
-                Width = Width,
-                Height = Height,
-                RefreshRate =
-                {
-                    Numerator = RefreshRate.Numerator,
-                    Denominator = RefreshRate.Denominator
-                },
-                Format = (DXGIFormat) Format,
-                ScanlineOrdering = (DXGIDisplayModeScanlineOrder) ScanlineOrdering,
-                Scaling = (DXGIDisplayModeScaling) Scaling
-            };
         }
 
         #region Equatable

@@ -22,9 +22,9 @@ namespace Libra.Graphics
             }
         }
 
-        internal State() { }
+        protected State() { }
 
-        internal void Freeze()
+        public void Freeze()
         {
             frozen = true;
         }

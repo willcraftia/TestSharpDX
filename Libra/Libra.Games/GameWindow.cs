@@ -33,7 +33,7 @@ namespace Libra.Games
             }
         }
 
-        internal GameWindow() { }
+        protected GameWindow() { }
 
         protected void OnClientSizeChanged()
         {

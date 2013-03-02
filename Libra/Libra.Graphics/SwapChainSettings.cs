@@ -2,12 +2,6 @@
 
 using System;
 
-using DXGIModeDescription = SharpDX.DXGI.ModeDescription;
-using DXGISwapChainDescription = SharpDX.DXGI.SwapChainDescription;
-using DXGISwapChainFlags = SharpDX.DXGI.SwapChainFlags;
-using DXGISwapEffect = SharpDX.DXGI.SwapEffect;
-using DXGIUsage = SharpDX.DXGI.Usage;
-
 #endregion
 
 namespace Libra.Graphics

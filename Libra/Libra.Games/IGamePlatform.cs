@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using Libra.Graphics;
 
 #endregion
 
@@ -14,7 +15,13 @@ namespace Libra.Games
 
         event EventHandler Exiting;
 
-        void CreateWindow();
+        GameWindow Window { get; }
+
+        IGameTimer GameTimer { get; }
+
+        IGraphicsFactory GraphicsFactory { get; }
+
+        void Initialize();
 
         void Run(TickCallback tick);
 

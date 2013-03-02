@@ -3,8 +3,6 @@
 using System;
 using System.Runtime.InteropServices;
 
-using SDXViewportF = SharpDX.ViewportF;
-
 #endregion
 
 namespace Libra.Graphics
@@ -90,18 +88,6 @@ namespace Libra.Graphics
             }
 
             return vector;
-        }
-
-        internal SDXViewportF ToSDXViewportF()
-        {
-            SDXViewportF result;
-            ToSDXViewportF(out result);
-            return result;
-        }
-
-        internal void ToSDXViewportF(out SDXViewportF result)
-        {
-            result = new SDXViewportF(X, Y, Width, Height, MinDepth, MaxDepth);
         }
 
         #region ToString

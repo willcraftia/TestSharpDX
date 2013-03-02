@@ -2,6 +2,7 @@
 
 using System;
 using Libra.Games;
+using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Compiler;
 
@@ -19,7 +20,7 @@ namespace Libra.Samples.MiniCube
 
         public MainGame()
         {
-            platform = new FormGamePlatform(this, new SDXWRenderForm());
+            platform = new SdxFormGamePlatform(this, new SDXWRenderForm());
             graphicsManager = new GraphicsManager(this);
             //graphicsManager.PreferredBackBufferWidth = 0;
             //graphicsManager.PreferredBackBufferHeight = 0;
@@ -30,15 +31,15 @@ namespace Libra.Samples.MiniCube
             base.Initialize();
         }
 
-        VertexShader vertexShader;
+        IVertexShader vertexShader;
 
-        InputLayout inputLayout;
+        IInputLayout inputLayout;
 
-        PixelShader pixelShader;
+        IPixelShader pixelShader;
 
-        VertexBuffer vertexBuffer;
+        IVertexBuffer vertexBuffer;
 
-        ConstantBuffer constantBuffer;
+        IConstantBuffer constantBuffer;
 
         protected override void LoadContent()
         {
@@ -50,9 +51,9 @@ namespace Libra.Samples.MiniCube
             var vsBytecode = compiler.CompileFromFile("MiniCube.fx", "VS", VertexShaderProfile.vs_4_0);
             var psBytecode = compiler.CompileFromFile("MiniCube.fx", "PS", PixelShaderProfile.ps_4_0);
 
-            vertexShader = new VertexShader(Device, vsBytecode);
-            inputLayout = new InputLayout(Device, vsBytecode, typeof(InputPositionColor));
-            pixelShader = new PixelShader(Device, psBytecode);
+            vertexShader = Device.CreateVertexShader(vsBytecode);
+            inputLayout = Device.CreateInputLayout<InputPositionColor>(vsBytecode);
+            pixelShader = Device.CreatePixelShader(psBytecode);
 
             // メモ
             //
@@ -61,7 +62,7 @@ namespace Libra.Samples.MiniCube
             // なお、面カリングは頂点から定まる法線を基準とするのみであることから、
             // 法線方向さえ正しければ左手右手での差異は無い。
 
-            vertexBuffer = VertexBuffer.Create(Device, new []
+            vertexBuffer = Device.CreateVertexBuffer(new []
                 {
                     new InputPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
                     new InputPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 0, 255) },
@@ -106,7 +107,7 @@ namespace Libra.Samples.MiniCube
                     new InputPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 255, 255) },
                 });
 
-            constantBuffer = ConstantBuffer.Create<Matrix>(Device);
+            constantBuffer = Device.CreateConstantBuffer<Matrix>();
 
             base.LoadContent();
         }
