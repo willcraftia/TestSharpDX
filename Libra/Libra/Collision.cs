@@ -4,6 +4,8 @@ using System;
 
 #endregion
 
+// SharpDX.Collision をそのまま移植。
+
 namespace Libra
 {
     public static class Collision

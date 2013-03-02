@@ -5,6 +5,10 @@ using System.Runtime.InteropServices;
 
 #endregion
 
+// SharpDX.Rectangle から移植。
+// 一部インタフェースを XNA 形式へ変更。
+// 一部ロジックを変更。
+
 namespace Libra
 {
     [Serializable]

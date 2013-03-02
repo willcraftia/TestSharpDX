@@ -5,6 +5,10 @@ using System.Runtime.InteropServices;
 
 #endregion
 
+// SharpDX.Vector2 から移植。
+// 一部インタフェースを XNA 形式へ変更。
+// 一部ロジックを変更。
+
 namespace Libra
 {
     [Serializable]
@@ -13,11 +17,11 @@ namespace Libra
     {
         public static readonly Vector2 Zero = new Vector2();
 
-        public static readonly Vector2 One = new Vector2(1f);
+        public static readonly Vector2 One = new Vector2(1.0f);
 
-        public static readonly Vector2 UnitX = new Vector2(1f, 0f);
+        public static readonly Vector2 UnitX = new Vector2(1.0f, 0.0f);
 
-        public static readonly Vector2 UnitY = new Vector2(0f, 1f);
+        public static readonly Vector2 UnitY = new Vector2(0.0f, 1.0f);
 
         public float X;
         
