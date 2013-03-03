@@ -8,66 +8,41 @@ using D3D11RasterizerStage = SharpDX.Direct3D11.RasterizerStage;
 
 namespace Libra.Graphics.SharpDX
 {
-    public sealed class SdxRasterizerStage : IRasterizerStage
+    public sealed class SdxRasterizerStage : RasterizerStage
     {
-        D3D11RasterizerStage d3d11RasterizerStage;
+        public SdxDevice Device { get; private set; }
 
-        RasterizerState rasterizerState;
+        public D3D11RasterizerStage D3D11RasterizerStage { get; private set; }
 
-        Viewport viewport;
-
-        Rectangle scissorRectangle;
-
-        public IDeviceContext DeviceContext { get; private set; }
-
-        public RasterizerState RasterizerState
+        public SdxRasterizerStage(SdxDevice device, D3D11RasterizerStage d3d11RasterizerStage)
         {
-            get { return rasterizerState; }
-            set
+            if (device == null) throw new ArgumentNullException("device");
+            if (d3d11RasterizerStage == null) throw new ArgumentNullException("d3d11RasterizerStage");
+
+            Device = device;
+            D3D11RasterizerStage = d3d11RasterizerStage;
+        }
+
+        protected override void OnRasterizerStateChanged()
+        {
+            if (RasterizerState == null)
             {
-                if (rasterizerState == value) return;
-
-                rasterizerState = value;
-
-                var device = DeviceContext.Device as SdxDevice;
-                if (rasterizerState == null)
-                {
-                    d3d11RasterizerStage.State = device.RasterizerStateManager[RasterizerState.CullBack];
-                }
-                else
-                {
-                    d3d11RasterizerStage.State = device.RasterizerStateManager[rasterizerState];
-                }
+                D3D11RasterizerStage.State = null;
+            }
+            else
+            {
+                D3D11RasterizerStage.State = Device.RasterizerStateManager[RasterizerState];
             }
         }
 
-        public Viewport Viewport
+        protected override void OnViewportChanged()
         {
-            get { return viewport; }
-            set
-            {
-                viewport = value;
-
-                d3d11RasterizerStage.SetViewports(viewport.ToSDXViewportF());
-            }
+            D3D11RasterizerStage.SetViewports(Viewport.ToSDXViewportF());
         }
 
-        public Rectangle ScissorRectangle
+        protected override void OnScissorRectangleChanged()
         {
-            get { return scissorRectangle; }
-            set
-            {
-                scissorRectangle = value;
-
-                d3d11RasterizerStage.SetScissorRectangles(scissorRectangle.ToSDXRectangle());
-            }
-        }
-
-        internal SdxRasterizerStage(SdxDeviceContext context)
-        {
-            DeviceContext = context;
-
-            d3d11RasterizerStage = (DeviceContext as SdxDeviceContext).D3D11DeviceContext.Rasterizer;
+            D3D11RasterizerStage.SetScissorRectangles(ScissorRectangle.ToSDXRectangle());
         }
     }
 }

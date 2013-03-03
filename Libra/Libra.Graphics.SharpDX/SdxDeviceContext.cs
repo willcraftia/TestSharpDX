@@ -23,15 +23,15 @@ namespace Libra.Graphics.SharpDX
 
         public bool Deferred { get; private set; }
 
-        public IInputAssemblerStage InputAssemblerStage { get; private set; }
+        public InputAssemblerStage InputAssemblerStage { get; private set; }
 
-        public IVertexShaderStage VertexShaderStage { get; private set; }
+        public VertexShaderStage VertexShaderStage { get; private set; }
 
-        public IRasterizerStage RasterizerStage { get; private set; }
+        public RasterizerStage RasterizerStage { get; private set; }
 
-        public IPixelShaderStage PixelShaderStage { get; private set; }
+        public PixelShaderStage PixelShaderStage { get; private set; }
 
-        public IOutputMergerStage OutputMergerStage { get; private set; }
+        public OutputMergerStage OutputMergerStage { get; private set; }
 
         internal D3D11DeviceContext D3D11DeviceContext { get; private set; }
 
@@ -46,11 +46,11 @@ namespace Libra.Graphics.SharpDX
             Deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
             // パイプライン ステージの初期化。
-            InputAssemblerStage = new SdxInputAssemblerStage(this);
-            VertexShaderStage = new SdxVertexShaderStage(this);
-            RasterizerStage = new SdxRasterizerStage(this);
-            PixelShaderStage = new SdxPixelShaderStage(this);
-            OutputMergerStage = new SdxOutputMergerStage(this);
+            InputAssemblerStage = new SdxInputAssemblerStage(d3d11DeviceContext.InputAssembler);
+            VertexShaderStage = new SdxVertexShaderStage(device, d3d11DeviceContext.VertexShader);
+            RasterizerStage = new SdxRasterizerStage(device, d3d11DeviceContext.Rasterizer);
+            PixelShaderStage = new SdxPixelShaderStage(device, d3d11DeviceContext.PixelShader);
+            OutputMergerStage = new SdxOutputMergerStage(device, this, d3d11DeviceContext.OutputMerger);
         }
 
 

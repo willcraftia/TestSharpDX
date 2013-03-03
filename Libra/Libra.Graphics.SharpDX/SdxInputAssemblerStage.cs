@@ -10,103 +10,75 @@ using D3D11VertexBufferBinding = SharpDX.Direct3D11.VertexBufferBinding;
 
 namespace Libra.Graphics.SharpDX
 {
-    internal sealed class SdxInputAssemblerStage : IInputAssemblerStage
+    public sealed class SdxInputAssemblerStage : InputAssemblerStage
     {
-        // D3D11.h: D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT ( 32 )
-        public const int InputResourceSlotCuont = 32;
+        public D3D11InputAssemblerStage D3D11InputAssemblerStage { get; private set; }
 
-        D3D11InputAssemblerStage d3d11InputAssemblerStage;
-
-        SdxInputLayout inputLayout;
-
-        public InputLayout InputLayout
+        public SdxInputAssemblerStage(D3D11InputAssemblerStage d3d11InputAssemblerStage)
         {
-            get { return inputLayout; }
-            set
-            {
-                inputLayout = value as SdxInputLayout;
+            if (d3d11InputAssemblerStage == null) throw new ArgumentNullException("d3d11InputAssemblerStage");
 
-                d3d11InputAssemblerStage.InputLayout = inputLayout.D3D11InputLayout;
+            D3D11InputAssemblerStage = d3d11InputAssemblerStage;
+        }
+
+        protected override void OnInputLayoutChanged()
+        {
+            if (InputLayout == null)
+            {
+                D3D11InputAssemblerStage.InputLayout = null;
+            }
+            else
+            {
+                D3D11InputAssemblerStage.InputLayout = (InputLayout as SdxInputLayout).D3D11InputLayout;
             }
         }
 
-        public PrimitiveTopology PrimitiveTopology
+        protected override void OnPrimitiveTopologyChanged()
         {
-            get { return (PrimitiveTopology) d3d11InputAssemblerStage.PrimitiveTopology; }
-            set { d3d11InputAssemblerStage.PrimitiveTopology = (D3D11PrimitiveTopology) value; }
+            D3D11InputAssemblerStage.PrimitiveTopology = (D3D11PrimitiveTopology) PrimitiveTopology;
         }
 
-        internal SdxInputAssemblerStage(SdxDeviceContext context)
-        {
-            d3d11InputAssemblerStage = context.D3D11DeviceContext.InputAssembler;
-        }
-
-        public void SetVertexBuffer<T>(int slot, VertexBuffer buffer, int offset = 0) where T : struct
-        {
-            SetVertexBuffer(slot, buffer, SdxUtilities.SizeOf<T>(), offset);
-        }
-
-        public void SetVertexBuffer(int slot, VertexBuffer buffer, int stride, int offset = 0)
+        protected override void SetVertexBufferCore(int slot, VertexBuffer buffer, int stride, int offset)
         {
             SetVertexBuffer(slot, new VertexBufferBinding(buffer, stride, offset));
         }
 
-        public void SetVertexBuffer(int slot, VertexBufferBinding binding)
+        protected override void SetVertexBufferCore<T>(int slot, VertexBuffer buffer, int offset)
         {
-            unsafe
-            {
-                IntPtr buffer;
-                if (binding.VertexBuffer == null)
-                {
-                    buffer = IntPtr.Zero;
-                }
-                else
-                {
-                    var d3d11Buffer = (binding.VertexBuffer as SdxVertexBuffer).D3D11Buffer;
-                    buffer = d3d11Buffer.NativePointer;
-                }
-                var stride = binding.Stride;
-                var offset = binding.Offset;
-
-                d3d11InputAssemblerStage.SetVertexBuffers(
-                    slot, 1, new IntPtr(&buffer), new IntPtr(&stride), new IntPtr(&offset));
-            }
+            SetVertexBuffer(slot, buffer, SdxUtilities.SizeOf<T>(), offset);
         }
 
-        public void SetVertexBuffers(int startSlot, params VertexBufferBinding[] bindings)
+        protected override void SetVertexBufferCore(int slot, VertexBufferBinding binding)
+        {
+            var d3d11VertexBufferBinding = new D3D11VertexBufferBinding
+            {
+                Buffer = (binding.VertexBuffer as SdxVertexBuffer).D3D11Buffer,
+                Offset = binding.Offset,
+                Stride = binding.Stride
+            };
+
+            D3D11InputAssemblerStage.SetVertexBuffers(slot, d3d11VertexBufferBinding);
+        }
+
+        protected override void SetVertexBuffersCore(int startSlot, int count, VertexBufferBinding[] bindings)
         {
             // D3D11 のポインタ渡しインタフェースが公開されているため、
-            // stackalloc を利用して配列をヒープに作らずに済んでいるが、
+            // stackalloc を利用して配列をヒープに作らずに済む方法もあるが、
             // 将来の SharpDX の更新によりインタフェースが隠蔽される可能性もあるため、
-            // 注意が必要。
-            // その場合には、GC 世代 #0 に入る事を期待して一時的なヒープへの配列生成を試みる。
+            // 配列複製で対応する。
 
-            unsafe
+            var d3d11VertexBufferBindings = new D3D11VertexBufferBinding[count];
+            for (int i = 0; i < count; i++)
             {
-                var length = bindings.Length;
-                var buffers = stackalloc IntPtr[length];
-                var strides = stackalloc int[length];
-                var offsets = stackalloc int[length];
-
-                for (int i = 0; i < length; i++)
+                d3d11VertexBufferBindings[i] = new D3D11VertexBufferBinding
                 {
-                    if (bindings[i].VertexBuffer == null)
-                    {
-                        buffers[i] = IntPtr.Zero;
-                    }
-                    else
-                    {
-                        var d3d11Buffer = (bindings[i].VertexBuffer as SdxVertexBuffer).D3D11Buffer;
-                        buffers[i] = d3d11Buffer.NativePointer;
-                    }
-
-                    strides[i] = bindings[i].Stride;
-                    offsets[i] = bindings[i].Offset;
-                }
-
-                d3d11InputAssemblerStage.SetVertexBuffers(
-                    startSlot, length, new IntPtr(buffers), new IntPtr(strides), new IntPtr(offsets));
+                    Buffer = (bindings[i].VertexBuffer as SdxVertexBuffer).D3D11Buffer,
+                    Offset = bindings[i].Offset,
+                    Stride = bindings[i].Stride
+                };
             }
+
+            D3D11InputAssemblerStage.SetVertexBuffers(startSlot, d3d11VertexBufferBindings);
         }
     }
 }

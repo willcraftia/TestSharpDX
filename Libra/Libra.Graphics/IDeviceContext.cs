@@ -14,15 +14,15 @@ namespace Libra.Graphics
 
         bool Deferred { get; }
 
-        IInputAssemblerStage InputAssemblerStage { get; }
+        InputAssemblerStage InputAssemblerStage { get; }
 
-        IVertexShaderStage VertexShaderStage { get; }
+        VertexShaderStage VertexShaderStage { get; }
 
-        IRasterizerStage RasterizerStage { get; }
+        RasterizerStage RasterizerStage { get; }
 
-        IPixelShaderStage PixelShaderStage { get; }
+        PixelShaderStage PixelShaderStage { get; }
 
-        IOutputMergerStage OutputMergerStage { get; }
+        OutputMergerStage OutputMergerStage { get; }
 
         void Draw(int vertexCount, int startVertexLocation = 0);
     }

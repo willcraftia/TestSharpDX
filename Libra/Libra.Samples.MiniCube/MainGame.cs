@@ -132,12 +132,12 @@ namespace Libra.Samples.MiniCube
             context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
             context.InputAssemblerStage.SetVertexBuffer<InputPositionColor>(0, vertexBuffer);
 
-            context.VertexShaderStage.Shader = vertexShader;
+            context.VertexShaderStage.VertexShader = vertexShader;
             context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);
 
             context.RasterizerStage.Viewport = viewport;
 
-            context.PixelShaderStage.Shader = pixelShader;
+            context.PixelShaderStage.PixelShader = pixelShader;
 
             context.OutputMergerStage.Clear(ClearOptions.Target | ClearOptions.Depth, Color.CornflowerBlue);
 

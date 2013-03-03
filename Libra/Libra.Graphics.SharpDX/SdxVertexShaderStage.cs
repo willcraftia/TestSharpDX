@@ -2,40 +2,68 @@
 
 using System;
 
-using D3D11CommonShaderStage = SharpDX.Direct3D11.CommonShaderStage;
-using D3D11VertexShader = SharpDX.Direct3D11.VertexShader;
 using D3D11VertexShaderStage = SharpDX.Direct3D11.VertexShaderStage;
 
 #endregion
 
 namespace Libra.Graphics.SharpDX
 {
-    internal sealed class SdxVertexShaderStage : SdxShaderStage<D3D11VertexShaderStage>, IVertexShaderStage
+    public sealed class SdxVertexShaderStage : VertexShaderStage
     {
-        SdxVertexShader shader;
+        public SdxDevice Device { get; private set; }
 
-        public VertexShader Shader
+        public D3D11VertexShaderStage D3D11VertexShaderStage { get; private set; }
+
+        public SdxVertexShaderStage(SdxDevice device, D3D11VertexShaderStage d3d11VertexShaderStage)
         {
-            get { return shader; }
-            set
-            {
-                shader = value as SdxVertexShader;
+            if (device == null) throw new ArgumentNullException("d3d11Device");
+            if (d3d11VertexShaderStage == null) throw new ArgumentNullException("d3d11VertexShaderStage");
 
-                if (shader == null)
-                {
-                    // null 設定でステージを無効化。
-                    D3D11ShaderStage.Set(null);
-                }
-                else
-                {
-                    D3D11ShaderStage.Set(shader.D3D11VertexShader);
-                }
+            Device = device;
+            D3D11VertexShaderStage = d3d11VertexShaderStage;
+        }
+
+        protected override void OnVertexShaderChanged()
+        {
+            if (VertexShader == null)
+            {
+                D3D11VertexShaderStage.Set(null);
+            }
+            else
+            {
+                var d3d11VertexShader = (VertexShader as SdxVertexShader).D3D11VertexShader;
+                D3D11VertexShaderStage.Set(d3d11VertexShader);
             }
         }
 
-        internal SdxVertexShaderStage(SdxDeviceContext context)
-            : base(context, context.D3D11DeviceContext.VertexShader)
+        protected override void SetConstantBufferCore(int slot, ConstantBuffer buffer)
         {
+            D3D11VertexShaderStage.SetConstantBuffer(slot, buffer);
+        }
+
+        protected override void SetConstantBuffersCore(int startSlot, int count, ConstantBuffer[] buffers)
+        {
+            D3D11VertexShaderStage.SetConstantBuffers(startSlot, count, buffers);
+        }
+
+        protected override void SetSamplerStateCore(int slot, SamplerState state)
+        {
+            D3D11VertexShaderStage.SetSamplerState(Device, slot, state);
+        }
+
+        protected override void SetSamplerStatesCore(int startSlot, int count, SamplerState[] states)
+        {
+            D3D11VertexShaderStage.SetSamplerStates(Device, startSlot, count, states);
+        }
+
+        protected override void SetShaderResourceViewCore(int slot, ShaderResourceView view)
+        {
+            D3D11VertexShaderStage.SetShaderResourceViewCore(slot, view);
+        }
+
+        protected override void SetShaderResourceViewsCore(int startSlot, int count, ShaderResourceView[] views)
+        {
+            D3D11VertexShaderStage.SetShaderResourceViewsCore(startSlot, count, views);
         }
     }
 }
