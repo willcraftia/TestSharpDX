@@ -254,7 +254,7 @@ namespace Libra.Graphics.SharpDX
             return new SdxVertexBuffer(d3d11Buffer);
         }
 
-        public IInputLayout CreateInputLayout(byte[] shaderBytecode, params InputElement[] elements)
+        public IInputLayout CreateInputLayout(byte[] shaderBytecode, IList<InputElement> elements)
         {
             int inputStride;
             var d3d11InputLayout = CreateD3D11InputLayout(shaderBytecode, elements, out inputStride);
@@ -265,9 +265,8 @@ namespace Libra.Graphics.SharpDX
         public IInputLayout CreateInputLayout<T>(byte[] shaderBytecode) where T : IInputType
         {
             var dummyObject = Activator.CreateInstance(typeof(T)) as IInputType;
-            var elements = dummyObject.GetInputElements();
 
-            return CreateInputLayout(shaderBytecode, elements);
+            return CreateInputLayout(shaderBytecode, dummyObject.InputElements);
         }
 
         public ITexture2D CreateTexture2D(
@@ -540,12 +539,12 @@ namespace Libra.Graphics.SharpDX
             return new D3D11DepthStencilState(D3D11Device, description);
         }
 
-        D3D11InputLayout CreateD3D11InputLayout(byte[] shaderBytecode, InputElement[] elements, out int inputStride)
+        D3D11InputLayout CreateD3D11InputLayout(byte[] shaderBytecode, IList<InputElement> elements, out int inputStride)
         {
             inputStride = 0;
 
-            var d3d11InputElements = new D3D11InputElement[elements.Length];
-            for (int i = 0; i < elements.Length; i++)
+            var d3d11InputElements = new D3D11InputElement[elements.Count];
+            for (int i = 0; i < elements.Count; i++)
             {
                 var d3d11InputClassification = D3D11InputClassification.PerVertexData;
                 if (elements[i].PerInstance)

@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -26,7 +27,7 @@ namespace Libra.Graphics
 
         IPixelShader CreatePixelShader(byte[] shaderBytecode);
 
-        IInputLayout CreateInputLayout(byte[] shaderBytecode, params InputElement[] elements);
+        IInputLayout CreateInputLayout(byte[] shaderBytecode, IList<InputElement> elements);
 
         IInputLayout CreateInputLayout<T>(byte[] shaderBytecode) where T : IInputType;
 

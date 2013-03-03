@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 
 #endregion
@@ -10,11 +11,12 @@ namespace Libra.Graphics
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct InputPositionColor : IInputType, IEquatable<InputPositionColor>
     {
-        static readonly InputElement[] inputElements =
-        {
-            new InputElement("POSITION", 0, InputElementFormat.Vector3, 0,  0),
-            new InputElement("COLOR",    0, InputElementFormat.Color,   0, 12),
-        };
+        static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
+            new[]
+            {
+                new InputElement("POSITION", 0, InputElementFormat.Vector3, 0,  0),
+                new InputElement("COLOR",    0, InputElementFormat.Color,   0, 12),
+            });
 
         public Vector3 Position;
 
@@ -26,11 +28,9 @@ namespace Libra.Graphics
             Color = color;
         }
 
-        public InputElement[] GetInputElements()
+        public ReadOnlyCollection<InputElement> InputElements
         {
-            var result = new InputElement[inputElements.Length];
-            Array.Copy(inputElements, result, inputElements.Length);
-            return result;
+            get { return inputElements; }
         }
 
         #region Equatable

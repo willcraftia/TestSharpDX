@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Collections.ObjectModel;
 
 #endregion
 
@@ -21,6 +22,6 @@ namespace Libra.Graphics
 
     public interface IInputType
     {
-        InputElement[] GetInputElements();
+        ReadOnlyCollection<InputElement> InputElements { get; }
     }
 }
