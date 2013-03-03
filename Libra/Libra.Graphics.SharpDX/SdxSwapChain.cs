@@ -145,7 +145,7 @@ namespace Libra.Graphics.SharpDX
             {
                 // 注意:
                 // Quality = 最大レベル - 1
-                multiSampleQuality = Device.CheckMultiSampleQualityLevels(
+                multiSampleQuality = Device.CheckMultisampleQualityLevels(
                     settings.BackBufferFormat, settings.BackBufferMultiSampleCount) - 1;
             }
 

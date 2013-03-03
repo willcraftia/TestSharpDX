@@ -45,8 +45,8 @@ namespace Libra.Graphics
 
         RenderTargetView CreateRenderTargetView();
 
-        int CheckMultiSampleQualityLevels(SurfaceFormat format, int sampleCount);
+        int CheckMultisampleQualityLevels(SurfaceFormat format, int sampleCount);
 
-        int CheckMultiSampleQualityLevels(DepthFormat format, int sampleCount);
+        int CheckMultisampleQualityLevels(DepthFormat format, int sampleCount);
     }
 }

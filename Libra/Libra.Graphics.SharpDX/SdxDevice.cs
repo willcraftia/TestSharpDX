@@ -214,7 +214,7 @@ namespace Libra.Graphics.SharpDX
             return new SdxRenderTargetView(D3D11Device);
         }
 
-        public int CheckMultiSampleQualityLevels(SurfaceFormat format, int sampleCount)
+        public int CheckMultisampleQualityLevels(SurfaceFormat format, int sampleCount)
         {
             if (sampleCount < 1) throw new ArgumentOutOfRangeException("sampleCount");
 
@@ -223,7 +223,7 @@ namespace Libra.Graphics.SharpDX
             return D3D11Device.CheckMultisampleQualityLevels((DXGIFormat) format, sampleCount);
         }
 
-        public int CheckMultiSampleQualityLevels(DepthFormat format, int sampleCount)
+        public int CheckMultisampleQualityLevels(DepthFormat format, int sampleCount)
         {
             if (sampleCount < 1) throw new ArgumentOutOfRangeException("sampleCount");
 
