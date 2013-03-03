@@ -64,7 +64,7 @@ namespace Libra.Graphics.SharpDX
 
             SdxShaderResourceView[] items;
 
-            public IShaderResourceView this[int slot]
+            public ShaderResourceView this[int slot]
             {
                 get
                 {
@@ -114,13 +114,13 @@ namespace Libra.Graphics.SharpDX
             ShaderResourceViews = new ShaderResourceViewCollection(this);
         }
 
-        public void SetConstantBuffer(int slot, IConstantBuffer buffer)
+        public void SetConstantBuffer(int slot, ConstantBuffer buffer)
         {
             var d3d11Buffer = (buffer as SdxConstantBuffer).D3D11Buffer;
             D3D11ShaderStage.SetConstantBuffer(slot, d3d11Buffer);
         }
 
-        public void SetConstantBuffers(int startSlot, params IConstantBuffer[] buffers)
+        public void SetConstantBuffers(int startSlot, params ConstantBuffer[] buffers)
         {
             // SharpDX では、定数バッファについて、D3D11 のポインタ渡しコードを隠蔽している。
             // このため、SharpDX のバッファ配列をここで生成するしかない。

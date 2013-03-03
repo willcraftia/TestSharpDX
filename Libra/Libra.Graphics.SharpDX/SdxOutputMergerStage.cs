@@ -93,12 +93,12 @@ namespace Libra.Graphics.SharpDX
             activeD3D11RenderTargetViews = new D3D11RenderTargetView[SimultaneousRenderTargetCount];
         }
 
-        public IRenderTargetView GetRenderTargetView()
+        public RenderTargetView GetRenderTargetView()
         {
             return activeRenderTargetViews[0];
         }
 
-        public void GetRenderTargetViews(IRenderTargetView[] result)
+        public void GetRenderTargetViews(RenderTargetView[] result)
         {
             if (result == null) throw new ArgumentNullException("result");
             if (result.Length == 0 || SimultaneousRenderTargetCount < result.Length)
@@ -108,7 +108,7 @@ namespace Libra.Graphics.SharpDX
                 result[i] = activeRenderTargetViews[i];
         }
 
-        public void SetRenderTargetView(IRenderTargetView renderTargetView)
+        public void SetRenderTargetView(RenderTargetView renderTargetView)
         {
             if (renderTargetView == null)
             {
@@ -121,7 +121,7 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        public void SetRenderTargetViews(params IRenderTargetView[] renderTargetViews)
+        public void SetRenderTargetViews(params RenderTargetView[] renderTargetViews)
         {
             if (renderTargetViews.Length == 0)
                 throw new ArgumentException("Invalid size of array: 0", "renderTargetViews");
@@ -198,13 +198,13 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        public void ClearRenderTargetView(IRenderTargetView renderTargetView,
+        public void ClearRenderTargetView(RenderTargetView renderTargetView,
             ClearOptions options, Color color, float depth, byte stencil)
         {
             ClearRenderTargetView(renderTargetView, options, color.ToVector4(), depth, stencil);
         }
 
-        public void ClearRenderTargetView(IRenderTargetView renderTargetView,
+        public void ClearRenderTargetView(RenderTargetView renderTargetView,
             ClearOptions options, Vector4 color, float depth, byte stencil)
         {
             if (renderTargetView == null) throw new ArgumentNullException("renderTarget");

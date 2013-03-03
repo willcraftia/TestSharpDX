@@ -54,11 +54,11 @@
     <Compile Include="ColorExtension.cs" />
     <Compile Include="RectangleExtension.cs" />
     <Compile Include="FormatHelper.cs" />
+    <Compile Include="ResourceHelper.cs" />
     <Compile Include="SdxDeviceFeatures.cs" />
     <Compile Include="SdxConstantBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdxAdapter.cs" />
-    <Compile Include="SdxBuffer.cs" />
     <Compile Include="SdxDepthStencil.cs" />
     <Compile Include="SdxDepthStencilView.cs" />
     <Compile Include="SdxDevice.cs" />
@@ -74,13 +74,10 @@
     <Compile Include="SdxRasterizerStage.cs" />
     <Compile Include="SdxRenderTarget.cs" />
     <Compile Include="SdxRenderTargetView.cs" />
-    <Compile Include="SdxResource.cs" />
-    <Compile Include="SdxResourceView.cs" />
     <Compile Include="SdxShaderResourceView.cs" />
     <Compile Include="SdxShaderStage.cs" />
     <Compile Include="SdxStateManager.cs" />
     <Compile Include="SdxSwapChain.cs" />
-    <Compile Include="SdxTexture.cs" />
     <Compile Include="SdxTexture2D.cs" />
     <Compile Include="SdxUtilities.cs" />
     <Compile Include="SdxVertexBuffer.cs" />

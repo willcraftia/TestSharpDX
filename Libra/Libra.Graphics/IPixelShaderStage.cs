@@ -8,6 +8,6 @@ namespace Libra.Graphics
 {
     public interface IPixelShaderStage : IShaderStage
     {
-        IPixelShader Shader { get; set; }
+        PixelShader Shader { get; set; }
     }
 }

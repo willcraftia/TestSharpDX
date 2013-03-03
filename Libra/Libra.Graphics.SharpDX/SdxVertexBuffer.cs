@@ -2,26 +2,90 @@
 
 using System;
 
+using D3D11BindFlags = SharpDX.Direct3D11.BindFlags;
 using D3D11Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11BufferDescription = SharpDX.Direct3D11.BufferDescription;
+using D3D11CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags;
+using D3D11Device = SharpDX.Direct3D11.Device;
+using D3D11ResourceOptionFlags = SharpDX.Direct3D11.ResourceOptionFlags;
+using D3D11ResourceUsage = SharpDX.Direct3D11.ResourceUsage;
 
 #endregion
 
 namespace Libra.Graphics.SharpDX
 {
-    // TODO
-    //
-    // XNA の DynamicVertexBuffer に相当する機能は、
-    // バッファ サイズの確保の仕方が異なるため、
-    // やはり同様に専用のクラスとして定義すべきと思われる。
-    //
-    // もし DynamicVertexBuffer を作るならば、sealed を外し、
-    // Texture2D を参考に拡張可能な状態へ作り直すこと。
-
-    public sealed class SdxVertexBuffer : SdxBuffer, IVertexBuffer
+    public sealed class SdxVertexBuffer : VertexBuffer
     {
-        public SdxVertexBuffer(D3D11Buffer d3d11Buffer)
-            : base(d3d11Buffer)
+        public D3D11Device D3D11Device { get; private set; }
+
+        public D3D11Buffer D3D11Buffer { get; private set; }
+
+        public SdxVertexBuffer(D3D11Device d3d11Device)
         {
+            if (d3d11Device == null) throw new ArgumentNullException("d3d11Device");
+
+            D3D11Device = d3d11Device;
         }
+
+        public override void Initialize()
+        {
+            if (Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Usage must be not immutable.");
+
+            D3D11BufferDescription description;
+            CreateD3D11BufferDescription(out description);
+
+            D3D11Buffer = new D3D11Buffer(D3D11Device, description);
+        }
+
+        public override void Initialize<T>(T[] data)
+        {
+            if (data == null) throw new ArgumentNullException("data");
+
+            ByteWidth = SdxUtilities.SizeOf<T>() * data.Length;
+
+            D3D11BufferDescription description;
+            CreateD3D11BufferDescription(out description);
+
+            D3D11Buffer = D3D11Buffer.Create<T>(D3D11Device, data, description);
+        }
+
+        public override void GetData<T>(IDeviceContext context, int level, T[] data, int startIndex, int elementCount)
+        {
+            (context as SdxDeviceContext).GetData(this, level, data, startIndex, elementCount);
+        }
+
+        public override void SetData<T>(IDeviceContext context, T[] data, int startIndex, int elementCount)
+        {
+            (context as SdxDeviceContext).SetData(this, data, startIndex, elementCount);
+        }
+
+        void CreateD3D11BufferDescription(out D3D11BufferDescription result)
+        {
+            result = new D3D11BufferDescription
+            {
+                SizeInBytes = ByteWidth,
+                Usage = (D3D11ResourceUsage) Usage,
+                BindFlags = D3D11BindFlags.VertexBuffer,
+                CpuAccessFlags = ResourceHelper.GetD3D11CpuAccessFlags((D3D11ResourceUsage) Usage),
+                OptionFlags = D3D11ResourceOptionFlags.None,
+                StructureByteStride = 0
+            };
+        }
+
+        #region IDisposable
+
+        protected override void DisposeOverride(bool disposing)
+        {
+            if (disposing)
+            {
+                if (D3D11Buffer != null)
+                    D3D11Buffer.Dispose();
+            }
+
+            base.DisposeOverride(disposing);
+        }
+
+        #endregion
     }
 }

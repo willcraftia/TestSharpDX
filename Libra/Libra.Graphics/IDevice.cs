@@ -23,68 +23,27 @@ namespace Libra.Graphics
 
         IDeviceContext CreateDeferredContext();
 
-        IVertexShader CreateVertexShader(byte[] shaderBytecode);
+        VertexShader CreateVertexShader();
 
-        IPixelShader CreatePixelShader(byte[] shaderBytecode);
+        PixelShader CreatePixelShader();
 
-        IInputLayout CreateInputLayout(byte[] shaderBytecode, IList<InputElement> elements);
+        InputLayout CreateInputLayout();
 
-        IInputLayout CreateInputLayout<T>(byte[] shaderBytecode) where T : IInputType;
+        ConstantBuffer CreateConstantBuffer();
 
-        IConstantBuffer CreateConstantBuffer(
-            int sizeInBytes,
-            ResourceUsage usage = ResourceUsage.Default);
+        VertexBuffer CreateVertexBuffer();
 
-        IConstantBuffer CreateConstantBuffer<T>(
-            ResourceUsage usage = ResourceUsage.Default) where T : struct;
+        Texture2D CreateTexture2D();
 
-        IVertexBuffer CreateVertexBuffer(
-            int sizeInBytes,
-            ResourceUsage usage = ResourceUsage.Default);
+        DepthStencil CreateDepthStencil();
 
-        IVertexBuffer CreateVertexBuffer<T>(
-            T[] data,
-            ResourceUsage usage = ResourceUsage.Immutable) where T : struct;
+        RenderTarget CreateRenderTarget();
 
-        ITexture2D CreateTexture2D(
-            int width,
-            int height,
-            bool mipMap = false,
-            SurfaceFormat format = SurfaceFormat.Color,
-            int multiSampleCount = 1,
-            ResourceUsage usage = ResourceUsage.Default);
+        ShaderResourceView CreateShaderResourceView();
 
-        IDepthStencil CreateDepthStencil(
-            int width,
-            int height,
-            DepthFormat format = DepthFormat.Depth24Stencil8,
-            int multiSampleCount = 1,
-            int multiSampleQuality = 0);
+        DepthStencilView CreateDepthStencilView();
 
-        IRenderTarget CreateRenderTarget(
-            int width,
-            int height,
-            bool mipMap = false,
-            SurfaceFormat format = SurfaceFormat.Color,
-            int multiSampleCount = 1,
-            ResourceUsage resourceUsage = ResourceUsage.Default,
-            RenderTargetUsage renderTargetUsage = RenderTargetUsage.Discard);
-
-        IRenderTarget CreateRenderTarget(
-            int width,
-            int height,
-            bool mipMap = false,
-            SurfaceFormat format = SurfaceFormat.Color,
-            DepthFormat depthFormat = DepthFormat.None,
-            int multiSampleCount = 1,
-            ResourceUsage resourceUsage = ResourceUsage.Default,
-            RenderTargetUsage renderTargetUsage = RenderTargetUsage.Discard);
-
-        IShaderResourceView CreateShaderResourceView(ITexture2D texture2D);
-
-        IDepthStencilView CreateDepthStencilView(IDepthStencil depthStencil);
-
-        IRenderTargetView CreateRenderTargetView(IRenderTarget renderTarget);
+        RenderTargetView CreateRenderTargetView();
 
         int CheckMultiSampleQualityLevels(SurfaceFormat format, int sampleCount);
 

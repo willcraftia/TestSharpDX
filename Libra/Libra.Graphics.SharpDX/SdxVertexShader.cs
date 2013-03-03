@@ -2,48 +2,44 @@
 
 using System;
 
+using D3D11Device = SharpDX.Direct3D11.Device;
 using D3D11VertexShader = SharpDX.Direct3D11.VertexShader;
 
 #endregion
 
 namespace Libra.Graphics.SharpDX
 {
-    public sealed class SdxVertexShader : IVertexShader
+    public sealed class SdxVertexShader : VertexShader
     {
+        public D3D11Device D3D11Device { get; private set; }
+
         public D3D11VertexShader D3D11VertexShader { get; private set; }
 
-        public SdxVertexShader(D3D11VertexShader d3d11VertexShader)
+        public SdxVertexShader(D3D11Device d3d11Device)
         {
-            if (d3d11VertexShader == null) throw new ArgumentNullException("d3d11VertexShader");
+            if (d3d11Device == null) throw new ArgumentNullException("d3d11Device");
 
-            D3D11VertexShader = d3d11VertexShader;
+            D3D11Device = d3d11Device;
+        }
+
+        public override void Initialize(byte[] shaderBytecode)
+        {
+            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
+
+            D3D11VertexShader = new D3D11VertexShader(D3D11Device, shaderBytecode);
         }
 
         #region IDisposable
 
-        public bool IsDisposed { get; private set; }
-
-        ~SdxVertexShader()
+        protected override void DisposeOverride(bool disposing)
         {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (IsDisposed) return;
-
             if (disposing)
             {
-                D3D11VertexShader.Dispose();
+                if (D3D11VertexShader != null)
+                    D3D11VertexShader.Dispose();
             }
 
-            IsDisposed = true;
+            base.DisposeOverride(disposing);
         }
 
         #endregion

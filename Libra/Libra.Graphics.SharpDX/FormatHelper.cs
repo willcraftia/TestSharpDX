@@ -13,9 +13,9 @@ namespace Libra.Graphics.SharpDX
 {
     public static class FormatHelper
     {
-        internal static ReadOnlyCollection<DXGIFormat> DXGIFormatsAsSurfaceFormat { get; private set; }
+        public static ReadOnlyCollection<DXGIFormat> DXGIFormatsAsSurfaceFormat { get; private set; }
 
-        internal static ReadOnlyCollection<DXGIFormat> DXGIFormatsAsDepthFormat { get; private set; }
+        public static ReadOnlyCollection<DXGIFormat> DXGIFormatsAsDepthFormat { get; private set; }
 
         static FormatHelper()
         {

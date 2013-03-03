@@ -8,6 +8,6 @@ namespace Libra.Graphics
 {
     public interface IShaderResourceViewCollection
     {
-        IShaderResourceView this[int slot] { get; }
+        ShaderResourceView this[int slot] { get; }
     }
 }

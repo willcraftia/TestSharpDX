@@ -12,8 +12,8 @@ namespace Libra.Graphics
 
         IShaderResourceViewCollection ShaderResourceViews { get; }
 
-        void SetConstantBuffer(int slot, IConstantBuffer buffer);
+        void SetConstantBuffer(int slot, ConstantBuffer buffer);
 
-        void SetConstantBuffers(int startSlot, params IConstantBuffer[] buffers);
+        void SetConstantBuffers(int startSlot, params ConstantBuffer[] buffers);
     }
 }

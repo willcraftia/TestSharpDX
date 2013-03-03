@@ -24,13 +24,13 @@ namespace Libra.Graphics.SharpDX
         /// </summary>
         public const int BackBufferCount = 2;
 
-        SdxDevice device;
-
         RefreshRate refreshRate;
 
         DXGISwapChainFlags dxgiSwapChainFlags;
 
         SdxRenderTarget renderTarget;
+
+        public SdxDevice Device { get; private set; }
 
         public int BackBufferWidth { get; private set; }
 
@@ -50,7 +50,7 @@ namespace Libra.Graphics.SharpDX
 
         public int SyncInterval { get; private set; }
 
-        public IRenderTargetView RenderTargetView { get; private set; }
+        public RenderTargetView RenderTargetView { get; private set; }
 
         public DXGISwapChain DXGISwapChain { get; private set; }
 
@@ -58,7 +58,7 @@ namespace Libra.Graphics.SharpDX
         {
             if (device == null) throw new ArgumentNullException("device");
 
-            this.device = device;
+            Device = device;
 
             DepthStencilFormat = settings.DepthStencilFormat;
             SyncInterval = settings.SyncInterval;
@@ -145,7 +145,7 @@ namespace Libra.Graphics.SharpDX
             {
                 // 注意:
                 // Quality = 最大レベル - 1
-                multiSampleQuality = device.CheckMultiSampleQualityLevels(
+                multiSampleQuality = Device.CheckMultiSampleQualityLevels(
                     settings.BackBufferFormat, settings.BackBufferMultiSampleCount) - 1;
             }
 
@@ -180,8 +180,8 @@ namespace Libra.Graphics.SharpDX
                 Flags = dxgiSwapChainFlags
             };
 
-            var dxgiFactory = (device.Adapter as SdxAdapter).DXGIAdapter.GetParent<DXGIFactory1>();
-            DXGISwapChain = new DXGISwapChain(dxgiFactory, device.D3D11Device, description);
+            var dxgiFactory = (Device.Adapter as SdxAdapter).DXGIAdapter.GetParent<DXGIFactory1>();
+            DXGISwapChain = new DXGISwapChain(dxgiFactory, Device.D3D11Device, description);
 
             // スワップ チェーンの生成では、推測により値が決定されるものも含まれるため、
             // スワップ チェーンの設定を示すプロパティについては、
@@ -206,22 +206,20 @@ namespace Libra.Graphics.SharpDX
 
         void InitializeBackBuffer()
         {
-            var depthStencil = device.CreateDepthStencil(
-                BackBufferWidth,
-                BackBufferHeight,
-                DepthStencilFormat,
-                BackBufferMultiSampleCount,
-                BackBufferMultiSampleQuality);
-
             var backBuffer = DXGISwapChain.GetBackBuffer<D3D11Texture2D>(0);
 
             // バッファ リサイズ時にバッファの破棄が発生するため、
             // 深度ステンシルを共有している設定は自由に破棄できずに都合が悪い。
             // よって、共有不可 (RenderTargetUsage.Preserve) でレンダ ターゲットを生成。
-            renderTarget = new SdxRenderTarget(backBuffer, RenderTargetUsage.Preserve, depthStencil);
-            renderTarget.Name = "BackBuffer_0";
 
-            RenderTargetView = device.CreateRenderTargetView(renderTarget);
+            renderTarget = Device.CreateRenderTarget() as SdxRenderTarget;
+            renderTarget.Name = "BackBuffer_0";
+            renderTarget.DepthFormat = DepthStencilFormat;
+            renderTarget.RenderTargetUsage = RenderTargetUsage.Preserve;
+            renderTarget.Initialize(backBuffer);
+
+            RenderTargetView = Device.CreateRenderTargetView();
+            RenderTargetView.Initialize(renderTarget);
         }
 
         void ReleaseBackBuffer()

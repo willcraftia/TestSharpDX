@@ -14,7 +14,7 @@ namespace Libra.Graphics.SharpDX
     {
         SdxPixelShader shader;
 
-        public IPixelShader Shader
+        public PixelShader Shader
         {
             get { return shader; }
             set

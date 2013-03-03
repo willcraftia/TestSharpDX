@@ -8,13 +8,13 @@ namespace Libra.Graphics
 {
     public interface IInputAssemblerStage
     {
-        IInputLayout InputLayout { get; set; }
+        InputLayout InputLayout { get; set; }
 
         PrimitiveTopology PrimitiveTopology { get; set; }
 
-        void SetVertexBuffer<T>(int slot, IVertexBuffer buffer, int offset = 0) where T : struct;
+        void SetVertexBuffer<T>(int slot, VertexBuffer buffer, int offset = 0) where T : struct;
 
-        void SetVertexBuffer(int slot, IVertexBuffer buffer, int stride, int offset = 0);
+        void SetVertexBuffer(int slot, VertexBuffer buffer, int stride, int offset = 0);
 
         void SetVertexBuffer(int slot, VertexBufferBinding binding);
 

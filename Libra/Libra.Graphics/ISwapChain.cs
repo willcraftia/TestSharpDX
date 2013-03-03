@@ -26,7 +26,7 @@ namespace Libra.Graphics
 
         int SyncInterval { get; }
 
-        IRenderTargetView RenderTargetView { get; }
+        RenderTargetView RenderTargetView { get; }
 
         void Present();
 

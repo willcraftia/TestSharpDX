@@ -3,23 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-using D3D11BindFlags = SharpDX.Direct3D11.BindFlags;
 using D3D11Blend = SharpDX.Direct3D11.BlendOption;
 using D3D11BlendOperation = SharpDX.Direct3D11.BlendOperation;
 using D3D11BlendState = SharpDX.Direct3D11.BlendState;
 using D3D11BlendStateDescription = SharpDX.Direct3D11.BlendStateDescription;
-using D3D11Buffer = SharpDX.Direct3D11.Buffer;
-using D3D11BufferDescription = SharpDX.Direct3D11.BufferDescription;
 using D3D11ColorWriteMaskFlags = SharpDX.Direct3D11.ColorWriteMaskFlags;
 using D3D11Comparison = SharpDX.Direct3D11.Comparison;
-using D3D11CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags;
 using D3D11CullMode = SharpDX.Direct3D11.CullMode;
 using D3D11DepthStencilState = SharpDX.Direct3D11.DepthStencilState;
 using D3D11DepthStencilStateDescription = SharpDX.Direct3D11.DepthStencilStateDescription;
-using D3D11DepthStencilView = SharpDX.Direct3D11.DepthStencilView;
-using D3D11DepthStencilViewDescription = SharpDX.Direct3D11.DepthStencilViewDescription;
-using D3D11DepthStencilViewDimension = SharpDX.Direct3D11.DepthStencilViewDimension;
-using D3D11DepthStencilViewFlags = SharpDX.Direct3D11.DepthStencilViewFlags;
 using D3D11DepthWriteMask = SharpDX.Direct3D11.DepthWriteMask;
 using D3D11Device = SharpDX.Direct3D11.Device;
 using D3D11DeviceChild = SharpDX.Direct3D11.DeviceChild;
@@ -28,25 +20,12 @@ using D3D11DeviceCreationFlags = SharpDX.Direct3D11.DeviceCreationFlags;
 using D3D11Feature = SharpDX.Direct3D11.Feature;
 using D3D11FillMode = SharpDX.Direct3D11.FillMode;
 using D3D11Filter = SharpDX.Direct3D11.Filter;
-using D3D11InputClassification = SharpDX.Direct3D11.InputClassification;
-using D3D11InputElement = SharpDX.Direct3D11.InputElement;
-using D3D11InputLayout = SharpDX.Direct3D11.InputLayout;
-using D3D11PixelShader = SharpDX.Direct3D11.PixelShader;
 using D3D11RasterizerState = SharpDX.Direct3D11.RasterizerState;
 using D3D11RasterizerStateDescription = SharpDX.Direct3D11.RasterizerStateDescription;
-using D3D11RenderTargetView = SharpDX.Direct3D11.RenderTargetView;
-using D3D11RenderTargetViewDescription = SharpDX.Direct3D11.RenderTargetViewDescription;
-using D3D11RenderTargetViewDimension = SharpDX.Direct3D11.RenderTargetViewDimension;
-using D3D11ResourceUsage = SharpDX.Direct3D11.ResourceUsage;
-using D3D11ResourceOptionFlags = SharpDX.Direct3D11.ResourceOptionFlags;
 using D3D11SamplerState = SharpDX.Direct3D11.SamplerState;
 using D3D11SamplerStateDescription = SharpDX.Direct3D11.SamplerStateDescription;
-using D3D11ShaderResourceView = SharpDX.Direct3D11.ShaderResourceView;
 using D3D11StencilOperation = SharpDX.Direct3D11.StencilOperation;
-using D3D11Texture2D = SharpDX.Direct3D11.Texture2D;
-using D3D11Texture2DDescription = SharpDX.Direct3D11.Texture2DDescription;
 using D3D11TextureAddressMode = SharpDX.Direct3D11.TextureAddressMode;
-using D3D11VertexShader = SharpDX.Direct3D11.VertexShader;
 using D3DDriverType = SharpDX.Direct3D.DriverType;
 using D3DFeatureLevel = SharpDX.Direct3D.FeatureLevel;
 using DXGIFormat = SharpDX.DXGI.Format;
@@ -180,245 +159,59 @@ namespace Libra.Graphics.SharpDX
             return new SdxDeviceContext(this, d3d11DeviceContext);
         }
 
-        public IVertexShader CreateVertexShader(byte[] shaderBytecode)
+        public VertexShader CreateVertexShader()
         {
-            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
-
-            var d3d11VertexShader = new D3D11VertexShader(D3D11Device, shaderBytecode);
-
-            return new SdxVertexShader(d3d11VertexShader);
+            return new SdxVertexShader(D3D11Device);
         }
 
-        public IPixelShader CreatePixelShader(byte[] shaderBytecode)
+        public PixelShader CreatePixelShader()
         {
-            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
-
-            var d3d11PixelShader = new D3D11PixelShader(D3D11Device, shaderBytecode);
-
-            return new SdxPixelShader(d3d11PixelShader);
+            return new SdxPixelShader(D3D11Device);
         }
 
-        public IConstantBuffer CreateConstantBuffer(
-            int sizeInBytes,
-            ResourceUsage usage = ResourceUsage.Default)
+        public InputLayout CreateInputLayout()
         {
-            if (sizeInBytes <= 0) throw new ArgumentOutOfRangeException("sizeInBytes");
-
-            // 初期データ無しの構築であるため Immutable は禁止。
-            if (usage == ResourceUsage.Immutable)
-                throw new ArgumentException("Usage must not be immutable.", "usage");
-
-            var d3d11ResuorceUsage = (D3D11ResourceUsage) usage;
-            var d3d11BindFlags = D3D11BindFlags.ConstantBuffer;
-
-            var d3d11Buffer = CreateD3D11Buffer(sizeInBytes, d3d11ResuorceUsage, d3d11BindFlags);
-
-            return new SdxConstantBuffer(d3d11Buffer);
+            return new SdxInputLayout(D3D11Device);
         }
 
-        public IConstantBuffer CreateConstantBuffer<T>(
-            ResourceUsage usage = ResourceUsage.Default) where T : struct
+        public ConstantBuffer CreateConstantBuffer()
         {
-            return CreateConstantBuffer(SdxUtilities.SizeOf<T>(), usage);
+            return new SdxConstantBuffer(D3D11Device);
         }
 
-        public IVertexBuffer CreateVertexBuffer(
-            int sizeInBytes,
-            ResourceUsage usage = ResourceUsage.Default)
+        public VertexBuffer CreateVertexBuffer()
         {
-            if (sizeInBytes <= 0) throw new ArgumentOutOfRangeException("sizeInBytes");
-
-            // 初期データ無しの構築であるため Immutable は禁止。
-            if (usage == ResourceUsage.Immutable)
-                throw new ArgumentException("Usage must not be immutable.", "usage");
-
-            var d3d11ResuorceUsage = (D3D11ResourceUsage) usage;
-            var d3d11BindFlags = D3D11BindFlags.VertexBuffer;
-
-            var d3d11Buffer = CreateD3D11Buffer(sizeInBytes, d3d11ResuorceUsage, d3d11BindFlags);
-
-            return new SdxVertexBuffer(d3d11Buffer);
+            return new SdxVertexBuffer(D3D11Device);
         }
 
-        public IVertexBuffer CreateVertexBuffer<T>(
-            T[] data,
-            ResourceUsage usage = ResourceUsage.Immutable) where T : struct
+        public Texture2D CreateTexture2D()
         {
-            if (data == null) throw new ArgumentNullException("data");
-
-            var d3d11ResuorceUsage = (D3D11ResourceUsage) usage;
-            var d3d11BindFlags = D3D11BindFlags.ConstantBuffer;
-
-            var d3d11Buffer = CreateD3D11Buffer(data, d3d11ResuorceUsage, d3d11BindFlags);
-
-            return new SdxVertexBuffer(d3d11Buffer);
+            return new SdxTexture2D(D3D11Device);
         }
 
-        public IInputLayout CreateInputLayout(byte[] shaderBytecode, IList<InputElement> elements)
+        public DepthStencil CreateDepthStencil()
         {
-            int inputStride;
-            var d3d11InputLayout = CreateD3D11InputLayout(shaderBytecode, elements, out inputStride);
-
-            return new SdxInputLayout(d3d11InputLayout, inputStride);
+            return new SdxDepthStencil(D3D11Device);
         }
 
-        public IInputLayout CreateInputLayout<T>(byte[] shaderBytecode) where T : IInputType
+        public RenderTarget CreateRenderTarget()
         {
-            var dummyObject = Activator.CreateInstance(typeof(T)) as IInputType;
-
-            return CreateInputLayout(shaderBytecode, dummyObject.InputElements);
+            return new SdxRenderTarget(D3D11Device);
         }
 
-        public ITexture2D CreateTexture2D(
-            int width,
-            int height,
-            bool mipMap = false,
-            SurfaceFormat format = SurfaceFormat.Color,
-            int multiSampleCount = 1,
-            ResourceUsage usage = ResourceUsage.Default)
+        public ShaderResourceView CreateShaderResourceView()
         {
-            if (width <= 0) throw new ArgumentOutOfRangeException("width");
-            if (height <= 0) throw new ArgumentOutOfRangeException("height");
-            if (multiSampleCount < 1) throw new ArgumentOutOfRangeException("multiSampleCount");
-
-            // 初期データ無しの構築であるため Immutable は禁止。
-            if (usage == ResourceUsage.Immutable)
-                throw new ArgumentException("Usage must not be immutable.", "usage");
-
-            var dxgiFormat = (DXGIFormat) format;
-            var multiSampleQuality = D3D11Device.CheckMultisampleQualityLevels(dxgiFormat, multiSampleCount);
-            var d3d11ResuorceUsage = (D3D11ResourceUsage) usage;
-            var d3d11BindFlags = D3D11BindFlags.ShaderResource;
-
-            var d3d11Texture2D = CreateD3D11Texture2D(
-                width, height, mipMap, dxgiFormat, multiSampleCount, multiSampleQuality, d3d11ResuorceUsage, d3d11BindFlags);
-
-            return new SdxTexture2D(d3d11Texture2D);
+            return new SdxShaderResourceView(D3D11Device);
         }
 
-        public IDepthStencil CreateDepthStencil(
-            int width,
-            int height,
-            DepthFormat format = DepthFormat.Depth24Stencil8,
-            int multiSampleCount = 1,
-            int multiSampleQuality = 0)
+        public DepthStencilView CreateDepthStencilView()
         {
-            if (width <= 0) throw new ArgumentOutOfRangeException("width");
-            if (height <= 0) throw new ArgumentOutOfRangeException("height");
-            if (multiSampleCount < 1) throw new ArgumentOutOfRangeException("multiSampleCount");
-            if (multiSampleQuality < 0) throw new ArgumentOutOfRangeException("multiSampleQuality");
-
-            var dxgiFormat = (DXGIFormat) format;
-            var d3d11ResuorceUsage = D3D11ResourceUsage.Default;
-            var d3d11BindFlags = D3D11BindFlags.DepthStencil;
-
-            var d3d11Texture2D = CreateD3D11Texture2D(
-                width, height, false, dxgiFormat, multiSampleCount, multiSampleQuality, d3d11ResuorceUsage, d3d11BindFlags);
-
-            return new SdxDepthStencil(d3d11Texture2D);
+            return new SdxDepthStencilView(D3D11Device);
         }
 
-        public IRenderTarget CreateRenderTarget(
-            int width,
-            int height,
-            bool mipMap = false,
-            SurfaceFormat format = SurfaceFormat.Color,
-            int multiSampleCount = 1,
-            ResourceUsage resourceUsage = ResourceUsage.Default,
-            RenderTargetUsage renderTargetUsage = RenderTargetUsage.Discard)
+        public RenderTargetView CreateRenderTargetView()
         {
-            if (width <= 0) throw new ArgumentOutOfRangeException("width");
-            if (height <= 0) throw new ArgumentOutOfRangeException("height");
-            if (multiSampleCount < 1) throw new ArgumentOutOfRangeException("multiSampleCount");
-
-            if (resourceUsage != ResourceUsage.Default && resourceUsage != ResourceUsage.Staging)
-                throw new ArgumentException("ResourceUsage.Default or Staging required.", "usage");
-
-            var dxgiFormat = (DXGIFormat) format;
-            var multiSampleQuality = D3D11Device.CheckMultisampleQualityLevels(dxgiFormat, multiSampleCount);
-            var d3d11ResuorceUsage = (D3D11ResourceUsage) resourceUsage;
-            var d3d11BindFlags = D3D11BindFlags.ShaderResource | D3D11BindFlags.RenderTarget;
-
-            var d3d11Texture2D = CreateD3D11Texture2D(
-                width, height, mipMap, dxgiFormat, multiSampleCount, multiSampleQuality, d3d11ResuorceUsage, d3d11BindFlags);
-
-            return new SdxRenderTarget(d3d11Texture2D, renderTargetUsage);
-        }
-
-        public IRenderTarget CreateRenderTarget(
-            int width,
-            int height,
-            bool mipMap = false,
-            SurfaceFormat format = SurfaceFormat.Color,
-            DepthFormat depthFormat = DepthFormat.None,
-            int multiSampleCount = 1,
-            ResourceUsage resourceUsage = ResourceUsage.Default,
-            RenderTargetUsage renderTargetUsage = RenderTargetUsage.Discard)
-        {
-            if (width <= 0) throw new ArgumentOutOfRangeException("width");
-            if (height <= 0) throw new ArgumentOutOfRangeException("height");
-            if (multiSampleCount < 1) throw new ArgumentOutOfRangeException("multiSampleCount");
-
-            if (resourceUsage != ResourceUsage.Default && resourceUsage != ResourceUsage.Staging)
-                throw new ArgumentException("ResourceUsage.Default or Staging required.", "usage");
-
-            var dxgiFormat = (DXGIFormat) format;
-            var multiSampleQuality = D3D11Device.CheckMultisampleQualityLevels(dxgiFormat, multiSampleCount);
-            var d3d11ResuorceUsage = (D3D11ResourceUsage) resourceUsage;
-            var d3d11BindFlags = D3D11BindFlags.ShaderResource | D3D11BindFlags.RenderTarget;
-
-            var d3d11Texture2D = CreateD3D11Texture2D(
-                width, height, mipMap, dxgiFormat, multiSampleCount, multiSampleQuality, d3d11ResuorceUsage, d3d11BindFlags);
-
-            IDepthStencil depthStencil = null;
-            if (depthFormat != DepthFormat.None)
-            {
-                depthStencil = CreateDepthStencil(width, height, depthFormat, multiSampleCount, multiSampleQuality);
-            }
-
-            return new SdxRenderTarget(d3d11Texture2D, renderTargetUsage, depthStencil);
-        }
-
-        public IShaderResourceView CreateShaderResourceView(ITexture2D texture2D)
-        {
-            if (texture2D == null) throw new ArgumentNullException("texture2D");
-
-            var sdxTexture2D = texture2D as SdxTexture2D;
-            var d3d11Resource = sdxTexture2D.D3D11Resource;
-
-            var d3d11ShaderResourceView = new D3D11ShaderResourceView(D3D11Device, d3d11Resource);
-
-            return new SdxShaderResourceView(d3d11ShaderResourceView, sdxTexture2D);
-        }
-
-        public IDepthStencilView CreateDepthStencilView(IDepthStencil depthStencil)
-        {
-            if (depthStencil == null) throw new ArgumentNullException("depthStencil");
-
-            var sdxDepthStencil = depthStencil as SdxDepthStencil;
-            var d3d11Texture2D = sdxDepthStencil.D3D11Texture2D;
-
-            var d3d11DepthStencilView = CreateD3D11DepthStencilView(d3d11Texture2D);
-
-            return new SdxDepthStencilView(d3d11DepthStencilView, sdxDepthStencil);
-        }
-
-        public IRenderTargetView CreateRenderTargetView(IRenderTarget renderTarget)
-        {
-            if (renderTarget == null) throw new ArgumentNullException("renderTarget");
-
-            var sdxRenderTarget = renderTarget as SdxRenderTarget;
-            var d3d11Texture2D = sdxRenderTarget.D3D11Texture2D;
-
-            var d3d11RenderTargetView = CreateD3D11RenderTargetView(d3d11Texture2D);
-
-            IDepthStencilView depthStencilView = null;
-            if (renderTarget.DepthStencil != null)
-            {
-                depthStencilView = CreateDepthStencilView(renderTarget.DepthStencil);
-            }
-
-            return new SdxRenderTargetView(d3d11RenderTargetView, sdxRenderTarget, false, depthStencilView);
+            return new SdxRenderTargetView(D3D11Device);
         }
 
         public int CheckMultiSampleQualityLevels(SurfaceFormat format, int sampleCount)
@@ -537,174 +330,6 @@ namespace Libra.Graphics.SharpDX
             };
 
             return new D3D11DepthStencilState(D3D11Device, description);
-        }
-
-        D3D11InputLayout CreateD3D11InputLayout(byte[] shaderBytecode, IList<InputElement> elements, out int inputStride)
-        {
-            inputStride = 0;
-
-            var d3d11InputElements = new D3D11InputElement[elements.Count];
-            for (int i = 0; i < elements.Count; i++)
-            {
-                var d3d11InputClassification = D3D11InputClassification.PerVertexData;
-                if (elements[i].PerInstance)
-                    d3d11InputClassification = D3D11InputClassification.PerInstanceData;
-
-                d3d11InputElements[i] = new D3D11InputElement
-                {
-                    SemanticName = elements[i].SemanticName,
-                    SemanticIndex = elements[i].SemanticIndex,
-                    Format = (DXGIFormat) elements[i].Format,
-                    Slot = elements[i].InputSlot,
-                    AlignedByteOffset = elements[i].AlignedByteOffset,
-                    Classification = d3d11InputClassification,
-                    InstanceDataStepRate = elements[i].InstanceDataStepRate
-                };
-
-                inputStride += FormatHelper.SizeOfInBytes(elements[i].Format);
-            }
-
-            // シグネチャ生成無しでも入力レイアウトを生成可能。
-            // このため、シグネチャを用いるならば、
-            // クラス外部でこれを生成し、引数 shaderBytecode に指定すれば良い。
-            return new D3D11InputLayout(D3D11Device, shaderBytecode, d3d11InputElements);
-        }
-
-        D3D11Buffer CreateD3D11Buffer(
-            int sizeInBytes,
-            D3D11ResourceUsage d3d11ResuorceUsage,
-            D3D11BindFlags d3d11BindFlags)
-        {
-            var description = new D3D11BufferDescription
-            {
-                SizeInBytes = sizeInBytes,
-                Usage = d3d11ResuorceUsage,
-                BindFlags = d3d11BindFlags,
-                CpuAccessFlags = ResolveD3D11CpuAccessFlags(d3d11ResuorceUsage),
-                OptionFlags = D3D11ResourceOptionFlags.None,
-                StructureByteStride = 0
-            };
-
-            return new D3D11Buffer(D3D11Device, description);
-        }
-
-        D3D11Buffer CreateD3D11Buffer<T>(
-            T[] data,
-            D3D11ResourceUsage d3d11ResuorceUsage,
-            D3D11BindFlags d3d11BindFlags) where T : struct
-        {
-            // 「要素の構造体のサイズ」×「配列サイズ」がバッファのサイズ。
-            var sizeInBytes = SdxUtilities.SizeOf<T>() * data.Length;
-
-            var description = new D3D11BufferDescription
-            {
-                SizeInBytes = sizeInBytes,
-                Usage = d3d11ResuorceUsage,
-                BindFlags = d3d11BindFlags,
-                CpuAccessFlags = ResolveD3D11CpuAccessFlags(d3d11ResuorceUsage),
-                OptionFlags = D3D11ResourceOptionFlags.None,
-                StructureByteStride = 0
-            };
-
-            return D3D11Buffer.Create<T>(D3D11Device, data, description);
-        }
-
-        D3D11Texture2D CreateD3D11Texture2D(
-            int width,
-            int height,
-            bool mipMap,
-            DXGIFormat dxgiFormat,
-            int multiSampleCount,
-            int multiSampleQuality,
-            D3D11ResourceUsage d3d11ResuorceUsage,
-            D3D11BindFlags bindFlags)
-        {
-            // 初期データ無しの構築であるため Immutable は禁止。
-            if (d3d11ResuorceUsage == D3D11ResourceUsage.Immutable)
-                throw new ArgumentException("Usage must not be immutable.", "d3d11ResuorceUsage");
-
-            var description = new D3D11Texture2DDescription
-            {
-                Width = width,
-                Height = height,
-                MipLevels = (mipMap) ? 0 : 1,
-                ArraySize = 1,
-                Format = dxgiFormat,
-                SampleDescription =
-                {
-                    Count = multiSampleCount,
-                    //Quality = D3D11Device.CheckMultisampleQualityLevels(dxgiFormat, multiSampleCount)
-                    Quality = multiSampleQuality
-                },
-                Usage = d3d11ResuorceUsage,
-                BindFlags = bindFlags,
-                CpuAccessFlags = ResolveD3D11CpuAccessFlags(d3d11ResuorceUsage),
-                OptionFlags = (mipMap) ? D3D11ResourceOptionFlags.GenerateMipMaps : D3D11ResourceOptionFlags.None
-            };
-
-            return new D3D11Texture2D(D3D11Device, description);
-        }
-
-        D3D11DepthStencilView CreateD3D11DepthStencilView(D3D11Texture2D d3d11Texture2D)
-        {
-            var d3d11Texture2DDescription = d3d11Texture2D.Description;
-
-            var description = new D3D11DepthStencilViewDescription
-            {
-                Format = d3d11Texture2DDescription.Format,
-                Flags = D3D11DepthStencilViewFlags.None,
-                Texture2D =
-                {
-                    MipSlice = 0
-                }
-            };
-
-            if (1 < d3d11Texture2DDescription.SampleDescription.Count)
-            {
-                description.Dimension = D3D11DepthStencilViewDimension.Texture2DMultisampled;
-            }
-            else
-            {
-                description.Dimension = D3D11DepthStencilViewDimension.Texture2D;
-            }
-
-            return new D3D11DepthStencilView(D3D11Device, d3d11Texture2D, description);
-        }
-
-        D3D11RenderTargetView CreateD3D11RenderTargetView(D3D11Texture2D d3d11Texture2D)
-        {
-            var d3d11Texture2DDescription = d3d11Texture2D.Description;
-
-            var description = new D3D11RenderTargetViewDescription
-            {
-                Format = d3d11Texture2DDescription.Format,
-                Texture2D =
-                {
-                    MipSlice = 0
-                }
-            };
-
-            if (1 < d3d11Texture2DDescription.SampleDescription.Count)
-            {
-                description.Dimension = D3D11RenderTargetViewDimension.Texture2DMultisampled;
-            }
-            else
-            {
-                description.Dimension = D3D11RenderTargetViewDimension.Texture2D;
-            }
-
-            return new D3D11RenderTargetView(D3D11Device, d3d11Texture2D, description);
-        }
-
-        D3D11CpuAccessFlags ResolveD3D11CpuAccessFlags(D3D11ResourceUsage usage)
-        {
-            if (usage == D3D11ResourceUsage.Staging)
-                return D3D11CpuAccessFlags.Read | D3D11CpuAccessFlags.Write;
-
-            if (usage == D3D11ResourceUsage.Dynamic)
-                return D3D11CpuAccessFlags.Write;
-
-            return D3D11CpuAccessFlags.None;
         }
 
         D3D11DeviceCreationFlags ResolveD3D11DeviceCreationFlags(DeviceSettings settings)

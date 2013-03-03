@@ -14,11 +14,11 @@ namespace Libra.Graphics
 
         DepthStencilState DepthStencilState { get; set; }
 
-        void GetRenderTargetViews(IRenderTargetView[] result);
+        void GetRenderTargetViews(RenderTargetView[] result);
 
-        void SetRenderTargetView(IRenderTargetView renderTargetView);
+        void SetRenderTargetView(RenderTargetView renderTargetView);
 
-        void SetRenderTargetViews(params IRenderTargetView[] renderTargetViews);
+        void SetRenderTargetViews(params RenderTargetView[] renderTargetViews);
 
         void Clear(Color color);
 
@@ -28,10 +28,10 @@ namespace Libra.Graphics
 
         void Clear(ClearOptions options, Vector4 color, float depth = 1f, byte stencil = 0);
 
-        void ClearRenderTargetView(IRenderTargetView renderTargetView,
+        void ClearRenderTargetView(RenderTargetView renderTargetView,
             ClearOptions options, Color color, float depth, byte stencil);
 
-        void ClearRenderTargetView(IRenderTargetView renderTargetView,
+        void ClearRenderTargetView(RenderTargetView renderTargetView,
             ClearOptions options, Vector4 color, float depth, byte stencil);
     }
 }

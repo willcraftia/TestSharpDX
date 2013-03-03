@@ -8,6 +8,6 @@ namespace Libra.Graphics
 {
     public interface IVertexShaderStage : IShaderStage
     {
-        IVertexShader Shader { get; set; }
+        VertexShader Shader { get; set; }
     }
 }

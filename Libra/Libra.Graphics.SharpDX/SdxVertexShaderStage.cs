@@ -14,7 +14,7 @@ namespace Libra.Graphics.SharpDX
     {
         SdxVertexShader shader;
 
-        public IVertexShader Shader
+        public VertexShader Shader
         {
             get { return shader; }
             set

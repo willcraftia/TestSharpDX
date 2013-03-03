@@ -19,7 +19,7 @@ namespace Libra.Graphics.SharpDX
 
         SdxInputLayout inputLayout;
 
-        public IInputLayout InputLayout
+        public InputLayout InputLayout
         {
             get { return inputLayout; }
             set
@@ -41,12 +41,12 @@ namespace Libra.Graphics.SharpDX
             d3d11InputAssemblerStage = context.D3D11DeviceContext.InputAssembler;
         }
 
-        public void SetVertexBuffer<T>(int slot, IVertexBuffer buffer, int offset = 0) where T : struct
+        public void SetVertexBuffer<T>(int slot, VertexBuffer buffer, int offset = 0) where T : struct
         {
             SetVertexBuffer(slot, buffer, SdxUtilities.SizeOf<T>(), offset);
         }
 
-        public void SetVertexBuffer(int slot, IVertexBuffer buffer, int stride, int offset = 0)
+        public void SetVertexBuffer(int slot, VertexBuffer buffer, int stride, int offset = 0)
         {
             SetVertexBuffer(slot, new VertexBufferBinding(buffer, stride, offset));
         }
