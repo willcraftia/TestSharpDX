@@ -19,9 +19,9 @@ namespace Libra.Graphics
 
         //DeviceFeatures Features { get; }
 
-        IDeviceContext ImmediateContext { get; }
+        DeviceContext ImmediateContext { get; }
 
-        IDeviceContext CreateDeferredContext();
+        DeviceContext CreateDeferredContext();
 
         VertexShader CreateVertexShader();
 

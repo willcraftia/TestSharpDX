@@ -33,6 +33,6 @@ namespace Libra.Graphics
 
         public abstract void Initialize(Stream stream);
 
-        public abstract void Save(IDeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png);
+        public abstract void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png);
     }
 }

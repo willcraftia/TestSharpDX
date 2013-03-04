@@ -51,16 +51,6 @@ namespace Libra.Graphics.SharpDX
             D3D11Buffer = new D3D11Buffer(D3D11Device, description);
         }
 
-        public override void GetData<T>(IDeviceContext context, int level, T[] data, int startIndex, int elementCount)
-        {
-            (context as SdxDeviceContext).GetData(this, level, data, startIndex, elementCount);
-        }
-
-        public override void SetData<T>(IDeviceContext context, T[] data, int startIndex, int elementCount)
-        {
-            (context as SdxDeviceContext).SetData(this, data, startIndex, elementCount);
-        }
-
         void CreateD3D11BufferDescription(out D3D11BufferDescription result)
         {
             result = new D3D11BufferDescription

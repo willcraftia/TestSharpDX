@@ -14,26 +14,32 @@ namespace Libra.Graphics
 
         protected Resource() { }
 
-        public abstract void GetData<T>(IDeviceContext context, int level, T[] data, int startIndex, int elementCount) where T : struct;
+        public void GetData<T>(DeviceContext context, int level, T[] data, int startIndex, int elementCount) where T : struct
+        {
+            context.GetData(this, level, data, startIndex, elementCount);
+        }
 
-        public void GetData<T>(IDeviceContext context, int level, T[] data) where T : struct
+        public void GetData<T>(DeviceContext context, int level, T[] data) where T : struct
         {
             GetData(context, level, data, 0, data.Length);
         }
 
-        public void GetData<T>(IDeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
+        public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
             GetData(context, 0, data, startIndex, elementCount);
         }
 
-        public void GetData<T>(IDeviceContext context, T[] data) where T : struct
+        public void GetData<T>(DeviceContext context, T[] data) where T : struct
         {
             GetData(context, 0, data, 0, data.Length);
         }
 
-        public abstract void SetData<T>(IDeviceContext context, T[] data, int startIndex, int elementCount) where T : struct;
+        public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
+        {
+            context.SetData(this, data, startIndex, elementCount);
+        }
 
-        public void SetData<T>(IDeviceContext context, params T[] data) where T : struct
+        public void SetData<T>(DeviceContext context, params T[] data) where T : struct
         {
             SetData(context, data, 0, data.Length);
         }

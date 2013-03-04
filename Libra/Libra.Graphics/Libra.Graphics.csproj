@@ -55,6 +55,7 @@
     <Compile Include="DepthStencil.cs" />
     <Compile Include="DepthStencilState.cs" />
     <Compile Include="DepthStencilView.cs" />
+    <Compile Include="DeviceContext.cs" />
     <Compile Include="DeviceProfile.cs" />
     <Compile Include="DeviceSettings.cs" />
     <Compile Include="DisplayMode.cs" />
@@ -64,7 +65,6 @@
     <Compile Include="FillMode.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="IDevice.cs" />
-    <Compile Include="IDeviceContext.cs" />
     <Compile Include="IGraphicsFactory.cs" />
     <Compile Include="IGraphicsService.cs" />
     <Compile Include="IInputType.cs" />

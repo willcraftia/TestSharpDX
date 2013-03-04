@@ -15,46 +15,83 @@ using SDXUtilities = SharpDX.Utilities;
 
 namespace Libra.Graphics.SharpDX
 {
-    public sealed class SdxDeviceContext : IDeviceContext
+    public sealed class SdxDeviceContext : DeviceContext
     {
-        public event EventHandler Disposing;
+        SdxDevice device;
 
-        public IDevice Device { get; private set; }
+        bool deferred;
 
-        public bool Deferred { get; private set; }
+        SdxInputAssemblerStage inputAssemblerStage;
 
-        public InputAssemblerStage InputAssemblerStage { get; private set; }
+        SdxVertexShaderStage vertexShaderStage;
 
-        public VertexShaderStage VertexShaderStage { get; private set; }
+        SdxRasterizerStage rasterizerStage;
 
-        public RasterizerStage RasterizerStage { get; private set; }
+        SdxPixelShaderStage pixelShaderStage;
 
-        public PixelShaderStage PixelShaderStage { get; private set; }
+        SdxOutputMergerStage outputMergerStage;
 
-        public OutputMergerStage OutputMergerStage { get; private set; }
+        public override IDevice Device
+        {
+            get { return device; }
+        }
 
-        internal D3D11DeviceContext D3D11DeviceContext { get; private set; }
+        public override bool Deferred
+        {
+            get { return deferred; }
+        }
 
-        internal SdxDeviceContext(SdxDevice device, D3D11DeviceContext d3d11DeviceContext)
+        public override InputAssemblerStage InputAssemblerStage
+        {
+            get { return inputAssemblerStage; }
+        }
+
+        public override VertexShaderStage VertexShaderStage
+        {
+            get { return vertexShaderStage; }
+        }
+
+        public override RasterizerStage RasterizerStage
+        {
+            get { return rasterizerStage; }
+        }
+
+        public override PixelShaderStage PixelShaderStage
+        {
+            get { return pixelShaderStage; }
+        }
+
+        public override OutputMergerStage OutputMergerStage
+        {
+            get { return outputMergerStage; }
+        }
+
+        public D3D11DeviceContext D3D11DeviceContext { get; private set; }
+
+        public SdxDeviceContext(SdxDevice device, D3D11DeviceContext d3d11DeviceContext)
         {
             if (device == null) throw new ArgumentNullException("device");
             if (d3d11DeviceContext == null) throw new ArgumentNullException("d3d11DeviceContext");
 
-            Device = device;
+            this.device = device;
             D3D11DeviceContext = d3d11DeviceContext;
 
-            Deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
+            deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
             // パイプライン ステージの初期化。
-            InputAssemblerStage = new SdxInputAssemblerStage(d3d11DeviceContext.InputAssembler);
-            VertexShaderStage = new SdxVertexShaderStage(device, d3d11DeviceContext.VertexShader);
-            RasterizerStage = new SdxRasterizerStage(device, d3d11DeviceContext.Rasterizer);
-            PixelShaderStage = new SdxPixelShaderStage(device, d3d11DeviceContext.PixelShader);
-            OutputMergerStage = new SdxOutputMergerStage(device, this, d3d11DeviceContext.OutputMerger);
+            inputAssemblerStage = new SdxInputAssemblerStage(d3d11DeviceContext.InputAssembler);
+            vertexShaderStage = new SdxVertexShaderStage(device, d3d11DeviceContext.VertexShader);
+            rasterizerStage = new SdxRasterizerStage(device, d3d11DeviceContext.Rasterizer);
+            pixelShaderStage = new SdxPixelShaderStage(device, d3d11DeviceContext.PixelShader);
+            outputMergerStage = new SdxOutputMergerStage(device, this, d3d11DeviceContext.OutputMerger);
         }
 
+        public override void Draw(int vertexCount, int startVertexLocation = 0)
+        {
+            D3D11DeviceContext.Draw(vertexCount, startVertexLocation);
+        }
 
-        public void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount) where T : struct
+        public override void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount)
         {
             if (resource == null) throw new ArgumentNullException("resource");
             if (data == null) throw new ArgumentNullException("data");
@@ -113,12 +150,7 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        public void SetData<T>(Resource resource, params T[] data) where T : struct
-        {
-            SetData(resource, data, 0, data.Length);
-        }
-
-        public void SetData<T>(Resource resource, T[] data, int startIndex, int elementCount) where T : struct
+        public override void SetData<T>(Resource resource, T[] data, int startIndex, int elementCount)
         {
             if (resource == null) throw new ArgumentNullException("resource");
             if (data == null) throw new ArgumentNullException("data");
@@ -176,39 +208,16 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        public void Draw(int vertexCount, int startVertexLocation = 0)
-        {
-            D3D11DeviceContext.Draw(vertexCount, startVertexLocation);
-        }
-
         #region IDisposable
 
-        public bool IsDisposed { get; private set; }
-
-        ~SdxDeviceContext()
+        protected override void DisposeOverride(bool disposing)
         {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (IsDisposed) return;
-
-            if (Disposing != null)
-                Disposing(this, EventArgs.Empty);
-
             if (disposing)
             {
                 D3D11DeviceContext.Dispose();
             }
 
-            IsDisposed = true;
+            base.DisposeOverride(disposing);
         }
 
         #endregion

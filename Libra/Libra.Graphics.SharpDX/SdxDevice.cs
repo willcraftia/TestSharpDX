@@ -64,7 +64,7 @@ namespace Libra.Graphics.SharpDX
 
         public SdxDeviceFeatures Features { get; private set; }
 
-        public IDeviceContext ImmediateContext { get; private set; }
+        public DeviceContext ImmediateContext { get; private set; }
 
         public D3D11Device D3D11Device { get; private set; }
 
@@ -153,7 +153,7 @@ namespace Libra.Graphics.SharpDX
             DepthStencilStateManager.Register(DepthStencilState.None);
         }
 
-        public IDeviceContext CreateDeferredContext()
+        public DeviceContext CreateDeferredContext()
         {
             var d3d11DeviceContext = new D3D11DeviceContext(D3D11Device);
             return new SdxDeviceContext(this, d3d11DeviceContext);

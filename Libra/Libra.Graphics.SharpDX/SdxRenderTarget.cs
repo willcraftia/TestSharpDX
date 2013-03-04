@@ -104,21 +104,11 @@ namespace Libra.Graphics.SharpDX
             return depthStencil;
         }
 
-        public override void Save(IDeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png)
+        public override void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png)
         {
             var d3d11DeviceContext = (context as SdxDeviceContext).D3D11DeviceContext;
 
             D3D11Resource.ToStream(d3d11DeviceContext, D3D11Texture2D, (D3D11ImageFileFormat) format, stream);
-        }
-
-        public override void GetData<T>(IDeviceContext context, int level, T[] data, int startIndex, int elementCount)
-        {
-            (context as SdxDeviceContext).GetData(this, level, data, startIndex, elementCount);
-        }
-
-        public override void SetData<T>(IDeviceContext context, T[] data, int startIndex, int elementCount)
-        {
-            (context as SdxDeviceContext).SetData(this, data, startIndex, elementCount);
         }
 
         void CreateD3D11Texture2DDescription(out D3D11Texture2DDescription result)
