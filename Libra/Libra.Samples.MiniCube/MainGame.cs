@@ -18,19 +18,6 @@ namespace Libra.Samples.MiniCube
 
         GraphicsManager graphicsManager;
 
-        public MainGame()
-        {
-            platform = new SdxFormGamePlatform(this, new SDXWRenderForm());
-            graphicsManager = new GraphicsManager(this);
-            //graphicsManager.PreferredBackBufferWidth = 0;
-            //graphicsManager.PreferredBackBufferHeight = 0;
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-        }
-
         VertexShader vertexShader;
 
         PixelShader pixelShader;
@@ -40,6 +27,12 @@ namespace Libra.Samples.MiniCube
         VertexBuffer vertexBuffer;
 
         ConstantBuffer constantBuffer;
+
+        public MainGame()
+        {
+            platform = new SdxFormGamePlatform(this, new SDXWRenderForm());
+            graphicsManager = new GraphicsManager(this);
+        }
 
         protected override void LoadContent()
         {
