@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Collections.ObjectModel;
 
 #endregion
 
@@ -49,9 +50,12 @@ namespace Libra.Graphics
             }
         }
 
+        internal ReadOnlyCollection<RenderTargetView> RenderTargetViews { get; private set; }
+
         protected OutputMergerStage()
         {
             renderTargetViews = new RenderTargetView[SimultaneousRenderTargetCount];
+            RenderTargetViews = Array.AsReadOnly<RenderTargetView>(renderTargetViews);
         }
 
         public RenderTargetView GetRenderTargetView()
@@ -80,43 +84,6 @@ namespace Libra.Graphics
             SetRenderTargetViewsCore(views);
         }
 
-        public void Clear(Color color)
-        {
-            Clear(color.ToVector4());
-        }
-
-        public void Clear(Vector4 color)
-        {
-            Clear(ClearOptions.Target, color, 1, 0);
-        }
-
-        public void Clear(ClearOptions options, Color color, float depth = 1f, byte stencil = 0)
-        {
-            Clear(options, color.ToVector4(), depth, stencil);
-        }
-
-        public void Clear(ClearOptions options, Vector4 color, float depth = 1f, byte stencil = 0)
-        {
-            // アクティブに設定されている全てのレンダ ターゲットをクリア。
-            for (int i = 0; i < renderTargetViews.Length; i++)
-            {
-                var renderTarget = renderTargetViews[i];
-                if (renderTarget != null)
-                {
-                    ClearRenderTargetView(renderTarget, options, color, depth, stencil);
-                }
-            }
-        }
-
-        public void ClearRenderTargetView(
-            RenderTargetView view, ClearOptions options, Color color, float depth, byte stencil)
-        {
-            ClearRenderTargetView(view, options, color.ToVector4(), depth, stencil);
-        }
-
-        public abstract void ClearRenderTargetView(
-            RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil);
-        
         protected abstract void SetRenderTargetViewCore(RenderTargetView view);
 
         protected abstract void SetRenderTargetViewsCore(RenderTargetView[] views);

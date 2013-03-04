@@ -3,11 +3,13 @@
 using System;
 using System.Runtime.InteropServices;
 
+using D3D11DepthStencilClearFlags = SharpDX.Direct3D11.DepthStencilClearFlags;
 using D3D11DeviceContext = SharpDX.Direct3D11.DeviceContext;
 using D3D11DeviceContextType = SharpDX.Direct3D11.DeviceContextType;
 using D3D11MapFlags = SharpDX.Direct3D11.MapFlags;
 using D3D11MapMode = SharpDX.Direct3D11.MapMode;
 using D3D11Resource = SharpDX.Direct3D11.Resource;
+using SDXColor4 = SharpDX.Color4;
 using SDXDataBox = SharpDX.DataBox;
 using SDXUtilities = SharpDX.Utilities;
 
@@ -84,6 +86,38 @@ namespace Libra.Graphics.SharpDX
             rasterizerStage = new SdxRasterizerStage(device, d3d11DeviceContext.Rasterizer);
             pixelShaderStage = new SdxPixelShaderStage(device, d3d11DeviceContext.PixelShader);
             outputMergerStage = new SdxOutputMergerStage(device, this, d3d11DeviceContext.OutputMerger);
+        }
+
+        public override void ClearRenderTargetView(RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil)
+        {
+            if (view == null) throw new ArgumentNullException("view");
+
+            if ((options & ClearOptions.Target) != 0)
+            {
+                var d3d11RenderTargetView = (view as SdxRenderTargetView).D3D11RenderTargetView;
+
+                D3D11DeviceContext.ClearRenderTargetView(
+                    d3d11RenderTargetView, new SDXColor4(color.X, color.Y, color.Z, color.W));
+            }
+
+            var depthStencilView = view.DepthStencilView;
+            if (depthStencilView == null)
+                return;
+
+            D3D11DepthStencilClearFlags flags = 0;
+
+            if ((options & ClearOptions.Depth) != 0)
+                flags |= D3D11DepthStencilClearFlags.Depth;
+
+            if ((options & ClearOptions.Stencil) != 0)
+                flags |= D3D11DepthStencilClearFlags.Stencil;
+
+            if (flags != 0)
+            {
+                var d3d11DepthStencilView = (depthStencilView as SdxDepthStencilView).D3D11DepthStencilView;
+
+                D3D11DeviceContext.ClearDepthStencilView(d3d11DepthStencilView, flags, depth, stencil);
+            }
         }
 
         public override void Draw(int vertexCount, int startVertexLocation = 0)

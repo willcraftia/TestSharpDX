@@ -128,39 +128,5 @@ namespace Libra.Graphics.SharpDX
 
             D3D11OutputMergerStage.SetTargets(d3d11DepthStencilView, activeD3D11RenderTargetViews);
         }
-
-        public override void ClearRenderTargetView(
-            RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil)
-        {
-            if (view == null) throw new ArgumentNullException("view");
-
-            var d3d11DeviceContext = (context as SdxDeviceContext).D3D11DeviceContext;
-
-            if ((options & ClearOptions.Target) != 0)
-            {
-                d3d11DeviceContext.ClearRenderTargetView(
-                    (view as SdxRenderTargetView).D3D11RenderTargetView,
-                    new SDXColor4(color.X, color.Y, color.Z, color.W));
-            }
-
-            var depthStencilView = view.DepthStencilView;
-            if (depthStencilView == null)
-                return;
-
-            D3D11DepthStencilClearFlags flags = 0;
-
-            if ((options & ClearOptions.Depth) != 0)
-                flags |= D3D11DepthStencilClearFlags.Depth;
-
-            if ((options & ClearOptions.Stencil) != 0)
-                flags |= D3D11DepthStencilClearFlags.Stencil;
-
-            if (flags != 0)
-            {
-                d3d11DeviceContext.ClearDepthStencilView(
-                    (depthStencilView as SdxDepthStencilView).D3D11DepthStencilView,
-                    flags, depth, stencil);
-            }
-        }
     }
 }

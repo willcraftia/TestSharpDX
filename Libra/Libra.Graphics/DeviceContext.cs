@@ -24,6 +24,46 @@ namespace Libra.Graphics
 
         public abstract OutputMergerStage OutputMergerStage { get; }
 
+        public void ClearRenderTargetView(
+            RenderTargetView view, ClearOptions options, Color color, float depth, byte stencil)
+        {
+            ClearRenderTargetView(view, options, color.ToVector4(), depth, stencil);
+        }
+
+        public abstract void ClearRenderTargetView(
+            RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil);
+
+        public void Clear(Color color)
+        {
+            Clear(color.ToVector4());
+        }
+
+        public void Clear(Vector4 color)
+        {
+            Clear(ClearOptions.Target, color, 1, 0);
+        }
+
+        public void Clear(ClearOptions options, Color color, float depth = 1f, byte stencil = 0)
+        {
+            Clear(options, color.ToVector4(), depth, stencil);
+        }
+
+        public void Clear(ClearOptions options, Vector4 color, float depth = 1f, byte stencil = 0)
+        {
+            var renderTargetViews = OutputMergerStage.RenderTargetViews;
+            var count = renderTargetViews.Count;
+
+            // アクティブに設定されている全てのレンダ ターゲットをクリア。
+            for (int i = 0; i < count; i++)
+            {
+                var renderTarget = renderTargetViews[i];
+                if (renderTarget != null)
+                {
+                    ClearRenderTargetView(renderTarget, options, color, depth, stencil);
+                }
+            }
+        }
+
         public abstract void Draw(int vertexCount, int startVertexLocation = 0);
 
         public abstract void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount) where T : struct;

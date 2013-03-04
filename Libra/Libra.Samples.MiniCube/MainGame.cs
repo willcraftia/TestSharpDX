@@ -139,7 +139,7 @@ namespace Libra.Samples.MiniCube
 
             context.PixelShaderStage.PixelShader = pixelShader;
 
-            context.OutputMergerStage.Clear(ClearOptions.Target | ClearOptions.Depth, Color.CornflowerBlue);
+            context.Clear(ClearOptions.Target | ClearOptions.Depth, Color.CornflowerBlue);
 
             float time = (float) gameTime.TotalGameTime.TotalSeconds;
             var world = Matrix.CreateRotationX(time) * Matrix.CreateRotationY(time * 2) * Matrix.CreateRotationZ(time * .7f);
