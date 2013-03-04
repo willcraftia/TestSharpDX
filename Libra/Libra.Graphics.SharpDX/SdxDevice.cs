@@ -184,6 +184,11 @@ namespace Libra.Graphics.SharpDX
             return new SdxVertexBuffer(D3D11Device);
         }
 
+        public IndexBuffer CreateIndexBuffer()
+        {
+            return new SdxIndexBuffer(D3D11Device);
+        }
+
         public Texture2D CreateTexture2D()
         {
             return new SdxTexture2D(D3D11Device);

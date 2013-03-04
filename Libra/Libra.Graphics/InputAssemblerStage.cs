@@ -21,6 +21,8 @@ namespace Libra.Graphics
 
         VertexBufferBinding[] vertexBufferBindings;
 
+        IndexBuffer indexBuffer;
+
         public InputLayout InputLayout
         {
             get { return inputLayout; }
@@ -44,6 +46,22 @@ namespace Libra.Graphics
                 primitiveTopology = value;
 
                 OnPrimitiveTopologyChanged();
+            }
+        }
+
+        // offset 指定はひとまず無視する。
+        // インデックス配列内のオフセットを指定する事が当面ないため。
+
+        public IndexBuffer IndexBuffer
+        {
+            get { return indexBuffer; }
+            set
+            {
+                if (indexBuffer == value) return;
+
+                indexBuffer = value;
+
+                OnIndexBufferChanged();
             }
         }
 
@@ -108,6 +126,8 @@ namespace Libra.Graphics
         protected abstract void OnInputLayoutChanged();
 
         protected abstract void OnPrimitiveTopologyChanged();
+
+        protected abstract void OnIndexBufferChanged();
 
         protected abstract void SetVertexBufferCore<T>(int slot, VertexBuffer buffer, int offset) where T : struct;
 

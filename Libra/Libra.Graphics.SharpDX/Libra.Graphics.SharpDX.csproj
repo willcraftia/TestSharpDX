@@ -64,6 +64,7 @@
     <Compile Include="SdxDevice.cs" />
     <Compile Include="SdxDeviceContext.cs" />
     <Compile Include="SdxGraphicsFactory.cs" />
+    <Compile Include="SdxIndexBuffer.cs" />
     <Compile Include="SdxInputAssemblerStage.cs" />
     <Compile Include="SdxInputLayout.cs" />
     <Compile Include="SdxOutput.cs" />

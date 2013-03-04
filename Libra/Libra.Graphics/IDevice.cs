@@ -33,6 +33,8 @@ namespace Libra.Graphics
 
         VertexBuffer CreateVertexBuffer();
 
+        IndexBuffer CreateIndexBuffer();
+
         Texture2D CreateTexture2D();
 
         DepthStencil CreateDepthStencil();

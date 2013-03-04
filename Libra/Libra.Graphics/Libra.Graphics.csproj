@@ -69,11 +69,14 @@
     <Compile Include="IGraphicsService.cs" />
     <Compile Include="IInputType.cs" />
     <Compile Include="ImageFileFormat.cs" />
+    <Compile Include="IndexBuffer.cs" />
+    <Compile Include="IndexFormat.cs" />
     <Compile Include="InputAssemblerStage.cs" />
     <Compile Include="InputElement.cs" />
     <Compile Include="InputElementFormat.cs" />
     <Compile Include="InputLayout.cs" />
     <Compile Include="InputPositionColor.cs" />
+    <Compile Include="InputPositionNormal.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="IOutputCollection.cs" />
     <Compile Include="ISwapChain.cs" />

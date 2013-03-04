@@ -5,6 +5,7 @@ using System;
 using D3D11InputAssemblerStage = SharpDX.Direct3D11.InputAssemblerStage;
 using D3D11PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology;
 using D3D11VertexBufferBinding = SharpDX.Direct3D11.VertexBufferBinding;
+using DXGIFormat = SharpDX.DXGI.Format;
 
 #endregion
 
@@ -36,6 +37,13 @@ namespace Libra.Graphics.SharpDX
         protected override void OnPrimitiveTopologyChanged()
         {
             D3D11InputAssemblerStage.PrimitiveTopology = (D3D11PrimitiveTopology) PrimitiveTopology;
+        }
+
+        protected override void OnIndexBufferChanged()
+        {
+            var d3d11Buffer = (IndexBuffer as SdxIndexBuffer).D3D11Buffer;
+
+            D3D11InputAssemblerStage.SetIndexBuffer(d3d11Buffer, (DXGIFormat) IndexBuffer.Format, 0);
         }
 
         protected override void SetVertexBufferCore(int slot, VertexBuffer buffer, int stride, int offset)
