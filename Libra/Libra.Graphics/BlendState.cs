@@ -179,9 +179,12 @@ namespace Libra.Graphics
             colorBlendFunction = BlendFunction.Add;
             alphaBlendFunction = BlendFunction.Add;
 
-            colorWriteChannels = ColorWriteChannels.None;
+            // XNA のドキュメントではデフォルト None らしいが、
+            // DirectXTK では All 固定で設定している。
+            colorWriteChannels = ColorWriteChannels.All;
 
-            // TODO 合ってる？
+            // TODO
+            // これの意味がわからない。
             multiSampleMask = -1;
 
             blendFactor = Color.White;
