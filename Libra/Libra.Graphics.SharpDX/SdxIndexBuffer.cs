@@ -29,11 +29,8 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = d3d11Device;
         }
 
-        protected override void InitializeCore(int indexCount)
+        protected override void InitializeCore()
         {
-            if (Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Usage must be not immutable.");
-
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);
 
@@ -42,8 +39,6 @@ namespace Libra.Graphics.SharpDX
 
         protected override void InitializeCore<T>(T[] data)
         {
-            if (data == null) throw new ArgumentNullException("data");
-
             ByteWidth = SdxUtilities.SizeOf<T>() * data.Length;
 
             D3D11BufferDescription description;

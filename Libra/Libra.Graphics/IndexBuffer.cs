@@ -19,11 +19,14 @@ namespace Libra.Graphics
 
         public void Initialize(int indexCount)
         {
-            if (indexCount <= 0) throw new ArgumentOutOfRangeException("indexCount");
+            if (indexCount < 1) throw new ArgumentOutOfRangeException("indexCount");
+
+            if (Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Usage must be not immutable.");
 
             IndexCount = indexCount;
 
-            InitializeCore(indexCount);
+            InitializeCore();
         }
 
         public void Initialize<T>(T[] data) where T : struct
@@ -33,10 +36,10 @@ namespace Libra.Graphics
 
             IndexCount = data.Length;
 
-            InitializeCore<T>(data);
+            InitializeCore(data);
         }
 
-        protected abstract void InitializeCore(int indexCount);
+        protected abstract void InitializeCore();
 
         protected abstract void InitializeCore<T>(T[] data) where T : struct;
 
