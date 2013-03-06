@@ -13,7 +13,7 @@ namespace Libra.Graphics
 
         public RenderTargetUsage RenderTargetUsage { get; set; }
 
-        public DepthStencil DepthStencil { get; private set; }
+        public DepthStencil DepthStencil { get; protected set; }
 
         protected RenderTarget()
         {
