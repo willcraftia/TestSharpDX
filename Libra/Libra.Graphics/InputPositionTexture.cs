@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Libra.Graphics
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct InputPositionTexture
+    public struct InputPositionTexture : IInputType, IEquatable<InputPositionTexture>
     {
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
             new[]
