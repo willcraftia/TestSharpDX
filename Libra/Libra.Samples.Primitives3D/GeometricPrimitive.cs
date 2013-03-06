@@ -14,8 +14,6 @@ namespace Libra.Samples.Primitives3D
 
         List<ushort> indices = new List<ushort>();
 
-        InputLayout inputLayout;
-
         VertexBuffer vertexBuffer;
         
         IndexBuffer indexBuffer;
@@ -61,7 +59,7 @@ namespace Libra.Samples.Primitives3D
             indexBuffer.Initialize(indices.ToArray());
 
             basicEffect = new BasicEffect(Device);
-            //basicEffect.EnableDefaultLighting();
+            basicEffect.EnableDefaultLighting();
         }
 
         public void Draw(DeviceContext context, IEffect effect)
