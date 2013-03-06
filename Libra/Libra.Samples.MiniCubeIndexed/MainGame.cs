@@ -133,7 +133,7 @@ namespace Libra.Samples.MiniCubeIndexed
             worldViewProjection.Transpose();
             constantBuffer.SetData(context, worldViewProjection);
 
-            context.DrawIndexed(36);
+            context.DrawIndexed(indexBuffer.IndexCount);
 
             base.Draw(gameTime);
         }

@@ -70,7 +70,7 @@ namespace Libra.Samples.Primitives3D
 
             effect.Apply(context);
 
-            context.DrawIndexed(indices.Count);
+            context.DrawIndexed(indexBuffer.IndexCount);
         }
 
         public void Draw(DeviceContext context, Matrix world, Matrix view, Matrix projection, Color color)

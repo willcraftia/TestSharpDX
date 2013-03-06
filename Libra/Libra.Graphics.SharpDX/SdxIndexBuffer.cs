@@ -16,6 +16,8 @@ namespace Libra.Graphics.SharpDX
 {
     public sealed class SdxIndexBuffer : IndexBuffer
     {
+        public int ByteWidth { get; private set; }
+
         public D3D11Device D3D11Device { get; private set; }
 
         public D3D11Buffer D3D11Buffer { get; private set; }
@@ -27,7 +29,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = d3d11Device;
         }
 
-        public override void Initialize()
+        protected override void InitializeCore(int indexCount)
         {
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Usage must be not immutable.");
@@ -38,7 +40,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Buffer = new D3D11Buffer(D3D11Device, description);
         }
 
-        public override void Initialize<T>(T[] data)
+        protected override void InitializeCore<T>(T[] data)
         {
             if (data == null) throw new ArgumentNullException("data");
 
