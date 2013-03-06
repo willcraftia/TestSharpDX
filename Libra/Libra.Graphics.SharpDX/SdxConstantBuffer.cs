@@ -17,6 +17,8 @@ namespace Libra.Graphics.SharpDX
 {
     public sealed class SdxConstantBuffer : ConstantBuffer
     {
+        public int ByteWidth { get; private set; }
+
         public D3D11Device D3D11Device { get; private set; }
 
         public D3D11Buffer D3D11Buffer { get; private set; }

@@ -8,8 +8,6 @@ namespace Libra.Graphics
 {
     public abstract class ConstantBuffer : Resource
     {
-        public int ByteWidth { get; set; }
-
         protected ConstantBuffer() { }
 
         public abstract void Initialize();
