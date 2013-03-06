@@ -45,7 +45,11 @@ namespace Libra.Samples.Primitives3D
 
         protected override void LoadContent()
         {
-            primitives.Add(new CubePrimitive(Device));
+            //primitives.Add(new CubePrimitive(Device));
+            //primitives.Add(new SpherePrimitive(Device));
+            //primitives.Add(new CylinderPrimitive(Device));
+            //primitives.Add(new TorusPrimitive(Device));
+            primitives.Add(new TeapotPrimitive(Device));
 
             wireFrameState = new RasterizerState()
             {
