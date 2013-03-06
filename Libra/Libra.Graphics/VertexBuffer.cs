@@ -8,11 +8,41 @@ namespace Libra.Graphics
 {
     public abstract class VertexBuffer : Resource
     {
+        public int VertexStride { get; private set; }
+
+        public int VertexCount { get; private set; }
+
         protected VertexBuffer() { }
 
-        public abstract void Initialize();
+        public void Initialize(int vertexStride, int vertexCount)
+        {
+            if (vertexStride < 1) throw new ArgumentOutOfRangeException("vertexStride");
+            if (vertexCount < 1) throw new ArgumentOutOfRangeException("vertexCount");
 
-        public abstract void Initialize<T>(T[] data) where T : struct;
+            if (Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Usage must be not immutable.");
+
+            VertexStride = vertexStride;
+            VertexCount = vertexCount;
+
+            InitializeCore();
+        }
+
+        public void Initialize<T>(T[] data) where T : struct
+        {
+            if (data == null) throw new ArgumentNullException("data");
+            if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
+
+            VertexCount = data.Length;
+
+            // 少し歪になるが、ジェネリクス対応の sizeof は現状 SharpDX に頼らざるを得ないため、
+            // 抽象メソッド実装側で VertexStride を返却してもらう。
+            VertexStride = InitializeCore(data);
+        }
+
+        protected abstract void InitializeCore();
+
+        protected abstract int InitializeCore<T>(T[] data) where T : struct;
 
         public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
