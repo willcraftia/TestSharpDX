@@ -6,8 +6,10 @@ using System;
 
 namespace Libra.Graphics
 {
-    public abstract class IndexBuffer : Buffer
+    public abstract class IndexBuffer : Resource
     {
+        public int ByteWidth { get; set; }
+
         public IndexFormat Format { get; set; }
 
         protected IndexBuffer()
@@ -18,5 +20,25 @@ namespace Libra.Graphics
         public abstract void Initialize();
 
         public abstract void Initialize<T>(T[] data) where T : struct;
+
+        public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
+        {
+            context.GetData(this, 0, data, startIndex, elementCount);
+        }
+
+        public void GetData<T>(DeviceContext context, T[] data) where T : struct
+        {
+            GetData(context, data, 0, data.Length);
+        }
+
+        public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
+        {
+            context.SetData(this, data, startIndex, elementCount);
+        }
+
+        public void SetData<T>(DeviceContext context, params T[] data) where T : struct
+        {
+            SetData(context, data, 0, data.Length);
+        }
     }
 }

@@ -136,7 +136,6 @@
     <Compile Include="Blend.cs" />
     <Compile Include="BlendFunction.cs" />
     <Compile Include="BlendState.cs" />
-    <Compile Include="Buffer.cs" />
     <Compile Include="ClearOptions.cs" />
     <Compile Include="ColorWriteChannels.cs" />
     <Compile Include="ComparisonFunction.cs" />
