@@ -475,6 +475,11 @@ namespace Libra
             Normalize(ref this, out this);
         }
 
+        public Vector4 ToVector4()
+        {
+            return new Vector4(X, Y, 0, 0);
+        }
+
         #region IEquatable
 
         public static bool operator ==(Vector2 left, Vector2 right)
