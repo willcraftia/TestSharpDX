@@ -46,14 +46,9 @@ namespace Libra.Graphics.SharpDX
             D3D11InputAssemblerStage.SetIndexBuffer(d3d11Buffer, (DXGIFormat) IndexBuffer.Format, 0);
         }
 
-        protected override void SetVertexBufferCore(int slot, VertexBuffer buffer, int stride, int offset)
+        protected override void SetVertexBufferCore(int slot, VertexBuffer buffer, int offset)
         {
-            SetVertexBuffer(slot, new VertexBufferBinding(buffer, stride, offset));
-        }
-
-        protected override void SetVertexBufferCore<T>(int slot, VertexBuffer buffer, int offset)
-        {
-            SetVertexBuffer(slot, buffer, SdxUtilities.SizeOf<T>(), offset);
+            SetVertexBuffer(slot, new VertexBufferBinding(buffer, offset));
         }
 
         protected override void SetVertexBufferCore(int slot, VertexBufferBinding binding)
@@ -62,7 +57,7 @@ namespace Libra.Graphics.SharpDX
             {
                 Buffer = (binding.VertexBuffer as SdxVertexBuffer).D3D11Buffer,
                 Offset = binding.Offset,
-                Stride = binding.Stride
+                Stride = binding.VertexBuffer.VertexStride
             };
 
             D3D11InputAssemblerStage.SetVertexBuffers(slot, d3d11VertexBufferBinding);
@@ -82,7 +77,7 @@ namespace Libra.Graphics.SharpDX
                 {
                     Buffer = (bindings[i].VertexBuffer as SdxVertexBuffer).D3D11Buffer,
                     Offset = bindings[i].Offset,
-                    Stride = bindings[i].Stride
+                    Stride = bindings[i].VertexBuffer.VertexStride
                 };
             }
 

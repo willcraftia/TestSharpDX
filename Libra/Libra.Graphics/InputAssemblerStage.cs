@@ -87,21 +87,12 @@ namespace Libra.Graphics
             Array.Copy(vertexBufferBindings, startSlot, bindings, 0, count);
         }
 
-        public void SetVertexBuffer<T>(int slot, VertexBuffer buffer, int offset = 0) where T : struct
+        public void SetVertexBuffer(int slot, VertexBuffer buffer, int offset = 0)
         {
             if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
             if (offset < 0) throw new ArgumentOutOfRangeException("offset");
 
-            SetVertexBufferCore<T>(slot, buffer, offset);
-        }
-
-        public void SetVertexBuffer(int slot, VertexBuffer buffer, int stride, int offset = 0)
-        {
-            if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
-            if (stride < 1) throw new ArgumentOutOfRangeException("stride");
-            if (offset < 0) throw new ArgumentOutOfRangeException("offset");
-
-            SetVertexBufferCore(slot, buffer, stride, offset);
+            SetVertexBufferCore(slot, buffer, offset);
         }
 
         public void SetVertexBuffer(int slot, VertexBufferBinding binding)
@@ -129,9 +120,7 @@ namespace Libra.Graphics
 
         protected abstract void OnIndexBufferChanged();
 
-        protected abstract void SetVertexBufferCore<T>(int slot, VertexBuffer buffer, int offset) where T : struct;
-
-        protected abstract void SetVertexBufferCore(int slot, VertexBuffer buffer, int stride, int offset);
+        protected abstract void SetVertexBufferCore(int slot, VertexBuffer buffer, int offset);
 
         protected abstract void SetVertexBufferCore(int slot, VertexBufferBinding binding);
 

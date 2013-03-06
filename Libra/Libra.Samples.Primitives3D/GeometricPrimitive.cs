@@ -65,7 +65,7 @@ namespace Libra.Samples.Primitives3D
         public void Draw(DeviceContext context, IEffect effect)
         {
             context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.InputAssemblerStage.SetVertexBuffer<InputPositionNormal>(0, vertexBuffer);
+            context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);
             context.InputAssemblerStage.IndexBuffer = indexBuffer;
 
             effect.Apply(context);

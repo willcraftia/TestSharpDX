@@ -114,7 +114,7 @@ namespace Libra.Samples.MiniCube
 
             context.InputAssemblerStage.InputLayout = inputLayout;
             context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.InputAssemblerStage.SetVertexBuffer<InputPositionColor>(0, vertexBuffer);
+            context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);
 
             context.VertexShaderStage.VertexShader = vertexShader;
             context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);

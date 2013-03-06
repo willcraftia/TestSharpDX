@@ -10,14 +10,11 @@ namespace Libra.Graphics
     {
         public VertexBuffer VertexBuffer;
 
-        public int Stride;
-
         public int Offset;
 
-        public VertexBufferBinding(VertexBuffer vertexBuffer, int stride, int offset)
+        public VertexBufferBinding(VertexBuffer vertexBuffer, int offset)
         {
             VertexBuffer = vertexBuffer;
-            Stride = stride;
             Offset = offset;
         }
     }
