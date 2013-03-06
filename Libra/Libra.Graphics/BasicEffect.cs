@@ -122,7 +122,7 @@ namespace Libra.Graphics
             MaterialColor           = 0x10,
             FogVector               = 0x20,
             FogEnable               = 0x40,
-            AlphaTest               = 0x80
+            //AlphaTest               = 0x80
         }
 
         #endregion
@@ -528,10 +528,10 @@ namespace Libra.Graphics
 
         static BasicEffect()
         {
-            var compiler = new Compiler.ShaderCompiler();
-            compiler.RootPath = "Shaders";
-            var vsBasicVertexLighting = compiler.CompileFromFile("BasicEffect.fx", "VSBasicVertexLighting", Compiler.VertexShaderProfile.vs_4_0);
-            var psBasicVertexLightingNoFog = compiler.CompileFromFile("BasicEffect.fx", "PSBasicVertexLightingNoFog", Compiler.PixelShaderProfile.ps_4_0);
+            //var compiler = new Compiler.ShaderCompiler();
+            //compiler.RootPath = "Shaders";
+            //var vsBasicVertexLighting = compiler.CompileFromFile("BasicEffect.fx", "VSBasicVertexLighting", Compiler.VertexShaderProfile.vs_4_0);
+            //var psBasicVertexLightingNoFog = compiler.CompileFromFile("BasicEffect.fx", "PSBasicVertexLightingNoFog", Compiler.PixelShaderProfile.ps_4_0);
 
             VertexShaderDefinitions = new[]
             {
@@ -544,8 +544,8 @@ namespace Libra.Graphics
                 new VertexShaderDefinition(3, VSBasicTxVc),
                 new VertexShaderDefinition(3, VSBasicTxVcNoFog),
 
-                new VertexShaderDefinition(4, vsBasicVertexLighting),
-                //new VertexShaderDefinition(4, VSBasicVertexLighting),
+                //new VertexShaderDefinition(4, vsBasicVertexLighting),
+                new VertexShaderDefinition(4, VSBasicVertexLighting),
                 new VertexShaderDefinition(5, VSBasicVertexLightingVc),
                 new VertexShaderDefinition(5, VSBasicVertexLightingTx),
                 new VertexShaderDefinition(7, VSBasicVertexLightingTxVc),
@@ -569,8 +569,8 @@ namespace Libra.Graphics
                 new PixelShaderDefinition(PSBasicTxNoFog),
 
                 new PixelShaderDefinition(PSBasicVertexLighting),
-                new PixelShaderDefinition(psBasicVertexLightingNoFog),
-                //new PixelShaderDefinition(PSBasicVertexLightingNoFog),
+                //new PixelShaderDefinition(psBasicVertexLightingNoFog),
+                new PixelShaderDefinition(PSBasicVertexLightingNoFog),
                 new PixelShaderDefinition(PSBasicVertexLightingTx),
                 new PixelShaderDefinition(PSBasicVertexLightingTxNoFog),
 
@@ -785,6 +785,32 @@ namespace Libra.Graphics
             constantBuffer = device.CreateConstantBuffer();
             constantBuffer.Usage = ResourceUsage.Dynamic;
             constantBuffer.Initialize<Constants>();
+
+            // デフォルト値。
+            diffuseColor = Vector3.One;
+            alpha = 1.0f;
+
+            fogEnabled = false;
+            fogStart = 0;
+            fogEnd = 1;
+
+            for (int i = 0; i < DirectionalLightCount; i++)
+            {
+                directionalLights[i].Enabled = (i == 0);
+                directionalLights[i].Direction = new Vector3(0, -1, 0);
+                directionalLights[i].DiffuseColor = Vector3.One;
+                directionalLights[i].SpecularColor = Vector3.Zero;
+            }
+
+            constants.SpecularColorPower = new Vector4(1, 1, 1, 16);
+
+            dirtyFlags = DirtyFlags.Contants |
+                DirtyFlags.WorldViewProj |
+                DirtyFlags.WorldInverseTranspose |
+                DirtyFlags.EyePosition |
+                DirtyFlags.MaterialColor |
+                DirtyFlags.FogVector |
+                DirtyFlags.FogEnable;
         }
 
         public void Apply(DeviceContext context)
