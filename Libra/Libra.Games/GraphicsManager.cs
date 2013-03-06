@@ -268,7 +268,12 @@ namespace Libra.Games
 
             var context = Device.ImmediateContext;
 
+            var backBufferWidth = SwapChain.BackBufferWidth;
+            var backBufferHeight = SwapChain.BackBufferHeight;
+            var viewport = new Viewport(0, 0, backBufferWidth, backBufferHeight);
+
             context.OutputMergerStage.SetRenderTargetView(SwapChain.RenderTargetView);
+            context.RasterizerStage.Viewport = viewport;
 
             return true;
         }
