@@ -38,7 +38,7 @@ namespace Libra.Samples.MiniCube
         {
             // ここではテストのために行優先でコンパイル。
             var compiler = new ShaderCompiler();
-            compiler.RootPath = "Shader";
+            compiler.RootPath = "Shaders";
             compiler.PackMatrixRowMajor = true;
 
             var vsBytecode = compiler.CompileFromFile("MiniCube.fx", "VS", VertexShaderProfile.vs_4_0);
@@ -52,13 +52,6 @@ namespace Libra.Samples.MiniCube
             
             inputLayout = Device.CreateInputLayout();
             inputLayout.Initialize<InputPositionColor>(vsBytecode);
-
-            // メモ
-            //
-            // 左手系 (DirectX 標準) と右手系 (ここでは XNA に倣って右手) の差異により、
-            // SharpDX とは頂点座標 (すなわち法線であり外積の方向) が異なる。
-            // なお、面カリングは頂点から定まる法線を基準とするのみであることから、
-            // 法線方向さえ正しければ左手右手での差異は無い。
 
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Immutable;
@@ -131,7 +124,7 @@ namespace Libra.Samples.MiniCube
             float time = (float) gameTime.TotalGameTime.TotalSeconds;
 
             var world = Matrix.CreateRotationX(time) * Matrix.CreateRotationY(time * 2) * Matrix.CreateRotationZ(time * .7f);
-            var view = Matrix.CreateLookAt(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
+            var view = Matrix.CreateLookAt(new Vector3(0, 0, -5), Vector3.Zero, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspect, 0.1f, 100.0f);
 
             // メモ

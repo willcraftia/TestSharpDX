@@ -8,9 +8,6 @@ namespace Libra.Samples.MiniCube
 {
     static class Program
     {
-        /// <summary>
-        /// アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
         [STAThread]
         static void Main()
         {
