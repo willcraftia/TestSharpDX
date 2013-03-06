@@ -15,9 +15,9 @@ namespace Libra.Graphics
 
         public abstract void Initialize(byte[] shaderBytecode, IList<InputElement> inputElements);
 
-        public void Initialize<T>(byte[] shaderBytecode) where T : IInputType
+        public void Initialize<T>(byte[] shaderBytecode) where T : IInputType, new()
         {
-            var dummyObject = Activator.CreateInstance(typeof(T)) as IInputType;
+            var dummyObject = new T();
             Initialize(shaderBytecode, dummyObject.InputElements);
         }
 

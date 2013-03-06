@@ -42,6 +42,97 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicEffect.cs" />
+    <Compile Include="BasicEffect.PSBasic.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicPixelLighting.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicPixelLightingTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicTxNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicVertexLighting.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicVertexLightingNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicVertexLightingTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.PSBasicVertexLightingTxNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasic.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicOneLight.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicOneLightTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicOneLightTxVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicOneLightVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicPixelLighting.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicPixelLightingTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicPixelLightingTxVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicPixelLightingVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicTxNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicTxVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicTxVcNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicVcNoFog.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicVertexLighting.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicVertexLightingTx.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicVertexLightingTxVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicEffect.VSBasicVertexLightingVc.cs">
+      <DependentUpon>BasicEffect.cs</DependentUpon>
+    </Compile>
     <Compile Include="Blend.cs" />
     <Compile Include="BlendFunction.cs" />
     <Compile Include="BlendState.cs" />
@@ -65,6 +156,7 @@
     <Compile Include="FillMode.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="IDevice.cs" />
+    <Compile Include="IEffect.cs" />
     <Compile Include="IGraphicsFactory.cs" />
     <Compile Include="IGraphicsService.cs" />
     <Compile Include="IInputType.cs" />
@@ -77,6 +169,7 @@
     <Compile Include="InputLayout.cs" />
     <Compile Include="InputPositionColor.cs" />
     <Compile Include="InputPositionNormal.cs" />
+    <Compile Include="InputPositionTexture.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="IOutputCollection.cs" />
     <Compile Include="ISwapChain.cs" />
@@ -110,6 +203,10 @@
     <Compile Include="Viewport.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libra.Compiler\Libra.Compiler.csproj">
+      <Project>{33E88FC2-87F2-41FE-8977-55DF51119156}</Project>
+      <Name>Libra.Compiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libra\Libra.csproj">
       <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>
       <Name>Libra</Name>

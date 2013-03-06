@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Libra.Graphics
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct InputPositionColor : IInputType, IEquatable<InputPositionColor>
     {
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(

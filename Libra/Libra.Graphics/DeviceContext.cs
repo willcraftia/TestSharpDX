@@ -40,7 +40,7 @@ namespace Libra.Graphics
 
         public void Clear(Vector4 color)
         {
-            Clear(ClearOptions.Target, color, 1, 0);
+            Clear(ClearOptions.Target | ClearOptions.Depth | ClearOptions.Stencil, color);
         }
 
         public void Clear(ClearOptions options, Color color, float depth = 1f, byte stencil = 0)
@@ -65,6 +65,8 @@ namespace Libra.Graphics
         }
 
         public abstract void Draw(int vertexCount, int startVertexLocation = 0);
+
+        public abstract void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0);
 
         public abstract void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount) where T : struct;
 

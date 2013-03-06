@@ -13,12 +13,14 @@ namespace Libra.Samples.Primitives3D
         List<InputPositionNormal> vertices = new List<InputPositionNormal>();
 
         List<ushort> indices = new List<ushort>();
-        
+
+        InputLayout inputLayout;
+
         VertexBuffer vertexBuffer;
         
         IndexBuffer indexBuffer;
         
-        //BasicEffect basicEffect;
+        BasicEffect basicEffect;
 
         protected IDevice Device { get; private set; }
 
@@ -58,36 +60,28 @@ namespace Libra.Samples.Primitives3D
             indexBuffer.Usage = ResourceUsage.Immutable;
             indexBuffer.Initialize(indices.ToArray());
 
-            // プリミティブのレンダリングに使用される BasicEffect を作成します。
-            //basicEffect = new BasicEffect(graphicsDevice);
+            basicEffect = new BasicEffect(Device);
             //basicEffect.EnableDefaultLighting();
         }
 
-        public void Draw(DeviceContext context/*, Effect effect*/)
+        public void Draw(DeviceContext context, IEffect effect)
         {
+            context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
             context.InputAssemblerStage.SetVertexBuffer<InputPositionNormal>(0, vertexBuffer);
             context.InputAssemblerStage.IndexBuffer = indexBuffer;
 
-            //foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
-            //{
-            //    effectPass.Apply();
+            effect.Apply(context);
 
-            //    int primitiveCount = indices.Count / 3;
-
-            //    graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0,
-            //                                         vertices.Count, 0, primitiveCount);
-
-            //}
+            context.DrawIndexed(indices.Count);
         }
 
         public void Draw(DeviceContext context, Matrix world, Matrix view, Matrix projection, Color color)
         {
-            // BasicEffect のパラメーターを設定します。
-            //basicEffect.World = world;
-            //basicEffect.View = view;
-            //basicEffect.Projection = projection;
-            //basicEffect.DiffuseColor = color.ToVector3();
-            //basicEffect.Alpha = color.A / 255.0f;
+            basicEffect.World = world;
+            basicEffect.View = view;
+            basicEffect.Projection = projection;
+            basicEffect.DiffuseColor = color.ToVector3();
+            basicEffect.Alpha = color.A / 255.0f;
 
             context.OutputMergerStage.DepthStencilState = DepthStencilState.Default;
 
@@ -100,8 +94,7 @@ namespace Libra.Samples.Primitives3D
                 context.OutputMergerStage.BlendState = BlendState.Opaque;
             }
 
-            // BasicEffect を使用して、モデルを描画します。
-            //Draw(basicEffect);
+            Draw(context, basicEffect);
         }
 
         #region IDisposable
@@ -131,8 +124,8 @@ namespace Libra.Samples.Primitives3D
                 if (indexBuffer != null)
                     indexBuffer.Dispose();
 
-                //if (basicEffect != null)
-                //    basicEffect.Dispose();
+                if (basicEffect != null)
+                    basicEffect.Dispose();
             }
 
             disposed = true;

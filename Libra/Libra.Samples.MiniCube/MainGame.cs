@@ -117,9 +117,7 @@ namespace Libra.Samples.MiniCube
         {
             var context = Device.ImmediateContext;
 
-            var backBufferWidth = graphicsManager.SwapChain.BackBufferWidth;
-            var backBufferHeight = graphicsManager.SwapChain.BackBufferHeight;
-            var viewport = new Viewport(0, 0, backBufferWidth, backBufferHeight);
+            context.Clear(Color.CornflowerBlue);
 
             context.InputAssemblerStage.InputLayout = inputLayout;
             context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
@@ -127,17 +125,14 @@ namespace Libra.Samples.MiniCube
 
             context.VertexShaderStage.VertexShader = vertexShader;
             context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);
-
-            context.RasterizerStage.Viewport = viewport;
-
             context.PixelShaderStage.PixelShader = pixelShader;
 
-            context.Clear(ClearOptions.Target | ClearOptions.Depth, Color.CornflowerBlue);
-
+            float aspect = context.RasterizerStage.Viewport.AspectRatio;
             float time = (float) gameTime.TotalGameTime.TotalSeconds;
+
             var world = Matrix.CreateRotationX(time) * Matrix.CreateRotationY(time * 2) * Matrix.CreateRotationZ(time * .7f);
             var view = Matrix.CreateLookAt(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
-            var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, viewport.AspectRatio, 0.1f, 100.0f);
+            var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspect, 0.1f, 100.0f);
 
             // メモ
             //

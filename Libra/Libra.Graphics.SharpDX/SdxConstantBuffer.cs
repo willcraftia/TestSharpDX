@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Runtime.InteropServices;
 
 using D3D11BindFlags = SharpDX.Direct3D11.BindFlags;
 using D3D11Buffer = SharpDX.Direct3D11.Buffer;

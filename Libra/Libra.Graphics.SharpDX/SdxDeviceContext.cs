@@ -125,6 +125,11 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.Draw(vertexCount, startVertexLocation);
         }
 
+        public override void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0)
+        {
+            D3D11DeviceContext.DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
+        }
+
         public override void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount)
         {
             if (resource == null) throw new ArgumentNullException("resource");
