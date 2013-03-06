@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Libra.Graphics
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct InputPositionNormal
+    public struct InputPositionNormal : IInputType, IEquatable<InputPositionNormal>
     {
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
             new[]
