@@ -8,8 +8,6 @@ namespace Libra.Graphics
 {
     public abstract class VertexBuffer : Resource
     {
-        public int ByteWidth { get; set; }
-
         protected VertexBuffer() { }
 
         public abstract void Initialize();
