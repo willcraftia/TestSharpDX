@@ -60,8 +60,19 @@ namespace Libra.Samples.Primitives3D
             base.LoadContent();
         }
 
+        Input.SharpDX.SdxKeyboard sdxKeyboard;
+
         protected override void Update(GameTime gameTime)
         {
+            if (sdxKeyboard == null)
+            {
+                sdxKeyboard = new Input.SharpDX.SdxKeyboard();
+            }
+
+            var keyboardState = sdxKeyboard.GetState();
+            if (keyboardState.IsKeyDown(Input.Keys.Escape))
+                Exit();
+
             // TODO
 
             base.Update(gameTime);
