@@ -23,7 +23,16 @@ namespace Libra.Graphics.SharpDX
 
         public TD3D11State this[TState state]
         {
-            get { return stateMap[state]; }
+            get
+            {
+                lock (stateMap)
+                {
+                    if (!stateMap.ContainsKey(state))
+                        Register(state);
+
+                    return stateMap[state];
+                }
+            }
         }
 
         public SdxStateManager(SdxDevice device, CreateD3D11StateFunction createFunction)
