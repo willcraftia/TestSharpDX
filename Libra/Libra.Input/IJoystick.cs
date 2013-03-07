@@ -6,12 +6,12 @@ using System;
 
 namespace Libra.Input
 {
-    public interface IKeyboard : IDisposable
+    public interface IJoystick : IDisposable
     {
         bool Enabled { get; }
 
         string Name { get; }
 
-        KeyboardState GetState();
+        JoystickState GetState();
     }
 }

@@ -51,12 +51,17 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SdxInputFactory.cs" />
+    <Compile Include="SdxJoystick.cs" />
     <Compile Include="SdxKeyboard.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libra.Input\Libra.Input.csproj">
       <Project>{A2F37986-5187-4A6F-85A0-F38F66FCF786}</Project>
       <Name>Libra.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra\Libra.csproj">
+      <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>
+      <Name>Libra</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

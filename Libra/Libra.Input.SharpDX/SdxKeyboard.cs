@@ -2,6 +2,7 @@
 
 using System;
 
+using DIDeviceInstance = SharpDX.DirectInput.DeviceInstance;
 using DIDirectInput = SharpDX.DirectInput.DirectInput;
 using DIKey = SharpDX.DirectInput.Key;
 using DIKeyboardUpdate = SharpDX.DirectInput.KeyboardUpdate;
@@ -24,8 +25,8 @@ namespace Libra.Input.SharpDX
 
         sealed class KeyboardBridge : global::SharpDX.DirectInput.CustomDevice<KeyboardStateBridge, DIRawKeyboardState, DIKeyboardUpdate>
         {
-            public KeyboardBridge(DIDirectInput diDirectInput)
-                : base(diDirectInput, SysKeyboardGuid)
+            public KeyboardBridge(DIDirectInput diDirectInput, Guid deviceGuid)
+                : base(diDirectInput, deviceGuid)
             {
             }
         }
@@ -71,29 +72,38 @@ namespace Libra.Input.SharpDX
 
         #endregion
 
-        /// <summary>
-        /// </summary>
-        /// <remarks>
-        /// dinput.h: GUID_SysKeyboard
-        /// </remarks>
-        static readonly Guid SysKeyboardGuid = new Guid(0x6F1D2B61, 0xD5A0, 0x11CF, 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00);
-
-        DIDirectInput diDirectInput;
+        DIDeviceInstance diDevice;
 
         KeyboardBridge keyboardBridge;
 
         KeyboardStateBridge keyboardStateBridge;
 
-        public SdxKeyboard()
+        public bool Enabled { get; private set; }
+
+        public string Name { get; private set; }
+
+        public SdxKeyboard(DIDirectInput diDirectInput, DIDeviceInstance diDevice)
         {
-            diDirectInput = new DIDirectInput();
-            keyboardBridge = new KeyboardBridge(diDirectInput);
-            keyboardBridge.Acquire();
-            keyboardStateBridge = new KeyboardStateBridge();
+            if (diDirectInput == null) throw new ArgumentNullException("diDirectInput");
+
+            this.diDevice = diDevice;
+
+            Enabled = (diDevice != null);
+            Name = diDevice.ProductName;
+
+            if (Enabled)
+            {
+                keyboardBridge = new KeyboardBridge(diDirectInput, diDevice.InstanceGuid);
+                keyboardBridge.Acquire();
+                keyboardStateBridge = new KeyboardStateBridge();
+            }
         }
 
         public KeyboardState GetState()
         {
+            if (!Enabled)
+                return new KeyboardState();
+
             lock (this)
             {
                 keyboardBridge.GetCurrentState(ref keyboardStateBridge);
@@ -122,8 +132,8 @@ namespace Libra.Input.SharpDX
 
             if (disposing)
             {
-                keyboardBridge.Dispose();
-                diDirectInput.Dispose();
+                if (keyboardBridge != null)
+                    keyboardBridge.Dispose();
             }
 
             disposed = true;

@@ -13,7 +13,7 @@ using SDXWRenderLoop = SharpDX.Windows.RenderLoop;
 
 namespace Libra.Games.SharpDX
 {
-    public sealed class SdxFormGamePlatform : IGamePlatform
+    public sealed class SdxFormGamePlatform : IGamePlatform, IDisposable
     {
         #region FormGameWindow
 
@@ -152,5 +152,35 @@ namespace Libra.Games.SharpDX
             if (Exiting != null)
                 Exiting(this, EventArgs.Empty);
         }
+
+        #region IDisposable
+
+        bool disposed;
+
+        ~SdxFormGamePlatform()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (disposed) return;
+
+            if (disposing)
+            {
+                if (InputFactory != null)
+                    (InputFactory as SdxInputFactory).Dispose();
+            }
+
+            disposed = true;
+        }
+
+        #endregion
     }
 }

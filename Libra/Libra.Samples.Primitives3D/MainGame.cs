@@ -21,9 +21,15 @@ namespace Libra.Samples.Primitives3D
 
         IKeyboard keyboard;
 
+        IJoystick joystick;
+
         KeyboardState currentKeyboardState;
 
         KeyboardState lastKeyboardState;
+
+        JoystickState currentJoystickState;
+
+        JoystickState lastJoystickState;
 
         List<GeometricPrimitive> primitives = new List<GeometricPrimitive>();
 
@@ -65,6 +71,7 @@ namespace Libra.Samples.Primitives3D
             };
 
             keyboard = platform.InputFactory.CreateKeyboard();
+            joystick = platform.InputFactory.CreateJoystick();
 
             base.LoadContent();
         }
@@ -116,9 +123,14 @@ namespace Libra.Samples.Primitives3D
         void HandleInput()
         {
             lastKeyboardState = currentKeyboardState;
-            currentKeyboardState = keyboard.GetState();
+            lastJoystickState = currentJoystickState;
 
-            if (IsPressed(Keys.Escape))
+            currentKeyboardState = keyboard.GetState();
+            currentJoystickState = joystick.GetState();
+
+            var test = joystick.GetState();
+
+            if (IsPressed(Keys.Escape, Buttons.Back))
             {
                 Exit();
             }
@@ -127,27 +139,28 @@ namespace Libra.Samples.Primitives3D
             int halfWidth = (int) viewport.Width / 2;
             int halfHeight = (int) viewport.Height / 2;
             Rectangle topOfScreen = new Rectangle(0, 0, (int) viewport.Width, (int) halfHeight);
-            if (IsPressed(Keys.A))
+            if (IsPressed(Keys.A, Buttons.A))
             {
                 currentPrimitiveIndex = (currentPrimitiveIndex + 1) % primitives.Count;
             }
 
             Rectangle botLeftOfScreen = new Rectangle(0, halfHeight, halfWidth, halfHeight);
-            if (IsPressed(Keys.B))
+            if (IsPressed(Keys.B, Buttons.B))
             {
                 currentColorIndex = (currentColorIndex + 1) % colors.Count;
             }
 
             Rectangle botRightOfScreen = new Rectangle(halfWidth, halfHeight, halfWidth, halfHeight);
-            if (IsPressed(Keys.Y))
+            if (IsPressed(Keys.Y, Buttons.Y))
             {
                 isWireframe = !isWireframe;
             }
         }
 
-        bool IsPressed(Keys key)
+        bool IsPressed(Keys key, Buttons button)
         {
-            return currentKeyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key);
+            return currentKeyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key) ||
+                   currentJoystickState.IsButtonDown(button) && lastJoystickState.IsButtonUp(button);
         }
     }
 

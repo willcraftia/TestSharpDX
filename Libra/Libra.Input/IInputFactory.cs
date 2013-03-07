@@ -9,5 +9,7 @@ namespace Libra.Input
     public interface IInputFactory
     {
         IKeyboard CreateKeyboard();
+
+        IJoystick CreateJoystick();
     }
 }
