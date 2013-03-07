@@ -116,4 +116,23 @@ namespace Libra.Samples.Primitives3D
             base.Draw(gameTime);
         }
     }
+
+    #region Program
+
+    static class Program
+    {
+        /// <summary>
+        /// アプリケーションのメイン エントリ ポイントです。
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            using (var game = new MainGame())
+            {
+                game.Run();
+            }
+        }
+    }
+
+    #endregion
 }

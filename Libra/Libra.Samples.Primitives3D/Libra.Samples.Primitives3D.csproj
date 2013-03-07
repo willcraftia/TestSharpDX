@@ -68,7 +68,6 @@
     <Compile Include="CylinderPrimitive.cs" />
     <Compile Include="GeometricPrimitive.cs" />
     <Compile Include="MainGame.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpherePrimitive.cs" />
     <Compile Include="TeapotPrimitive.cs" />
