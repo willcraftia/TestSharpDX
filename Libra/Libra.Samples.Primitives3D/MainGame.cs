@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
+using Libra.Input;
 
 using SDXWRenderForm = SharpDX.Windows.RenderForm;
 
@@ -17,6 +18,12 @@ namespace Libra.Samples.Primitives3D
         IGamePlatform platform;
 
         GraphicsManager graphicsManager;
+
+        Input.SharpDX.SdxKeyboard keyboard;
+
+        KeyboardState currentKeyboardState;
+
+        KeyboardState lastKeyboardState;
 
         List<GeometricPrimitive> primitives = new List<GeometricPrimitive>();
 
@@ -41,14 +48,15 @@ namespace Libra.Samples.Primitives3D
         {
             platform = new SdxFormGamePlatform(this, new SDXWRenderForm());
             graphicsManager = new GraphicsManager(this);
+            keyboard = new Input.SharpDX.SdxKeyboard();
         }
 
         protected override void LoadContent()
         {
-            //primitives.Add(new CubePrimitive(Device));
-            //primitives.Add(new SpherePrimitive(Device));
-            //primitives.Add(new CylinderPrimitive(Device));
-            //primitives.Add(new TorusPrimitive(Device));
+            primitives.Add(new CubePrimitive(Device));
+            primitives.Add(new SpherePrimitive(Device));
+            primitives.Add(new CylinderPrimitive(Device));
+            primitives.Add(new TorusPrimitive(Device));
             primitives.Add(new TeapotPrimitive(Device));
 
             wireFrameState = new RasterizerState()
@@ -60,20 +68,9 @@ namespace Libra.Samples.Primitives3D
             base.LoadContent();
         }
 
-        Input.SharpDX.SdxKeyboard sdxKeyboard;
-
         protected override void Update(GameTime gameTime)
         {
-            if (sdxKeyboard == null)
-            {
-                sdxKeyboard = new Input.SharpDX.SdxKeyboard();
-            }
-
-            var keyboardState = sdxKeyboard.GetState();
-            if (keyboardState.IsKeyDown(Input.Keys.Escape))
-                Exit();
-
-            // TODO
+            HandleInput();
 
             base.Update(gameTime);
         }
@@ -114,6 +111,42 @@ namespace Libra.Samples.Primitives3D
             context.RasterizerStage.RasterizerState = RasterizerState.CullBack;
 
             base.Draw(gameTime);
+        }
+        void HandleInput()
+        {
+            lastKeyboardState = currentKeyboardState;
+            currentKeyboardState = keyboard.GetState();
+
+            if (IsPressed(Keys.Escape))
+            {
+                Exit();
+            }
+
+            Viewport viewport = Device.ImmediateContext.RasterizerStage.Viewport;
+            int halfWidth = (int) viewport.Width / 2;
+            int halfHeight = (int) viewport.Height / 2;
+            Rectangle topOfScreen = new Rectangle(0, 0, (int) viewport.Width, (int) halfHeight);
+            if (IsPressed(Keys.A))
+            {
+                currentPrimitiveIndex = (currentPrimitiveIndex + 1) % primitives.Count;
+            }
+
+            Rectangle botLeftOfScreen = new Rectangle(0, halfHeight, halfWidth, halfHeight);
+            if (IsPressed(Keys.B))
+            {
+                currentColorIndex = (currentColorIndex + 1) % colors.Count;
+            }
+
+            Rectangle botRightOfScreen = new Rectangle(halfWidth, halfHeight, halfWidth, halfHeight);
+            if (IsPressed(Keys.Y))
+            {
+                isWireframe = !isWireframe;
+            }
+        }
+
+        bool IsPressed(Keys key)
+        {
+            return currentKeyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key);
         }
     }
 
