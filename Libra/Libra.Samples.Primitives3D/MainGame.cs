@@ -19,7 +19,7 @@ namespace Libra.Samples.Primitives3D
 
         GraphicsManager graphicsManager;
 
-        Input.SharpDX.SdxKeyboard keyboard;
+        IKeyboard keyboard;
 
         KeyboardState currentKeyboardState;
 
@@ -48,7 +48,6 @@ namespace Libra.Samples.Primitives3D
         {
             platform = new SdxFormGamePlatform(this, new SDXWRenderForm());
             graphicsManager = new GraphicsManager(this);
-            keyboard = new Input.SharpDX.SdxKeyboard();
         }
 
         protected override void LoadContent()
@@ -64,6 +63,8 @@ namespace Libra.Samples.Primitives3D
                 FillMode = FillMode.Wireframe,
                 CullMode = CullMode.None,
             };
+
+            keyboard = platform.InputFactory.CreateKeyboard();
 
             base.LoadContent();
         }

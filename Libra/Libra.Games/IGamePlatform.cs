@@ -2,6 +2,7 @@
 
 using System;
 using Libra.Graphics;
+using Libra.Input;
 
 #endregion
 
@@ -20,6 +21,8 @@ namespace Libra.Games
         IGameTimer GameTimer { get; }
 
         IGraphicsFactory GraphicsFactory { get; }
+
+        IInputFactory InputFactory { get; }
 
         void Initialize();
 

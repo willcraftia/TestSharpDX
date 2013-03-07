@@ -4,6 +4,8 @@ using System;
 using System.Windows.Forms;
 using Libra.Graphics;
 using Libra.Graphics.SharpDX;
+using Libra.Input;
+using Libra.Input.SharpDX;
 
 using SDXWRenderLoop = SharpDX.Windows.RenderLoop;
 
@@ -94,6 +96,8 @@ namespace Libra.Games.SharpDX
 
         public IGraphicsFactory GraphicsFactory { get; private set; }
 
+        public IInputFactory InputFactory { get; private set; }
+
         public Form Form { get; private set; }
 
         public SdxFormGamePlatform(Game game, Form form)
@@ -118,6 +122,7 @@ namespace Libra.Games.SharpDX
             Window = new FormGameWindow(Form);
             GameTimer = new SdxGameTimer();
             GraphicsFactory = new SdxGraphicsFactory();
+            InputFactory = new SdxInputFactory();
         }
 
         public void Run(TickCallback tick)
