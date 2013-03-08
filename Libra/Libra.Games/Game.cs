@@ -561,12 +561,18 @@ namespace Libra.Games
 
             if (disposing)
             {
+                IDisposable disposable;
+
                 for (int i = 0; i < Components.Count; i++)
                 {
-                    var disposable = Components[i] as IDisposable;
+                    disposable = Components[i] as IDisposable;
                     if (disposable != null)
                         disposable.Dispose();
                 }
+
+                disposable = gamePlatform as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
             }
 
             disposed = true;

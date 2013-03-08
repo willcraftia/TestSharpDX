@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Libra.Graphics;
 using Libra.Graphics.SharpDX;
 using Libra.Input;
+using Libra.Input.Forms;
 using Libra.Input.SharpDX;
 
 using SDXWRenderLoop = SharpDX.Windows.RenderLoop;
@@ -13,7 +14,7 @@ using SDXWRenderLoop = SharpDX.Windows.RenderLoop;
 
 namespace Libra.Games.SharpDX
 {
-    public sealed class SdxFormGamePlatform : IGamePlatform
+    public sealed class SdxFormGamePlatform : IGamePlatform, IDisposable
     {
         #region FormGameWindow
 
@@ -90,6 +91,8 @@ namespace Libra.Games.SharpDX
 
         Game game;
 
+        MessageFilter messageFilter;
+
         public GameWindow Window { get; private set; }
 
         public IGameTimer GameTimer { get; private set; }
@@ -120,6 +123,9 @@ namespace Libra.Games.SharpDX
             Window = new FormGameWindow(Form);
             GameTimer = new SdxGameTimer();
             GraphicsFactory = new SdxGraphicsFactory();
+
+            messageFilter = new MessageFilter(Window.Handle);
+            Application.AddMessageFilter(messageFilter);
         }
 
         public void Run(TickCallback tick)
@@ -130,6 +136,16 @@ namespace Libra.Games.SharpDX
         public void Exit()
         {
             Form.Close();
+        }
+
+        public IKeyboard CreateKeyboard()
+        {
+            return FormKeyboard.Instance;
+        }
+
+        public IMouse CreateMouse()
+        {
+            return FormMouse.Instance;
         }
 
         void OnActivated(object sender, EventArgs e)
@@ -149,5 +165,35 @@ namespace Libra.Games.SharpDX
             if (Exiting != null)
                 Exiting(this, EventArgs.Empty);
         }
+
+        #region IDisposable
+
+        bool disposed;
+
+        ~SdxFormGamePlatform()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (disposed) return;
+
+            if (disposing)
+            {
+                if (messageFilter != null)
+                    Application.RemoveMessageFilter(messageFilter);
+            }
+
+            disposed = true;
+        }
+
+        #endregion
     }
 }

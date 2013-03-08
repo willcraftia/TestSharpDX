@@ -8,10 +8,10 @@ using System.Windows.Forms;
 
 namespace Libra.Input.Forms
 {
-    public sealed class MessageFilter : IMessageFilter, IDisposable
+    public sealed class MessageFilter : IMessageFilter
     {
         [StructLayout(LayoutKind.Sequential)]
-        public struct TRACKMOUSEEVENT
+        struct MouseEvent
         {
             public Int32 structureSize;
 
@@ -22,116 +22,71 @@ namespace Libra.Input.Forms
             public Int32 hoverTime;
         }
 
-        public enum WindowMessages : int
+        enum WindowMessages : int
         {
-            WM_GETDLGCODE       = 0x0087,
-            WM_INPUT            = 0x00FF,
-            WM_KEYDOWN          = 0x0100,
-            WM_KEYUP            = 0x0101,
-            WM_CHAR             = 0x0102,
-            WM_UNICHAR          = 0x0109,
-            WM_MOUSEMOVE        = 0x0200,
-            WM_LBUTTONDOWN      = 0x0201,
-            WM_LBUTTONUP        = 0x0202,
-            WM_LBUTTONDBLCLK    = 0x0203,
-            WM_RBUTTONDOWN      = 0x0204,
-            WM_RBUTTONUP        = 0x0205,
-            WM_RBUTTONDBLCLK    = 0x0206,
-            WM_MBUTTONDOWN      = 0x0207,
-            WM_MBUTTONUP        = 0x0208,
-            WM_MBUTTONDBLCLK    = 0x0209,
-            WM_MOUSEHWHEEL      = 0x020A,
-            WM_XBUTTONDOWN      = 0x020B,
-            WM_XBUTTONUP        = 0x020C,
-            WM_XBUTTONDBLCLK    = 0x020D,
-            WM_MOUSEHWHEEL_TILT = 0x020E,
-            WM_MOUSELEAVE       = 0x02A3
+            GETDLGCODE       = 0x0087,
+            INPUT            = 0x00FF,
+            KEYDOWN          = 0x0100,
+            KEYUP            = 0x0101,
+            CHAR             = 0x0102,
+            UNICHAR          = 0x0109,
+            MOUSEMOVE        = 0x0200,
+            LBUTTONDOWN      = 0x0201,
+            LBUTTONUP        = 0x0202,
+            LBUTTONDBLCLK    = 0x0203,
+            RBUTTONDOWN      = 0x0204,
+            RBUTTONUP        = 0x0205,
+            RBUTTONDBLCLK    = 0x0206,
+            MBUTTONDOWN      = 0x0207,
+            MBUTTONUP        = 0x0208,
+            MBUTTONDBLCLK    = 0x0209,
+            MOUSEHWHEEL      = 0x020A,
+            XBUTTONDOWN      = 0x020B,
+            XBUTTONUP        = 0x020C,
+            XBUTTONDBLCLK    = 0x020D,
+            MOUSEHWHEEL_TILT = 0x020E,
+            MOUSELEAVE       = 0x02A3
         }
 
-        public const int TME_LEAVE = 0x00000002;
+        const int TME_LEAVE = 0x00000002;
 
-        TRACKMOUSEEVENT mouseEventTrackData;
+        MouseEvent mouseEvent;
 
         bool trackingMouse;
 
         public MessageFilter(IntPtr windowHandle)
         {
-            mouseEventTrackData = new TRACKMOUSEEVENT();
-            mouseEventTrackData.structureSize = Marshal.SizeOf(this.mouseEventTrackData);
-            mouseEventTrackData.flags = TME_LEAVE;
-            mouseEventTrackData.trackWindowHandle = windowHandle;
-
-            Application.AddMessageFilter(this);
+            mouseEvent = new MouseEvent();
+            mouseEvent.structureSize = Marshal.SizeOf(this.mouseEvent);
+            mouseEvent.flags = TME_LEAVE;
+            mouseEvent.trackWindowHandle = windowHandle;
         }
 
         [DllImport("user32")]
-        public static extern int TrackMouseEvent(ref TRACKMOUSEEVENT eventTrack);
+        static extern int TrackMouseEvent(ref MouseEvent eventTrack);
 
         public bool PreFilterMessage(ref Message message)
         {
             switch (message.Msg)
             {
-                //case (int) UnsafeNativeMethods.WindowMessages.WM_KEYDOWN:
-                //    {
-                //        int virtualKeyCode = message.WParam.ToInt32();
-                //        // bool repetition = (message.LParam.ToInt32() & WM_KEYDOWN_WASDOWN) != 0;
-                //        OnKeyPressed((Keys) virtualKeyCode);
+                case (int) WindowMessages.KEYDOWN:
+                    {
+                        int key = message.WParam.ToInt32();
+                        FormKeyboard.Instance.State[(Keys) key] = KeyState.Down;
+                        break;
+                    }
+                case (int) WindowMessages.KEYUP:
+                    {
+                        int key = message.WParam.ToInt32();
+                        FormKeyboard.Instance.State[(Keys) key] = KeyState.Up;
+                        break;
+                    }
 
-                //        if (virtualKeyCode == 17)
-                //        {
-                //            ctrlKeyDown = true;
-                //        }
-                //        if (virtualKeyCode == 18)
-                //        {
-                //            altKeyDown = true;
-                //        }
-
-                //        UnsafeNativeMethods.TranslateMessage(ref message);
-
-                //        return true; // consumed!
-                //    }
-                //case (int) UnsafeNativeMethods.WindowMessages.WM_KEYUP:
-                //    {
-                //        int virtualKeyCode = message.WParam.ToInt32();
-                //        OnKeyReleased((Keys) virtualKeyCode);
-
-                //        // Workaround for strange behavior of ctrl and alt key combinations
-                //        // Pressing & releasing both generates two keydowns but only one keyup.
-                //        if (virtualKeyCode == 17)
-                //        {
-                //            ctrlKeyDown = false;
-                //            if (altKeyDown)
-                //            {
-                //                OnKeyReleased((Keys) 18);
-                //                altKeyDown = false;
-                //            }
-                //        }
-                //        else if (virtualKeyCode == 18)
-                //        {
-                //            altKeyDown = false;
-                //            if (ctrlKeyDown)
-                //            {
-                //                OnKeyReleased((Keys) 17);
-                //                ctrlKeyDown = false;
-                //            }
-                //        }
-
-                //        return true; // consumed!
-                //    }
-
-                //// Character has been entered on the keyboard
-                //case (int) UnsafeNativeMethods.WindowMessages.WM_CHAR:
-                //    {
-                //        char character = (char) message.WParam.ToInt32();
-                //        OnCharacterEntered(character);
-                //        return true; // consumed!
-                //    }
-
-                case (int) WindowMessages.WM_MOUSEMOVE:
+                case (int) WindowMessages.MOUSEMOVE:
                     {
                         if (!trackingMouse)
                         {
-                            int result = TrackMouseEvent(ref this.mouseEventTrackData);
+                            int result = TrackMouseEvent(ref mouseEvent);
                             trackingMouse = (result != 0);
                         }
 
@@ -140,105 +95,86 @@ namespace Libra.Input.Forms
 
                         FormMouse.Instance.State.X = x;
                         FormMouse.Instance.State.Y = y;
-                        //OnMouseMoved((float) x, (float) y);
                         break;
                     }
 
-                // Left mouse button pressed / released
-                case (int) WindowMessages.WM_LBUTTONDOWN:
-                case (int) WindowMessages.WM_LBUTTONDBLCLK:
+                case (int) WindowMessages.LBUTTONDOWN:
+                case (int) WindowMessages.LBUTTONDBLCLK:
                     {
                         FormMouse.Instance.State.LeftButton = ButtonState.Pressed;
-                        //OnMouseButtonPressed(MouseButtons.Left);
                         break;
                     }
-                case (int) WindowMessages.WM_LBUTTONUP:
+                case (int) WindowMessages.LBUTTONUP:
                     {
                         FormMouse.Instance.State.LeftButton = ButtonState.Released;
-                        //OnMouseButtonReleased(MouseButtons.Left);
                         break;
                     }
 
-                // Right mouse button pressed / released
-                case (int) WindowMessages.WM_RBUTTONDOWN:
-                case (int) WindowMessages.WM_RBUTTONDBLCLK:
+                case (int) WindowMessages.RBUTTONDOWN:
+                case (int) WindowMessages.RBUTTONDBLCLK:
                     {
                         FormMouse.Instance.State.RightButton = ButtonState.Pressed;
-                        //OnMouseButtonPressed(MouseButtons.Right);
                         break;
                     }
-                case (int) WindowMessages.WM_RBUTTONUP:
+                case (int) WindowMessages.RBUTTONUP:
                     {
                         FormMouse.Instance.State.RightButton = ButtonState.Released;
-                        //OnMouseButtonReleased(MouseButtons.Right);
                         break;
                     }
 
-                // Middle mouse button pressed / released
-                case (int) WindowMessages.WM_MBUTTONDOWN:
-                case (int) WindowMessages.WM_MBUTTONDBLCLK:
+                case (int) WindowMessages.MBUTTONDOWN:
+                case (int) WindowMessages.MBUTTONDBLCLK:
                     {
                         FormMouse.Instance.State.MiddleButton = ButtonState.Pressed;
-                        //OnMouseButtonPressed(MouseButtons.Middle);
                         break;
                     }
-                case (int) WindowMessages.WM_MBUTTONUP:
+                case (int) WindowMessages.MBUTTONUP:
                     {
                         FormMouse.Instance.State.MiddleButton = ButtonState.Released;
-                        //OnMouseButtonReleased(MouseButtons.Middle);
                         break;
                     }
 
-                // Extended mouse button pressed / released
-                case (int) WindowMessages.WM_XBUTTONDOWN:
-                case (int) WindowMessages.WM_XBUTTONDBLCLK:
+                case (int) WindowMessages.XBUTTONDOWN:
+                case (int) WindowMessages.XBUTTONDBLCLK:
                     {
                         short button = (short) (message.WParam.ToInt32() >> 16);
                         if (button == 1)
                         {
                             FormMouse.Instance.State.XButton1 = ButtonState.Pressed;
-                            //OnMouseButtonPressed(MouseButtons.X1);
                         }
                         if (button == 2)
                         {
                             FormMouse.Instance.State.XButton2 = ButtonState.Pressed;
-                            //OnMouseButtonPressed(MouseButtons.X2);
                         }
 
                         break;
                     }
-                case (int) WindowMessages.WM_XBUTTONUP:
+                case (int) WindowMessages.XBUTTONUP:
                     {
                         short button = (short) (message.WParam.ToInt32() >> 16);
                         if (button == 1)
                         {
                             FormMouse.Instance.State.XButton1 = ButtonState.Released;
-                            //OnMouseButtonReleased(MouseButtons.X1);
                         }
                         if (button == 2)
                         {
                             FormMouse.Instance.State.XButton2 = ButtonState.Released;
-                            //OnMouseButtonReleased(MouseButtons.X2);
                         }
 
                         break;
                     }
 
-                // Mouse wheel rotated
-                case (int) WindowMessages.WM_MOUSEHWHEEL:
+                case (int) WindowMessages.MOUSEHWHEEL:
                     {
                         short ticks = (short) (message.WParam.ToInt32() >> 16);
                         FormMouse.Instance.State.ScrollWheelValue = ticks;
-                        //OnMouseWheelRotated((float) ticks / 120.0f);
                         break;
                     }
 
-                // Mouse has left the window's client area
-                case (int) WindowMessages.WM_MOUSELEAVE:
+                case (int) WindowMessages.MOUSELEAVE:
                     {
                         FormMouse.Instance.State.X = -1;
                         FormMouse.Instance.State.Y = -1;
-                        //OnMouseMoved(-1.0f, -1.0f);
                         this.trackingMouse = false;
                         break;
                     }
@@ -246,70 +182,5 @@ namespace Libra.Input.Forms
 
             return false;
         }
-
-        void OnMouseButtonPressed(MouseButtons buttons)
-        {
-            Console.WriteLine("OnMouseButtonPressed");
-            //if (MouseButtonPressed != null)
-            //{
-            //    MouseButtonPressed(buttons);
-            //}
-        }
-
-        void OnMouseButtonReleased(MouseButtons buttons)
-        {
-            Console.WriteLine("OnMouseButtonReleased");
-            //if (MouseButtonReleased != null)
-            //{
-            //    MouseButtonReleased(buttons);
-            //}
-        }
-
-        void OnMouseMoved(float x, float y)
-        {
-            Console.WriteLine("OnMouseMoved: (" + x + ", " + y + ")");
-            //if (MouseMoved != null)
-            //{
-            //    MouseMoved(x, y);
-            //}
-        }
-
-        void OnMouseWheelRotated(float ticks)
-        {
-            Console.WriteLine("OnMouseWheelRotated");
-            //if (MouseWheelRotated != null)
-            //{
-            //    MouseWheelRotated(ticks);
-            //}
-        }
-
-        #region IDisposable
-
-        bool disposed;
-
-        ~MessageFilter()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (disposed) return;
-
-            if (disposing)
-            {
-                Application.RemoveMessageFilter(this);
-            }
-
-            disposed = true;
-        }
-
-        #endregion
     }
 }

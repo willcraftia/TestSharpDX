@@ -21,6 +21,8 @@ namespace Libra.Samples.Primitives3D
 
         IKeyboard keyboard;
 
+        IMouse mouse;
+
         IJoystick joystick;
 
         KeyboardState currentKeyboardState;
@@ -60,18 +62,6 @@ namespace Libra.Samples.Primitives3D
             graphicsManager = new GraphicsManager(this);
         }
 
-        Input.Forms.MessageFilter messageFilter;
-
-        IMouse mouse;
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            messageFilter = new Input.Forms.MessageFilter(Window.Handle);
-            mouse = Input.Forms.FormMouse.Instance;
-        }
-
         protected override void LoadContent()
         {
             primitives.Add(new CubePrimitive(Device));
@@ -86,8 +76,10 @@ namespace Libra.Samples.Primitives3D
                 CullMode = CullMode.None,
             };
 
+            keyboard = platform.CreateKeyboard();
+            mouse = platform.CreateMouse();
+
             // TODO
-            keyboard = Libra.Input.SharpDX.SdxKeyboard.Create();
             joystick = Libra.Input.SharpDX.SdxJoystick.Create();
 
             base.LoadContent();

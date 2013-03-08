@@ -27,5 +27,9 @@ namespace Libra.Games
         void Run(TickCallback tick);
 
         void Exit();
+
+        IKeyboard CreateKeyboard();
+
+        IMouse CreateMouse();
     }
 }
