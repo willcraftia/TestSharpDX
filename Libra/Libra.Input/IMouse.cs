@@ -9,5 +9,7 @@ namespace Libra.Input
     public interface IMouse
     {
         MouseState GetState();
+
+        void SetPosition(int x, int y);
     }
 }
