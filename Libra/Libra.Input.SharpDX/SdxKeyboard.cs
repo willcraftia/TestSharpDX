@@ -2,7 +2,9 @@
 
 using System;
 
+using DIDeviceEnumerationFlags = SharpDX.DirectInput.DeviceEnumerationFlags;
 using DIDeviceInstance = SharpDX.DirectInput.DeviceInstance;
+using DIDeviceType = SharpDX.DirectInput.DeviceType;
 using DIDirectInput = SharpDX.DirectInput.DirectInput;
 using DIKey = SharpDX.DirectInput.Key;
 using DIKeyboardUpdate = SharpDX.DirectInput.KeyboardUpdate;
@@ -12,6 +14,10 @@ using DIRawKeyboardState = SharpDX.DirectInput.RawKeyboardState;
 
 namespace Libra.Input.SharpDX
 {
+    // TODO
+    //
+    // Dispose する必要あり。ただし、後でこのクラスそのものを破棄する。
+
     /// <summary>
     /// </summary>
     /// <remarks>
@@ -97,6 +103,16 @@ namespace Libra.Input.SharpDX
                 bridge.Acquire();
                 stateBridge = new StateBridge();
             }
+        }
+
+        public static SdxKeyboard Create()
+        {
+            var diDirectInput = new DIDirectInput();
+
+            var devices = diDirectInput.GetDevices(DIDeviceType.Keyboard, DIDeviceEnumerationFlags.AllDevices);
+
+            var device = (devices.Count != 0) ? devices[0] : null;
+            return new SdxKeyboard(diDirectInput, device);
         }
 
         public KeyboardState GetState()

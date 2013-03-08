@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="Buttons.cs" />
     <Compile Include="ButtonState.cs" />
-    <Compile Include="IInputFactory.cs" />
     <Compile Include="IJoystick.cs" />
     <Compile Include="IKeyboard.cs" />
     <Compile Include="IMouse.cs" />

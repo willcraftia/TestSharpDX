@@ -22,8 +22,6 @@ namespace Libra.Games
 
         IGraphicsFactory GraphicsFactory { get; }
 
-        IInputFactory InputFactory { get; }
-
         void Initialize();
 
         void Run(TickCallback tick);

@@ -79,8 +79,9 @@ namespace Libra.Samples.Primitives3D
                 CullMode = CullMode.None,
             };
 
-            keyboard = platform.InputFactory.CreateKeyboard();
-            joystick = platform.InputFactory.CreateJoystick();
+            // TODO
+            keyboard = Libra.Input.SharpDX.SdxKeyboard.Create();
+            joystick = Libra.Input.SharpDX.SdxJoystick.Create();
 
             base.LoadContent();
         }

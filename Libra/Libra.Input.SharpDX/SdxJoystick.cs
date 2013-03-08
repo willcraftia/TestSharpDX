@@ -2,7 +2,9 @@
 
 using System;
 
+using DIDeviceEnumerationFlags = SharpDX.DirectInput.DeviceEnumerationFlags;
 using DIDeviceInstance = SharpDX.DirectInput.DeviceInstance;
+using DIDeviceType = SharpDX.DirectInput.DeviceType;
 using DIDirectInput = SharpDX.DirectInput.DirectInput;
 using DIRawJoystickState = SharpDX.DirectInput.RawJoystickState;
 using DIJoystickUpdate = SharpDX.DirectInput.JoystickUpdate;
@@ -12,6 +14,10 @@ using SDXUtilities = SharpDX.Utilities;
 
 namespace Libra.Input.SharpDX
 {
+    // TODO
+    //
+    // Dispose する必要あり。ただし、後で構造自体を変える。
+
     public sealed class SdxJoystick : IJoystick
     {
         #region Bridge
@@ -146,6 +152,21 @@ namespace Libra.Input.SharpDX
                 bridge.Acquire();
                 stateBridge = new StateBridge();
             }
+        }
+
+        public static SdxJoystick Create()
+        {
+            var diDirectInput = new DIDirectInput();
+
+            var devices = diDirectInput.GetDevices(DIDeviceType.Joystick, DIDeviceEnumerationFlags.AllDevices);
+
+            if (devices.Count == 0)
+            {
+                devices = diDirectInput.GetDevices(DIDeviceType.Gamepad, DIDeviceEnumerationFlags.AllDevices);
+            }
+
+            var device = (devices.Count != 0) ? devices[0] : null;
+            return new SdxJoystick(diDirectInput, device);
         }
 
         public JoystickState GetState()
