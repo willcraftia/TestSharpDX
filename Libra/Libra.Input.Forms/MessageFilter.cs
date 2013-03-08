@@ -8,6 +8,10 @@ using System.Windows.Forms;
 
 namespace Libra.Input.Forms
 {
+    // フォームから直接イベントを受信しない理由。
+    //      イベント ハンドラを登録しなければ、
+    //      イベント オブジェクト生成を避けられるのではないかと・・・。
+
     public sealed class MessageFilter : IMessageFilter
     {
         [StructLayout(LayoutKind.Sequential)]
