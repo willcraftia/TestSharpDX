@@ -12,68 +12,69 @@ using System.Runtime.InteropServices;
 namespace Libra
 {
     [Serializable]
-    [StructLayout(LayoutKind.Sequential)]
     public struct Rectangle : IEquatable<Rectangle>
     {
         public static readonly Rectangle Empty = new Rectangle();
 
-        public int Left;
-        
-        public int Top;
-        
-        public int Right;
-        
-        public int Bottom;
+        public int X;
 
-        public int X
+        public int Y;
+
+        public int Width;
+
+        public int Height;
+
+        public int Left
         {
-            get { return Left; }
+            get { return X; }
         }
 
-        public int Y
+        public int Top
         {
-            get { return Top; }
+            get { return Y; }
         }
 
-        public int Width
+        public int Right
         {
-            get { return Right - Left; }
+            get { return X + Width; }
         }
 
-        public int Height
+        public int Bottom
         {
-            get { return Bottom - Top; }
+            get { return Y + Height; }
         }
 
-        public Rectangle(int left, int top, int right, int bottom)
+        public Point Location
         {
-            Left = left;
-            Top = top;
-            Right = right;
-            Bottom = bottom;
+            get { return new Point(X, Y); }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+            }
+        }
+
+        public Point Center
+        {
+            get { return new Point(X + Width / 2, Y + Height / 2); }
+        }
+
+        public bool IsEmpty
+        {
+            get { return X == 0 && Y == 0 && Width == 0 && Height == 0; }
+        }
+
+        public Rectangle(int x, int y, int width, int height)
+        {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
         }
 
         public bool Contains(int x, int y)
         {
-            if (x >= Left && x <= Right && y >= Top && y <= Bottom)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public bool Contains(float x, float y)
-        {
-            if (x >= Left && x <= Right && y >= Top && y <= Bottom)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public bool Contains(Vector2 vector2D)
-        {
-            if (vector2D.X >= Left && vector2D.X <= Right && vector2D.Y >= Top && vector2D.Y <= Bottom)
+            if (X <= x && x <= Right && Y <= y && y <= Bottom)
             {
                 return true;
             }
@@ -82,11 +83,26 @@ namespace Libra
 
         public bool Contains(Point point)
         {
-            if (point.X >= Left && point.X <= Right && point.Y >= Top && point.Y <= Bottom)
-            {
-                return true;
-            }
-            return false;
+            bool result;
+            Contains(ref point, out result);
+            return result;
+        }
+
+        public void Contains(ref Point point, out bool result)
+        {
+            result = (X <= point.X && point.X <= Right && Y <= point.Y && point.Y <= Bottom);
+        }
+
+        public bool Contains(Rectangle rectangle)
+        {
+            bool result;
+            Contains(ref rectangle, out result);
+            return result;
+        }
+
+        public void Contains(ref Rectangle rectangle, out bool result)
+        {
+            result = (X <= rectangle.X && rectangle.Right <= Right && Y <= rectangle.Y && rectangle.Bottom <= Bottom);
         }
 
         #region IEquatable
@@ -103,7 +119,7 @@ namespace Libra
 
         public bool Equals(Rectangle other)
         {
-            return Left == other.Left && Top == other.Top && Right == other.Right && Bottom == other.Bottom;
+            return X == other.X && Y == other.Y && Width == other.Width && Height == other.Height;
         }
 
         public override bool Equals(object obj)
@@ -115,7 +131,7 @@ namespace Libra
 
         public override int GetHashCode()
         {
-            return Left.GetHashCode() ^ Top.GetHashCode() ^ Right.GetHashCode() ^ Bottom.GetHashCode();
+            return X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
         }
 
         #endregion
@@ -124,7 +140,7 @@ namespace Libra
 
         public override string ToString()
         {
-            return "{Left:" + Left + " Top:" + Top + " Right:" + Right + " Bottom:" + Bottom + "}";
+            return "{X:" + X + " Y:" + Y + " Width:" + Width + " Height:" + Height + "}";
         }
 
         #endregion

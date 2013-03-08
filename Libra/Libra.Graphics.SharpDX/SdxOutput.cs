@@ -38,10 +38,10 @@ namespace Libra.Graphics.SharpDX
             DeviceName = outpuDescription.DeviceName;
             DesktopCoordinates = new Rectangle
             {
-                Left = outpuDescription.DesktopBounds.Left,
-                Top = outpuDescription.DesktopBounds.Top,
-                Right = outpuDescription.DesktopBounds.Right,
-                Bottom = outpuDescription.DesktopBounds.Bottom
+                X = outpuDescription.DesktopBounds.Left,
+                Y = outpuDescription.DesktopBounds.Top,
+                Width = outpuDescription.DesktopBounds.Width,
+                Height = outpuDescription.DesktopBounds.Height
             };
             AttachedToDesktop = outpuDescription.IsAttachedToDesktop;
             Monitor = outpuDescription.MonitorHandle;
