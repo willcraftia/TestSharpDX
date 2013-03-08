@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A2F37986-5187-4A6F-85A0-F38F66FCF786}</ProjectGuid>
+    <ProjectGuid>{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Libra.Input</RootNamespace>
-    <AssemblyName>Libra.Input</AssemblyName>
+    <RootNamespace>Libra.Input.Forms</RootNamespace>
+    <AssemblyName>Libra.Input.Forms</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,24 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buttons.cs" />
-    <Compile Include="ButtonState.cs" />
-    <Compile Include="IInputFactory.cs" />
-    <Compile Include="IJoystick.cs" />
-    <Compile Include="IKeyboard.cs" />
-    <Compile Include="IMouse.cs" />
-    <Compile Include="JoystickButtons.cs" />
-    <Compile Include="JoystickDPad.cs" />
-    <Compile Include="JoystickState.cs" />
-    <Compile Include="JoystickTriggers.cs" />
-    <Compile Include="JoystickThumbSticks.cs" />
-    <Compile Include="KeyboardState.cs" />
-    <Compile Include="Keys.cs" />
-    <Compile Include="KeyState.cs" />
-    <Compile Include="MouseState.cs" />
+    <Compile Include="MouseButtons.cs" />
+    <Compile Include="MessageFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libra.Input\Libra.Input.csproj">
+      <Project>{A2F37986-5187-4A6F-85A0-F38F66FCF786}</Project>
+      <Name>Libra.Input</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libra\Libra.csproj">
       <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>
       <Name>Libra</Name>

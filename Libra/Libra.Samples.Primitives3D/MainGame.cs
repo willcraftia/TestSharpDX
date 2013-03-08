@@ -56,6 +56,15 @@ namespace Libra.Samples.Primitives3D
             graphicsManager = new GraphicsManager(this);
         }
 
+        Input.Forms.MessageFilter messageFilter;
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            messageFilter = new Input.Forms.MessageFilter(Window.Handle);
+        }
+
         protected override void LoadContent()
         {
             primitives.Add(new CubePrimitive(Device));
@@ -120,8 +129,53 @@ namespace Libra.Samples.Primitives3D
 
             base.Draw(gameTime);
         }
+
+        SharpDX.DirectInput.Mouse mouse;
+        SharpDX.DirectInput.MouseState mouseState;
+
         void HandleInput()
         {
+            if (mouse == null)
+            {
+                var directInput = new SharpDX.DirectInput.DirectInput();
+                mouse = new SharpDX.DirectInput.Mouse(directInput);
+                mouse.Acquire();
+            }
+
+            mouseState = mouse.GetCurrentState();
+            if (mouseState.Buttons[0])
+            {
+                Console.WriteLine("Buttons[0]: Left");
+            }
+            if (mouseState.Buttons[1])
+            {
+                Console.WriteLine("Buttons[1]: Right");
+            }
+            if (mouseState.Buttons[2])
+            {
+                Console.WriteLine("Buttons[2]: Unknown");
+            }
+            if (mouseState.Buttons[3])
+            {
+                Console.WriteLine("Buttons[3]: Backward");
+            }
+            if (mouseState.Buttons[4])
+            {
+                Console.WriteLine("Buttons[4]: Forward");
+            }
+            if (mouseState.Buttons[5])
+            {
+                Console.WriteLine("Buttons[5]:");
+            }
+            if (mouseState.Buttons[6])
+            {
+                Console.WriteLine("Buttons[6]:");
+            }
+            if (mouseState.Buttons[7])
+            {
+                Console.WriteLine("Buttons[7]:");
+            }
+
             lastKeyboardState = currentKeyboardState;
             lastJoystickState = currentJoystickState;
 

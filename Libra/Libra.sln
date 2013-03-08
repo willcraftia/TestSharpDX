@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Input", "Libra.Input\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Input.SharpDX", "Libra.Input.SharpDX\Libra.Input.SharpDX.csproj", "{AFD05BCE-8CBE-4CDB-A641-A4FA3BA678F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Input.Forms", "Libra.Input.Forms\Libra.Input.Forms.csproj", "{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,16 @@ Global
 		{AFD05BCE-8CBE-4CDB-A641-A4FA3BA678F0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AFD05BCE-8CBE-4CDB-A641-A4FA3BA678F0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AFD05BCE-8CBE-4CDB-A641-A4FA3BA678F0}.Release|x86.ActiveCfg = Release|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
