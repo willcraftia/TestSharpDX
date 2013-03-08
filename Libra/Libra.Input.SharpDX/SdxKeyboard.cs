@@ -21,11 +21,11 @@ namespace Libra.Input.SharpDX
     /// </remarks>
     public sealed class SdxKeyboard : IKeyboard
     {
-        #region KeyboardBridge
+        #region Bridge
 
-        sealed class KeyboardBridge : global::SharpDX.DirectInput.CustomDevice<KeyboardStateBridge, DIRawKeyboardState, DIKeyboardUpdate>
+        sealed class Bridge : global::SharpDX.DirectInput.CustomDevice<StateBridge, DIRawKeyboardState, DIKeyboardUpdate>
         {
-            public KeyboardBridge(DIDirectInput diDirectInput, Guid deviceGuid)
+            public Bridge(DIDirectInput diDirectInput, Guid deviceGuid)
                 : base(diDirectInput, deviceGuid)
             {
             }
@@ -33,9 +33,9 @@ namespace Libra.Input.SharpDX
 
         #endregion
 
-        #region KeyboardStateBridge
+        #region StateBridge
 
-        sealed class KeyboardStateBridge : global::SharpDX.DirectInput.IDeviceState<DIRawKeyboardState, DIKeyboardUpdate>
+        sealed class StateBridge : global::SharpDX.DirectInput.IDeviceState<DIRawKeyboardState, DIKeyboardUpdate>
         {
             public KeyboardState State;
 
@@ -74,9 +74,9 @@ namespace Libra.Input.SharpDX
 
         DIDeviceInstance diDevice;
 
-        KeyboardBridge keyboardBridge;
+        Bridge bridge;
 
-        KeyboardStateBridge keyboardStateBridge;
+        StateBridge stateBridge;
 
         public bool Enabled { get; private set; }
 
@@ -93,9 +93,9 @@ namespace Libra.Input.SharpDX
 
             if (Enabled)
             {
-                keyboardBridge = new KeyboardBridge(diDirectInput, diDevice.InstanceGuid);
-                keyboardBridge.Acquire();
-                keyboardStateBridge = new KeyboardStateBridge();
+                bridge = new Bridge(diDirectInput, diDevice.InstanceGuid);
+                bridge.Acquire();
+                stateBridge = new StateBridge();
             }
         }
 
@@ -106,8 +106,8 @@ namespace Libra.Input.SharpDX
 
             lock (this)
             {
-                keyboardBridge.GetCurrentState(ref keyboardStateBridge);
-                return keyboardStateBridge.State;
+                bridge.GetCurrentState(ref stateBridge);
+                return stateBridge.State;
             }
         }
 
@@ -132,8 +132,8 @@ namespace Libra.Input.SharpDX
 
             if (disposing)
             {
-                if (keyboardBridge != null)
-                    keyboardBridge.Dispose();
+                if (bridge != null)
+                    bridge.Dispose();
             }
 
             disposed = true;

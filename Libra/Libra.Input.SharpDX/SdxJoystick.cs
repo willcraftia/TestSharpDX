@@ -14,11 +14,11 @@ namespace Libra.Input.SharpDX
 {
     public sealed class SdxJoystick : IJoystick
     {
-        #region KeyboardBridge
+        #region Bridge
 
-        sealed class JoystickBridge : global::SharpDX.DirectInput.CustomDevice<JoystickStateBridge, DIRawJoystickState, DIJoystickUpdate>
+        sealed class Bridge : global::SharpDX.DirectInput.CustomDevice<StateBridge, DIRawJoystickState, DIJoystickUpdate>
         {
-            public JoystickBridge(DIDirectInput diDirectInput, Guid deviceGuid)
+            public Bridge(DIDirectInput diDirectInput, Guid deviceGuid)
                 : base(diDirectInput, deviceGuid)
             {
             }
@@ -26,9 +26,9 @@ namespace Libra.Input.SharpDX
 
         #endregion
 
-        #region KeyboardStateBridge
+        #region StateBridge
 
-        sealed class JoystickStateBridge : global::SharpDX.DirectInput.IDeviceState<DIRawJoystickState, DIJoystickUpdate>
+        sealed class StateBridge : global::SharpDX.DirectInput.IDeviceState<DIRawJoystickState, DIJoystickUpdate>
         {
             public JoystickState State;
 
@@ -123,9 +123,9 @@ namespace Libra.Input.SharpDX
 
         DIDeviceInstance diDevice;
 
-        JoystickBridge joystickBridge;
+        Bridge bridge;
 
-        JoystickStateBridge joystickStateBridge;
+        StateBridge stateBridge;
 
         public bool Enabled { get; private set; }
 
@@ -142,9 +142,9 @@ namespace Libra.Input.SharpDX
 
             if (Enabled)
             {
-                joystickBridge = new JoystickBridge(diDirectInput, diDevice.InstanceGuid);
-                joystickBridge.Acquire();
-                joystickStateBridge = new JoystickStateBridge();
+                bridge = new Bridge(diDirectInput, diDevice.InstanceGuid);
+                bridge.Acquire();
+                stateBridge = new StateBridge();
             }
         }
 
@@ -155,8 +155,8 @@ namespace Libra.Input.SharpDX
 
             lock (this)
             {
-                joystickBridge.GetCurrentState(ref joystickStateBridge);
-                return joystickStateBridge.State;
+                bridge.GetCurrentState(ref stateBridge);
+                return stateBridge.State;
             }
         }
 
@@ -181,8 +181,8 @@ namespace Libra.Input.SharpDX
 
             if (disposing)
             {
-                if (joystickBridge != null)
-                    joystickBridge.Dispose();
+                if (bridge != null)
+                    bridge.Dispose();
             }
 
             disposed = true;
