@@ -67,22 +67,22 @@ namespace Libra.Input.Forms
 
         public bool PreFilterMessage(ref Message message)
         {
-            switch (message.Msg)
+            switch ((WindowMessages) message.Msg)
             {
-                case (int) WindowMessages.KEYDOWN:
+                case WindowMessages.KEYDOWN:
                     {
                         int key = message.WParam.ToInt32();
                         FormKeyboard.Instance.State[(Keys) key] = KeyState.Down;
                         break;
                     }
-                case (int) WindowMessages.KEYUP:
+                case WindowMessages.KEYUP:
                     {
                         int key = message.WParam.ToInt32();
                         FormKeyboard.Instance.State[(Keys) key] = KeyState.Up;
                         break;
                     }
 
-                case (int) WindowMessages.MOUSEMOVE:
+                case WindowMessages.MOUSEMOVE:
                     {
                         if (!trackingMouse)
                         {
@@ -98,44 +98,44 @@ namespace Libra.Input.Forms
                         break;
                     }
 
-                case (int) WindowMessages.LBUTTONDOWN:
-                case (int) WindowMessages.LBUTTONDBLCLK:
+                case WindowMessages.LBUTTONDOWN:
+                case WindowMessages.LBUTTONDBLCLK:
                     {
                         FormMouse.Instance.State.LeftButton = ButtonState.Pressed;
                         break;
                     }
-                case (int) WindowMessages.LBUTTONUP:
+                case WindowMessages.LBUTTONUP:
                     {
                         FormMouse.Instance.State.LeftButton = ButtonState.Released;
                         break;
                     }
 
-                case (int) WindowMessages.RBUTTONDOWN:
-                case (int) WindowMessages.RBUTTONDBLCLK:
+                case WindowMessages.RBUTTONDOWN:
+                case WindowMessages.RBUTTONDBLCLK:
                     {
                         FormMouse.Instance.State.RightButton = ButtonState.Pressed;
                         break;
                     }
-                case (int) WindowMessages.RBUTTONUP:
+                case WindowMessages.RBUTTONUP:
                     {
                         FormMouse.Instance.State.RightButton = ButtonState.Released;
                         break;
                     }
 
-                case (int) WindowMessages.MBUTTONDOWN:
-                case (int) WindowMessages.MBUTTONDBLCLK:
+                case WindowMessages.MBUTTONDOWN:
+                case WindowMessages.MBUTTONDBLCLK:
                     {
                         FormMouse.Instance.State.MiddleButton = ButtonState.Pressed;
                         break;
                     }
-                case (int) WindowMessages.MBUTTONUP:
+                case WindowMessages.MBUTTONUP:
                     {
                         FormMouse.Instance.State.MiddleButton = ButtonState.Released;
                         break;
                     }
 
-                case (int) WindowMessages.XBUTTONDOWN:
-                case (int) WindowMessages.XBUTTONDBLCLK:
+                case WindowMessages.XBUTTONDOWN:
+                case WindowMessages.XBUTTONDBLCLK:
                     {
                         short button = (short) (message.WParam.ToInt32() >> 16);
                         if (button == 1)
@@ -149,7 +149,7 @@ namespace Libra.Input.Forms
 
                         break;
                     }
-                case (int) WindowMessages.XBUTTONUP:
+                case WindowMessages.XBUTTONUP:
                     {
                         short button = (short) (message.WParam.ToInt32() >> 16);
                         if (button == 1)
@@ -164,14 +164,14 @@ namespace Libra.Input.Forms
                         break;
                     }
 
-                case (int) WindowMessages.MOUSEHWHEEL:
+                case WindowMessages.MOUSEHWHEEL:
                     {
                         short ticks = (short) (message.WParam.ToInt32() >> 16);
                         FormMouse.Instance.State.ScrollWheelValue = ticks;
                         break;
                     }
 
-                case (int) WindowMessages.MOUSELEAVE:
+                case WindowMessages.MOUSELEAVE:
                     {
                         FormMouse.Instance.State.X = -1;
                         FormMouse.Instance.State.Y = -1;
