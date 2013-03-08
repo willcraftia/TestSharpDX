@@ -31,6 +31,10 @@ namespace Libra.Samples.Primitives3D
 
         JoystickState lastJoystickState;
 
+        MouseState currentMouseState;
+
+        MouseState lastMouseState;
+
         List<GeometricPrimitive> primitives = new List<GeometricPrimitive>();
 
         int currentPrimitiveIndex = 0;
@@ -58,11 +62,14 @@ namespace Libra.Samples.Primitives3D
 
         Input.Forms.MessageFilter messageFilter;
 
+        IMouse mouse;
+
         protected override void Initialize()
         {
             base.Initialize();
 
             messageFilter = new Input.Forms.MessageFilter(Window.Handle);
+            mouse = Input.Forms.FormMouse.Instance;
         }
 
         protected override void LoadContent()
@@ -131,57 +138,15 @@ namespace Libra.Samples.Primitives3D
             base.Draw(gameTime);
         }
 
-        SharpDX.DirectInput.Mouse mouse;
-        SharpDX.DirectInput.MouseState mouseState;
-
         void HandleInput()
         {
-            if (mouse == null)
-            {
-                var directInput = new SharpDX.DirectInput.DirectInput();
-                mouse = new SharpDX.DirectInput.Mouse(directInput);
-                mouse.Acquire();
-            }
-
-            mouseState = mouse.GetCurrentState();
-            if (mouseState.Buttons[0])
-            {
-                Console.WriteLine("Buttons[0]: Left");
-            }
-            if (mouseState.Buttons[1])
-            {
-                Console.WriteLine("Buttons[1]: Right");
-            }
-            if (mouseState.Buttons[2])
-            {
-                Console.WriteLine("Buttons[2]: Unknown");
-            }
-            if (mouseState.Buttons[3])
-            {
-                Console.WriteLine("Buttons[3]: Backward");
-            }
-            if (mouseState.Buttons[4])
-            {
-                Console.WriteLine("Buttons[4]: Forward");
-            }
-            if (mouseState.Buttons[5])
-            {
-                Console.WriteLine("Buttons[5]:");
-            }
-            if (mouseState.Buttons[6])
-            {
-                Console.WriteLine("Buttons[6]:");
-            }
-            if (mouseState.Buttons[7])
-            {
-                Console.WriteLine("Buttons[7]:");
-            }
-
             lastKeyboardState = currentKeyboardState;
             lastJoystickState = currentJoystickState;
+            lastMouseState = currentMouseState;
 
             currentKeyboardState = keyboard.GetState();
             currentJoystickState = joystick.GetState();
+            currentMouseState = mouse.GetState();
 
             var test = joystick.GetState();
 
@@ -194,19 +159,19 @@ namespace Libra.Samples.Primitives3D
             int halfWidth = (int) viewport.Width / 2;
             int halfHeight = (int) viewport.Height / 2;
             Rectangle topOfScreen = new Rectangle(0, 0, (int) viewport.Width, (int) halfHeight);
-            if (IsPressed(Keys.A, Buttons.A))
+            if (IsPressed(Keys.A, Buttons.A) || LeftMouseIsPressed(topOfScreen))
             {
                 currentPrimitiveIndex = (currentPrimitiveIndex + 1) % primitives.Count;
             }
 
             Rectangle botLeftOfScreen = new Rectangle(0, halfHeight, halfWidth, halfHeight);
-            if (IsPressed(Keys.B, Buttons.B))
+            if (IsPressed(Keys.B, Buttons.B) || LeftMouseIsPressed(botLeftOfScreen))
             {
                 currentColorIndex = (currentColorIndex + 1) % colors.Count;
             }
 
             Rectangle botRightOfScreen = new Rectangle(halfWidth, halfHeight, halfWidth, halfHeight);
-            if (IsPressed(Keys.Y, Buttons.Y))
+            if (IsPressed(Keys.Y, Buttons.Y) || LeftMouseIsPressed(botRightOfScreen))
             {
                 isWireframe = !isWireframe;
             }
@@ -216,6 +181,12 @@ namespace Libra.Samples.Primitives3D
         {
             return currentKeyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key) ||
                    currentJoystickState.IsButtonDown(button) && lastJoystickState.IsButtonUp(button);
+        }
+
+        bool LeftMouseIsPressed(Rectangle rect)
+        {
+            return currentMouseState.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton != ButtonState.Pressed &&
+                rect.Contains(currentMouseState.X, currentMouseState.Y);
         }
     }
 

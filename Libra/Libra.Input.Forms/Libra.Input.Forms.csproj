@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormMouse.cs" />
     <Compile Include="MouseButtons.cs" />
     <Compile Include="MessageFilter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

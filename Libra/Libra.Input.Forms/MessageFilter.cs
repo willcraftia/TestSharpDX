@@ -137,7 +137,10 @@ namespace Libra.Input.Forms
 
                         short x = (short) (message.LParam.ToInt32() & 0xFFFF);
                         short y = (short) (message.LParam.ToInt32() >> 16);
-                        OnMouseMoved((float) x, (float) y);
+
+                        FormMouse.Instance.State.X = x;
+                        FormMouse.Instance.State.Y = y;
+                        //OnMouseMoved((float) x, (float) y);
                         break;
                     }
 
@@ -145,12 +148,14 @@ namespace Libra.Input.Forms
                 case (int) WindowMessages.WM_LBUTTONDOWN:
                 case (int) WindowMessages.WM_LBUTTONDBLCLK:
                     {
-                        OnMouseButtonPressed(MouseButtons.Left);
+                        FormMouse.Instance.State.LeftButton = ButtonState.Pressed;
+                        //OnMouseButtonPressed(MouseButtons.Left);
                         break;
                     }
                 case (int) WindowMessages.WM_LBUTTONUP:
                     {
-                        OnMouseButtonReleased(MouseButtons.Left);
+                        FormMouse.Instance.State.LeftButton = ButtonState.Released;
+                        //OnMouseButtonReleased(MouseButtons.Left);
                         break;
                     }
 
@@ -158,12 +163,14 @@ namespace Libra.Input.Forms
                 case (int) WindowMessages.WM_RBUTTONDOWN:
                 case (int) WindowMessages.WM_RBUTTONDBLCLK:
                     {
-                        OnMouseButtonPressed(MouseButtons.Right);
+                        FormMouse.Instance.State.RightButton = ButtonState.Pressed;
+                        //OnMouseButtonPressed(MouseButtons.Right);
                         break;
                     }
                 case (int) WindowMessages.WM_RBUTTONUP:
                     {
-                        OnMouseButtonReleased(MouseButtons.Right);
+                        FormMouse.Instance.State.RightButton = ButtonState.Released;
+                        //OnMouseButtonReleased(MouseButtons.Right);
                         break;
                     }
 
@@ -171,12 +178,14 @@ namespace Libra.Input.Forms
                 case (int) WindowMessages.WM_MBUTTONDOWN:
                 case (int) WindowMessages.WM_MBUTTONDBLCLK:
                     {
-                        OnMouseButtonPressed(MouseButtons.Middle);
+                        FormMouse.Instance.State.MiddleButton = ButtonState.Pressed;
+                        //OnMouseButtonPressed(MouseButtons.Middle);
                         break;
                     }
                 case (int) WindowMessages.WM_MBUTTONUP:
                     {
-                        OnMouseButtonReleased(MouseButtons.Middle);
+                        FormMouse.Instance.State.MiddleButton = ButtonState.Released;
+                        //OnMouseButtonReleased(MouseButtons.Middle);
                         break;
                     }
 
@@ -186,9 +195,15 @@ namespace Libra.Input.Forms
                     {
                         short button = (short) (message.WParam.ToInt32() >> 16);
                         if (button == 1)
-                            OnMouseButtonPressed(MouseButtons.X1);
+                        {
+                            FormMouse.Instance.State.XButton1 = ButtonState.Pressed;
+                            //OnMouseButtonPressed(MouseButtons.X1);
+                        }
                         if (button == 2)
-                            OnMouseButtonPressed(MouseButtons.X2);
+                        {
+                            FormMouse.Instance.State.XButton2 = ButtonState.Pressed;
+                            //OnMouseButtonPressed(MouseButtons.X2);
+                        }
 
                         break;
                     }
@@ -196,9 +211,15 @@ namespace Libra.Input.Forms
                     {
                         short button = (short) (message.WParam.ToInt32() >> 16);
                         if (button == 1)
-                            OnMouseButtonReleased(MouseButtons.X1);
+                        {
+                            FormMouse.Instance.State.XButton1 = ButtonState.Released;
+                            //OnMouseButtonReleased(MouseButtons.X1);
+                        }
                         if (button == 2)
-                            OnMouseButtonReleased(MouseButtons.X2);
+                        {
+                            FormMouse.Instance.State.XButton2 = ButtonState.Released;
+                            //OnMouseButtonReleased(MouseButtons.X2);
+                        }
 
                         break;
                     }
@@ -207,14 +228,17 @@ namespace Libra.Input.Forms
                 case (int) WindowMessages.WM_MOUSEHWHEEL:
                     {
                         short ticks = (short) (message.WParam.ToInt32() >> 16);
-                        OnMouseWheelRotated((float) ticks / 120.0f);
+                        FormMouse.Instance.State.ScrollWheelValue = ticks;
+                        //OnMouseWheelRotated((float) ticks / 120.0f);
                         break;
                     }
 
                 // Mouse has left the window's client area
                 case (int) WindowMessages.WM_MOUSELEAVE:
                     {
-                        OnMouseMoved(-1.0f, -1.0f);
+                        FormMouse.Instance.State.X = -1;
+                        FormMouse.Instance.State.Y = -1;
+                        //OnMouseMoved(-1.0f, -1.0f);
                         this.trackingMouse = false;
                         break;
                     }
@@ -243,7 +267,7 @@ namespace Libra.Input.Forms
 
         void OnMouseMoved(float x, float y)
         {
-            //Console.WriteLine("OnMouseMoved");
+            Console.WriteLine("OnMouseMoved: (" + x + ", " + y + ")");
             //if (MouseMoved != null)
             //{
             //    MouseMoved(x, y);
