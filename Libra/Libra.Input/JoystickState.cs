@@ -19,6 +19,8 @@ namespace Libra.Input
 
         public JoystickDPad DPad;
 
+        public bool IsConnected;
+
         public bool IsButtonDown(Buttons button)
         {
             if ((button & Input.Buttons.A) != 0 && Buttons.A != ButtonState.Pressed)

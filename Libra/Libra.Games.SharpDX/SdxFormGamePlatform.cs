@@ -8,6 +8,7 @@ using Libra.Input;
 using Libra.Input.Forms;
 using Libra.Input.SharpDX;
 
+using SDXWRenderForm = SharpDX.Windows.RenderForm;
 using SDXWRenderLoop = SharpDX.Windows.RenderLoop;
 
 #endregion
@@ -83,6 +84,18 @@ namespace Libra.Games.SharpDX
 
         #endregion
 
+        #region MockJoystick
+
+        sealed class MockJoystick : IJoystick
+        {
+            public JoystickState GetState()
+            {
+                return new JoystickState();
+            }
+        }
+
+        #endregion
+
         public event EventHandler Activated;
 
         public event EventHandler Deactivated;
@@ -93,6 +106,10 @@ namespace Libra.Games.SharpDX
 
         MessageFilter messageFilter;
 
+        SdxDirectInput sdxDirectInput;
+
+        SdxJoystick sdxJoystick;
+
         public GameWindow Window { get; private set; }
 
         public IGameTimer GameTimer { get; private set; }
@@ -101,13 +118,14 @@ namespace Libra.Games.SharpDX
         
         public Form Form { get; private set; }
 
-        public SdxFormGamePlatform(Game game, Form form)
+        public bool DirectInputEnabled { get; set; }
+
+        public SdxFormGamePlatform(Game game, Form form = null)
         {
             if (game == null) throw new ArgumentNullException("game");
-            if (form == null) throw new ArgumentNullException("form");
 
             this.game = game;
-            Form = form;
+            Form = form ?? new SDXWRenderForm();
             Form.Activated += OnActivated;
             Form.Deactivate += OnDeactivated;
             Form.FormClosing += OnClosing;
@@ -126,6 +144,9 @@ namespace Libra.Games.SharpDX
 
             messageFilter = new MessageFilter(Window.Handle);
             Application.AddMessageFilter(messageFilter);
+
+            if (DirectInputEnabled)
+                sdxDirectInput = new SdxDirectInput();
         }
 
         public void Run(TickCallback tick)
@@ -146,6 +167,21 @@ namespace Libra.Games.SharpDX
         public IMouse CreateMouse()
         {
             return FormMouse.Instance;
+        }
+
+        public IJoystick CreateJoystick()
+        {
+            if (DirectInputEnabled)
+            {
+                if (sdxJoystick == null)
+                    sdxJoystick = sdxDirectInput.CreateJoystick();
+
+                return sdxJoystick;
+            }
+            else
+            {
+                return new MockJoystick();
+            }
         }
 
         void OnActivated(object sender, EventArgs e)
@@ -189,6 +225,12 @@ namespace Libra.Games.SharpDX
             {
                 if (messageFilter != null)
                     Application.RemoveMessageFilter(messageFilter);
+
+                if (sdxJoystick != null)
+                    sdxJoystick.Dispose();
+
+                if (sdxDirectInput != null)
+                    sdxDirectInput.Dispose();
             }
 
             disposed = true;

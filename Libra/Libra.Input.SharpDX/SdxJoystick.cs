@@ -2,9 +2,7 @@
 
 using System;
 
-using DIDeviceEnumerationFlags = SharpDX.DirectInput.DeviceEnumerationFlags;
 using DIDeviceInstance = SharpDX.DirectInput.DeviceInstance;
-using DIDeviceType = SharpDX.DirectInput.DeviceType;
 using DIDirectInput = SharpDX.DirectInput.DirectInput;
 using DIRawJoystickState = SharpDX.DirectInput.RawJoystickState;
 using DIJoystickUpdate = SharpDX.DirectInput.JoystickUpdate;
@@ -14,11 +12,7 @@ using SDXUtilities = SharpDX.Utilities;
 
 namespace Libra.Input.SharpDX
 {
-    // TODO
-    //
-    // Dispose する必要あり。ただし、後で構造自体を変える。
-
-    public sealed class SdxJoystick : IJoystick
+    public sealed class SdxJoystick : IJoystick, IDisposable
     {
         #region Bridge
 
@@ -133,20 +127,13 @@ namespace Libra.Input.SharpDX
 
         StateBridge stateBridge;
 
-        public bool Enabled { get; private set; }
-
-        public string Name { get; private set; }
-
         public SdxJoystick(DIDirectInput diDirectInput, DIDeviceInstance diDevice)
         {
             if (diDirectInput == null) throw new ArgumentNullException("diDirectInput");
 
             this.diDevice = diDevice;
 
-            Enabled = (diDevice != null);
-            Name = diDevice.ProductName;
-
-            if (Enabled)
+            if (diDevice != null)
             {
                 bridge = new Bridge(diDirectInput, diDevice.InstanceGuid);
                 bridge.Acquire();
@@ -154,29 +141,15 @@ namespace Libra.Input.SharpDX
             }
         }
 
-        public static SdxJoystick Create()
-        {
-            var diDirectInput = new DIDirectInput();
-
-            var devices = diDirectInput.GetDevices(DIDeviceType.Joystick, DIDeviceEnumerationFlags.AllDevices);
-
-            if (devices.Count == 0)
-            {
-                devices = diDirectInput.GetDevices(DIDeviceType.Gamepad, DIDeviceEnumerationFlags.AllDevices);
-            }
-
-            var device = (devices.Count != 0) ? devices[0] : null;
-            return new SdxJoystick(diDirectInput, device);
-        }
-
         public JoystickState GetState()
         {
-            if (!Enabled)
+            if (diDevice == null)
                 return new JoystickState();
 
             lock (this)
             {
                 bridge.GetCurrentState(ref stateBridge);
+                stateBridge.State.IsConnected = true;
                 return stateBridge.State;
             }
         }

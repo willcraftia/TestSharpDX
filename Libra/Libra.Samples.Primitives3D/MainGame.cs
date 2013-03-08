@@ -7,8 +7,6 @@ using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Input;
 
-using SDXWRenderForm = SharpDX.Windows.RenderForm;
-
 #endregion
 
 namespace Libra.Samples.Primitives3D
@@ -58,7 +56,10 @@ namespace Libra.Samples.Primitives3D
 
         public MainGame()
         {
-            platform = new SdxFormGamePlatform(this, new SDXWRenderForm());
+            platform = new SdxFormGamePlatform(this)
+            {
+                DirectInputEnabled = true
+            };
             graphicsManager = new GraphicsManager(this);
         }
 
@@ -78,9 +79,7 @@ namespace Libra.Samples.Primitives3D
 
             keyboard = platform.CreateKeyboard();
             mouse = platform.CreateMouse();
-
-            // TODO
-            joystick = Libra.Input.SharpDX.SdxJoystick.Create();
+            joystick = platform.CreateJoystick();
 
             base.LoadContent();
         }
@@ -139,8 +138,6 @@ namespace Libra.Samples.Primitives3D
             currentKeyboardState = keyboard.GetState();
             currentJoystickState = joystick.GetState();
             currentMouseState = mouse.GetState();
-
-            var test = joystick.GetState();
 
             if (IsPressed(Keys.Escape, Buttons.Back))
             {

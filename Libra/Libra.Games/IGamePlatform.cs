@@ -31,5 +31,7 @@ namespace Libra.Games
         IKeyboard CreateKeyboard();
 
         IMouse CreateMouse();
+
+        IJoystick CreateJoystick();
     }
 }
