@@ -167,6 +167,7 @@
     <Compile Include="InputElementFormat.cs" />
     <Compile Include="InputLayout.cs" />
     <Compile Include="InputPositionColor.cs" />
+    <Compile Include="InputPositionColorTexture.cs" />
     <Compile Include="InputPositionNormal.cs" />
     <Compile Include="InputPositionTexture.cs" />
     <Compile Include="IOutput.cs" />
@@ -186,7 +187,18 @@
     <Compile Include="Resource.cs" />
     <Compile Include="ResourceUsage.cs" />
     <Compile Include="SamplerState.cs" />
+    <Compile Include="SetDataOptions.cs" />
     <Compile Include="ShaderStage.cs" />
+    <Compile Include="SharedResourcePool.cs" />
+    <Compile Include="SpriteBatch.cs" />
+    <Compile Include="SpriteBatch.SpritePixelShader.cs">
+      <DependentUpon>SpriteBatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SpriteBatch.SpriteVertexShader.cs">
+      <DependentUpon>SpriteBatch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SpriteEffects.cs" />
+    <Compile Include="SpriteSortMode.cs" />
     <Compile Include="State.cs" />
     <Compile Include="StencilOperation.cs" />
     <Compile Include="SurfaceFormat.cs" />

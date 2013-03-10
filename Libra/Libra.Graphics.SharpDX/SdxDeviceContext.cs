@@ -234,7 +234,7 @@ namespace Libra.Graphics.SharpDX
             else
             {
                 // Map
-                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, D3D11MapMode.WriteDiscard, D3D11MapFlags.None);
+                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, D3D11MapMode.Write, D3D11MapFlags.None);
                 try
                 {
                     SDXUtilities.CopyMemory(dataBox.DataPointer, sourcePointer, sizeInBytes);
@@ -245,6 +245,71 @@ namespace Libra.Graphics.SharpDX
                     D3D11DeviceContext.UnmapSubresource(d3d11Resource, 0);
                 }
             }
+        }
+
+        public override void SetData<T>(Resource resource, T[] data, int sourceIndex, int elementCount,
+            int destinationIndex, SetDataOptions options = SetDataOptions.None)
+        {
+            if (resource.Usage != ResourceUsage.Dynamic && resource.Usage != ResourceUsage.Staging)
+                throw new InvalidOperationException("Resource not writable.");
+
+            if (options == SetDataOptions.Discard && resource.Usage != ResourceUsage.Dynamic)
+                throw new InvalidOperationException("Resource.Usage must be dynamic for discard option.");
+
+            if ((options == SetDataOptions.Discard || options == SetDataOptions.NoOverwrite) &&
+                resource is ConstantBuffer)
+                throw new InvalidOperationException("Resource must be not a constant buffer for discard/no overwite option.");
+
+            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            try
+            {
+                var dataPointer = gcHandle.AddrOfPinnedObject();
+                var sizeOfT = SdxUtilities.SizeOf<T>();
+
+                unsafe
+                {
+                    var sourcePointer = (IntPtr) ((byte*) dataPointer + sourceIndex * sizeOfT);
+                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+
+                    var d3d11Resource = GetD3D11Resource(resource);
+                    var d3d11MapMode = (D3D11MapMode) options;
+
+                    // メモ
+                    //
+                    // D3D11MapFlags.DoNotWait は、Discard と NoOverwite では使えない。
+                    // D3D11MapFlags 参照のこと。
+
+                    var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, d3d11MapMode, D3D11MapFlags.None);
+                    var destinationPtr = (IntPtr) ((byte*) dataBox.DataPointer + destinationIndex * sizeOfT);
+
+                    try
+                    {
+                        SDXUtilities.CopyMemory(destinationPtr, sourcePointer, sizeInBytes);
+                    }
+                    finally
+                    {
+                        // Unmap
+                        D3D11DeviceContext.UnmapSubresource(d3d11Resource, 0);
+                    }
+                }
+            }
+            finally
+            {
+                gcHandle.Free();
+            }
+        }
+
+        protected override IntPtr Map(Resource resource, int subresource, DeviceContext.MapMode mapMode)
+        {
+            var d3d11Resource = GetD3D11Resource(resource);
+            var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, (D3D11MapMode) mapMode, D3D11MapFlags.None);
+            return dataBox.DataPointer;
+        }
+
+        protected override void Unmap(Resource resource, int subresource)
+        {
+            var d3d11Resource = GetD3D11Resource(resource);
+            D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
         }
 
         #region IDisposable

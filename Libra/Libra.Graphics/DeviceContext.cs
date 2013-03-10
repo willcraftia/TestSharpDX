@@ -77,6 +77,27 @@ namespace Libra.Graphics
 
         public abstract void SetData<T>(Resource resource, T[] data, int startIndex, int elementCount) where T : struct;
 
+        public abstract void SetData<T>(Resource resource, T[] data, int sourceIndex, int elementCount,
+            int destinationIndex, SetDataOptions options = SetDataOptions.None) where T : struct;
+
+        // メモ
+        //
+        // 事前に配列を用意して設定する場合はポインタ不要だが、
+        // バッファへ順次書き込むロジックを組む場合にはポインタが必要（必須ではないが便利であり素直）。
+
+        internal protected enum MapMode
+        {
+            Read = 1,
+            Write = 2,
+            ReadWrite = 3,
+            WriteDiscard = 4,
+            WriteNoOverwrite = 5,
+        }
+
+        internal protected abstract IntPtr Map(Resource resource, int subresource, MapMode mapMode);
+
+        internal protected abstract void Unmap(Resource resource, int subresource);
+
         protected virtual void OnDisposing(object sender, EventArgs e)
         {
             if (Disposing != null)
