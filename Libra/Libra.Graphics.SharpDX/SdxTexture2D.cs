@@ -20,6 +20,11 @@ namespace Libra.Graphics.SharpDX
 {
     public class SdxTexture2D : Texture2D
     {
+        // TODO
+        //
+        // 以下のメモは何か勘違いしている。
+        // D3DX11_IMAGE_LOAD_INFO に画像形式指定などない。
+        //
         // メモ
         //
         // ・ストリームからの生成では ResourceUsage 決定を D3D11Resource.FromStream に委任
