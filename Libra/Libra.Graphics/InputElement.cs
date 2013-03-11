@@ -8,6 +8,10 @@ namespace Libra.Graphics
 {
     public struct InputElement : IEquatable<InputElement>
     {
+        // D3D では uint で 0xffffffff。
+        // int の -1 は、uint へのキャストで 0xffffffff となる。
+        public const int AppendAlignedElement = -1;
+
         public string SemanticName;
 
         public int SemanticIndex;
@@ -23,7 +27,8 @@ namespace Libra.Graphics
         public int InstanceDataStepRate;
 
         public InputElement(string semanticName, int semanticIndex, InputElementFormat format,
-            int inputSlot, int alignedByteOffset, bool perInstance = false, int instanceDataStepRate = 0)
+            int inputSlot = 0, int alignedByteOffset = AppendAlignedElement,
+            bool perInstance = false, int instanceDataStepRate = 0)
         {
             SemanticName = semanticName;
             SemanticIndex = semanticIndex;
