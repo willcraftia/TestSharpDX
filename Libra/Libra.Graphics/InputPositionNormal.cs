@@ -11,12 +11,22 @@ namespace Libra.Graphics
     [StructLayout(LayoutKind.Sequential)]
     public struct InputPositionNormal : IInputType, IEquatable<InputPositionNormal>
     {
-        static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
+        public static readonly int SizeInBytes;
+
+        static ReadOnlyCollection<InputElement> InputElements = new ReadOnlyCollection<InputElement>(
             new [] { InputElement.SVPosition, InputElement.Normal });
 
         public Vector3 Position;
 
         public Vector3 Normal;
+
+        static InputPositionNormal()
+        {
+            unsafe
+            {
+                SizeInBytes = sizeof(InputPositionNormal);
+            }
+        }
 
         public InputPositionNormal(Vector3 position, Vector3 normal)
         {
@@ -24,9 +34,9 @@ namespace Libra.Graphics
             Normal = normal;
         }
 
-        public ReadOnlyCollection<InputElement> InputElements
+        ReadOnlyCollection<InputElement> IInputType.InputElements
         {
-            get { return inputElements; }
+            get { return InputElements; }
         }
 
         #region Equatable

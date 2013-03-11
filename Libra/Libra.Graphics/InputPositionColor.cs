@@ -11,12 +11,22 @@ namespace Libra.Graphics
     [StructLayout(LayoutKind.Sequential)]
     public struct InputPositionColor : IInputType, IEquatable<InputPositionColor>
     {
-        static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
+        public static readonly int SizeInBytes;
+
+        static ReadOnlyCollection<InputElement> InputElements = new ReadOnlyCollection<InputElement>(
             new [] { InputElement.SVPosition, InputElement.Color });
 
         public Vector3 Position;
 
         public Color Color;
+
+        static InputPositionColor()
+        {
+            unsafe
+            {
+                SizeInBytes = sizeof(InputPositionColor);
+            }
+        }
 
         public InputPositionColor(Vector3 position, Color color)
         {
@@ -24,9 +34,9 @@ namespace Libra.Graphics
             Color = color;
         }
 
-        public ReadOnlyCollection<InputElement> InputElements
+        ReadOnlyCollection<InputElement> IInputType.InputElements
         {
-            get { return inputElements; }
+            get { return InputElements; }
         }
 
         #region Equatable

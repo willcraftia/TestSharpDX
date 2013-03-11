@@ -11,12 +11,22 @@ namespace Libra.Graphics
     [StructLayout(LayoutKind.Sequential)]
     public struct InputPositionTexture : IInputType, IEquatable<InputPositionTexture>
     {
-        static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
+        public static readonly int SizeInBytes;
+
+        static ReadOnlyCollection<InputElement> InputElements = new ReadOnlyCollection<InputElement>(
             new [] { InputElement.SVPosition, InputElement.TexCoord });
 
         public Vector3 Position;
 
         public Vector2 TexCoord;
+
+        static InputPositionTexture()
+        {
+            unsafe
+            {
+                SizeInBytes = sizeof(InputPositionTexture);
+            }
+        }
 
         public InputPositionTexture(Vector3 position, Vector2 texCoord)
         {
@@ -24,9 +34,9 @@ namespace Libra.Graphics
             TexCoord = texCoord;
         }
 
-        public ReadOnlyCollection<InputElement> InputElements
+        ReadOnlyCollection<InputElement> IInputType.InputElements
         {
-            get { return inputElements; }
+            get { return InputElements; }
         }
 
         #region Equatable
