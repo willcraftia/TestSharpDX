@@ -180,17 +180,11 @@ namespace Libra.Graphics.SharpDX
 
             var d3d11Resource = GetD3D11Resource(resource);
 
-            // Map
             var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, level, D3D11MapMode.Read, D3D11MapFlags.None);
-            try
-            {
-                SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
-            }
-            finally
-            {
-                // Unmap
-                D3D11DeviceContext.UnmapSubresource(d3d11Resource, level);
-            }
+
+            SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
+
+            D3D11DeviceContext.UnmapSubresource(d3d11Resource, level);
         }
 
         public override void SetData<T>(Resource resource, T[] data, int startIndex, int elementCount)
@@ -237,17 +231,17 @@ namespace Libra.Graphics.SharpDX
             }
             else
             {
-                // Map
-                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, D3D11MapMode.Write, D3D11MapFlags.None);
-                try
-                {
-                    SDXUtilities.CopyMemory(dataBox.DataPointer, sourcePointer, sizeInBytes);
-                }
-                finally
-                {
-                    // Unmap
-                    D3D11DeviceContext.UnmapSubresource(d3d11Resource, 0);
-                }
+                // TODO
+                //
+                // Dynamic だと D3D11MapMode.Write はエラーになる。
+                // 対応関係を MSDN から把握できないが、どうすべきか。
+                // ひとまず WriteDiscard とする。
+
+                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, D3D11MapMode.WriteDiscard, D3D11MapFlags.None);
+                
+                SDXUtilities.CopyMemory(dataBox.DataPointer, sourcePointer, sizeInBytes);
+                
+                D3D11DeviceContext.UnmapSubresource(d3d11Resource, 0);
             }
         }
 
