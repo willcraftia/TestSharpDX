@@ -33,6 +33,14 @@ namespace Libra.Graphics
 
         public abstract void Initialize(Stream stream);
 
+        public void Initialize(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            {
+                Initialize(stream);
+            }
+        }
+
         public abstract void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png);
 
         public void GetData<T>(DeviceContext context, int level, T[] data, int startIndex, int elementCount) where T : struct
