@@ -12,11 +12,7 @@ namespace Libra.Graphics
     public struct InputPositionNormal : IInputType, IEquatable<InputPositionNormal>
     {
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
-            new[]
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
-            });
+            new [] { InputElement.SVPosition, InputElement.Normal });
 
         public Vector3 Position;
 

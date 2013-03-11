@@ -12,11 +12,7 @@ namespace Libra.Graphics
     public struct InputPositionColor : IInputType, IEquatable<InputPositionColor>
     {
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
-            new[]
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
-            });
+            new [] { InputElement.SVPosition, InputElement.Color });
 
         public Vector3 Position;
 

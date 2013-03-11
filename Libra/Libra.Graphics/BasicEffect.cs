@@ -389,57 +389,21 @@ namespace Libra.Graphics
         static readonly InputElement[][] VertexShaderInputs =
         {
             // VSInput
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3)
-            },
+            new [] { InputElement.SVPosition },
             // VSInputVc
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
-            },
+            new [] { InputElement.SVPosition, InputElement.Color },
             // VSInputTx
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
-            },
+            new [] { InputElement.SVPosition, InputElement.TexCoord },
             // VSInputTxVc
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
-                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
-            },
+            new [] { InputElement.SVPosition, InputElement.TexCoord, InputElement.Color },
             // VSInputNm
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
-            },
+            new [] { InputElement.SVPosition, InputElement.Normal },
             // VSInputNmVc
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
-            },
+            new [] { InputElement.SVPosition, InputElement.Normal, InputElement.Color },
             // VSInputNmTx
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
-            },
+            new [] { InputElement.SVPosition, InputElement.Normal, InputElement.TexCoord },
             // VSInputNmTxVc
-            new []
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
-                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
-            },
+            new [] { InputElement.SVPosition, InputElement.Normal, InputElement.TexCoord, InputElement.Color },
         };
 
         static readonly VertexShaderDefinition[] VertexShaderDefinitions;

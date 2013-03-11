@@ -20,6 +20,14 @@ namespace Libra.Graphics
 
         public const string SemanticTexCoord = "TEXCOORD";
 
+        public static readonly InputElement SVPosition = new InputElement(SemanticSVPosition, InputElementFormat.Vector3);
+
+        public static readonly InputElement Normal = new InputElement(SemanticNormal, InputElementFormat.Vector3);
+
+        public static readonly InputElement Color = new InputElement(SemanticColor, InputElementFormat.Color);
+
+        public static readonly InputElement TexCoord = new InputElement(SemanticTexCoord, InputElementFormat.Vector2);
+
         public string SemanticName;
 
         public int SemanticIndex;

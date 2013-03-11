@@ -12,11 +12,7 @@ namespace Libra.Graphics
     public struct InputPositionTexture : IInputType, IEquatable<InputPositionTexture>
     {
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
-            new[]
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
-            });
+            new [] { InputElement.SVPosition, InputElement.TexCoord });
 
         public Vector3 Position;
 

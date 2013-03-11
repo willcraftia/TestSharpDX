@@ -14,12 +14,7 @@ namespace Libra.Graphics
         public static readonly int SizeInBytes;
 
         public static ReadOnlyCollection<InputElement> InputElements = new ReadOnlyCollection<InputElement>(
-            new[]
-            {
-                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
-                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
-                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
-            });
+            new [] { InputElement.SVPosition, InputElement.Color, InputElement.TexCoord });
 
         public Vector3 Position;
 
