@@ -26,6 +26,19 @@ namespace Libra.Graphics
 
         public int InstanceDataStepRate;
 
+        public InputElement(string semanticName, InputElementFormat format,
+            int inputSlot = 0, int alignedByteOffset = AppendAlignedElement,
+            bool perInstance = false, int instanceDataStepRate = 0)
+        {
+            SemanticName = semanticName;
+            SemanticIndex = 0;
+            Format = format;
+            InputSlot = inputSlot;
+            AlignedByteOffset = alignedByteOffset;
+            PerInstance = perInstance;
+            InstanceDataStepRate = instanceDataStepRate;
+        }
+
         public InputElement(string semanticName, int semanticIndex, InputElementFormat format,
             int inputSlot = 0, int alignedByteOffset = AppendAlignedElement,
             bool perInstance = false, int instanceDataStepRate = 0)
