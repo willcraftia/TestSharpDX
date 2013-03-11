@@ -167,6 +167,10 @@ namespace Libra.Graphics.SharpDX
             if (vertexBuffer != null)
                 return vertexBuffer.D3D11Buffer;
 
+            var texture2D = resource as SdxTexture2D;
+            if (texture2D != null)
+                return texture2D.D3D11Texture2D;
+
             throw new ArgumentException("Unknown resource specified: " + resource.GetType(), "resource");
         }
 
