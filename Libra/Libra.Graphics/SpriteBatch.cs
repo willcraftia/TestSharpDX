@@ -433,7 +433,7 @@ namespace Libra.Graphics
         {
             var destination = new RectangleF(destinationRectangle);
 
-            Draw(texture, destination, null, color, 0, Vector2.Zero, 0, 0);
+            Draw(texture, destination, null, color, 0, Vector2.Zero, 0, DestSizeInPixels);
         }
 
         public void Draw(
@@ -444,7 +444,7 @@ namespace Libra.Graphics
         {
             var destination = new RectangleF(destinationRectangle);
 
-            Draw(texture, destination, sourceRectangle, color, 0, Vector2.Zero, 0, 0);
+            Draw(texture, destination, sourceRectangle, color, 0, Vector2.Zero, 0, DestSizeInPixels);
         }
 
         public void Draw(
@@ -459,7 +459,7 @@ namespace Libra.Graphics
         {
             var destination = new RectangleF(destinationRectangle);
 
-            Draw(texture, destination, sourceRectangle, color, rotation, origin, depth, (int) effects);
+            Draw(texture, destination, sourceRectangle, color, rotation, origin, depth, ((int) effects) | DestSizeInPixels);
         }
 
         void Draw(
