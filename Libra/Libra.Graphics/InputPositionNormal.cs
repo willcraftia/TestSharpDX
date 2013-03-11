@@ -14,8 +14,8 @@ namespace Libra.Graphics
         static ReadOnlyCollection<InputElement> inputElements = new ReadOnlyCollection<InputElement>(
             new[]
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3),
-                new InputElement("NORMAL",      0, InputElementFormat.Vector3),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("NORMAL",      InputElementFormat.Vector3),
             });
 
         public Vector3 Position;

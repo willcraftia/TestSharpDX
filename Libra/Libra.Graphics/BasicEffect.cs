@@ -391,54 +391,54 @@ namespace Libra.Graphics
             // VSInput
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0, 0)
+                new InputElement("SV_Position", InputElementFormat.Vector3)
             },
             // VSInputVc
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("COLOR",       0, InputElementFormat.Color,   0, 12),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("COLOR",       InputElementFormat.Color),
             },
             // VSInputTx
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0, 12),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
             },
             // VSInputTxVc
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0, 12),
-                new InputElement("COLOR",       0, InputElementFormat.Color,   0, 20),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
+                new InputElement("COLOR",       InputElementFormat.Color),
             },
             // VSInputNm
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0, 12),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("NORMAL",      InputElementFormat.Vector3),
             },
             // VSInputNmVc
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0, 12),
-                new InputElement("COLOR",       0, InputElementFormat.Color,   0, 24),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("NORMAL",      InputElementFormat.Vector3),
+                new InputElement("COLOR",       InputElementFormat.Color),
             },
             // VSInputNmTx
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0, 12),
-                new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0, 24),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("NORMAL",      InputElementFormat.Vector3),
+                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
             },
             // VSInputNmTxVc
             new []
             {
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0,  0),
-                new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0, 12),
-                new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0, 24),
-                new InputElement("COLOR",       0, InputElementFormat.Color,   0, 32),
+                new InputElement("SV_Position", InputElementFormat.Vector3),
+                new InputElement("NORMAL",      InputElementFormat.Vector3),
+                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
+                new InputElement("COLOR",       InputElementFormat.Color),
             },
         };
 
