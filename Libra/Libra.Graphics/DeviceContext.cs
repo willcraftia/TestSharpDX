@@ -8,6 +8,19 @@ namespace Libra.Graphics
 {
     public abstract class DeviceContext : IDisposable
     {
+        #region MapMode
+
+        internal protected enum MapMode
+        {
+            Read                = 1,
+            Write               = 2,
+            ReadWrite           = 3,
+            WriteDiscard        = 4,
+            WriteNoOverwrite    = 5,
+        }
+
+        #endregion
+
         public event EventHandler Disposing;
 
         public abstract IDevice Device { get; }
@@ -84,15 +97,6 @@ namespace Libra.Graphics
         //
         // 事前に配列を用意して設定する場合はポインタ不要だが、
         // バッファへ順次書き込むロジックを組む場合にはポインタが必要（必須ではないが便利であり素直）。
-
-        internal protected enum MapMode
-        {
-            Read = 1,
-            Write = 2,
-            ReadWrite = 3,
-            WriteDiscard = 4,
-            WriteNoOverwrite = 5,
-        }
 
         internal protected abstract IntPtr Map(Resource resource, int subresource, MapMode mapMode);
 
