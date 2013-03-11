@@ -47,15 +47,16 @@ namespace Libra.Graphics
             {
                 var indices = new ushort[MaxBatchSize * IndicesPerSprite];
 
-                for (ushort i = 0; i < MaxBatchSize * VerticesPerSprite; )
+                int cursor = 0;
+                for (ushort i = 0; i < MaxBatchSize * VerticesPerSprite; i += VerticesPerSprite)
                 {
-                    indices[i++] = i;
-                    indices[i++] = (ushort) (i + 1);
-                    indices[i++] = (ushort) (i + 2);
+                    indices[cursor++] = i;
+                    indices[cursor++] = (ushort) (i + 1);
+                    indices[cursor++] = (ushort) (i + 2);
 
-                    indices[i++] = (ushort) (i + 1);
-                    indices[i++] = (ushort) (i + 3);
-                    indices[i++] = (ushort) (i + 2);
+                    indices[cursor++] = (ushort) (i + 1);
+                    indices[cursor++] = (ushort) (i + 3);
+                    indices[cursor++] = (ushort) (i + 2);
                 }
 
                 return indices;
@@ -537,11 +538,11 @@ namespace Libra.Graphics
             Matrix viewportTransform;
             GetViewportTransform(out viewportTransform);
 
-            Matrix finalTransform;
-            Matrix.Multiply(ref transformMatrix, ref viewportTransform, out finalTransform);
+            Matrix finalTransformMatrix;
+            Matrix.Multiply(ref transformMatrix, ref viewportTransform, out finalTransformMatrix);
 
             var constantBuffer = contextResoruces.ConstantBuffer;
-            constantBuffer.SetData(context, transformMatrix);
+            constantBuffer.SetData(context, finalTransformMatrix);
 
             context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);
 
@@ -648,25 +649,20 @@ namespace Libra.Graphics
                 // Map されたリソースへ直接書き込むと極端に低速になるとのこと。
                 // 要調査。
 
-                var mappedBuffer = context.Map(texture.Resource, 0, mapMode);
-                try
+                var mappedBuffer = context.Map(contextResoruces.VertexBuffer, 0, mapMode);
+                unsafe
                 {
-                    unsafe
+                    var vs = (InputPositionColorTexture*) mappedBuffer;
+                    var vertices = (InputPositionColorTexture*) mappedBuffer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
+
+                    for (int i = 0; i < batchSize; i++)
                     {
-                        var vertices = (InputPositionColorTexture*) mappedBuffer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
+                        RenderSprite(baseSpriteIndex + i, ref vertices, ref textureSize, ref inverseTextureSize);
 
-                        for (int i = 0; i < batchSize; i++)
-                        {
-                            RenderSprite(baseSpriteIndex + i, ref vertices, ref inverseTextureSize);
-
-                            vertices += VerticesPerSprite;
-                        }
+                        vertices += VerticesPerSprite;
                     }
                 }
-                finally
-                {
-                    context.Unmap(texture.Resource, 0);
-                }
+                context.Unmap(contextResoruces.VertexBuffer, 0);
 
                 int startIndexLocation = contextResoruces.VertexBufferPosition * IndicesPerSprite;
                 int indexCount = batchSize * IndicesPerSprite;
@@ -679,9 +675,38 @@ namespace Libra.Graphics
             }
         }
 
-        unsafe void RenderSprite(int spriteIndex, ref InputPositionColorTexture* vertices, ref Vector2 inverseTextureSize)
+        unsafe void RenderSprite(
+            int spriteIndex, ref InputPositionColorTexture* vertices, ref Vector2 textureSize, ref Vector2 inverseTextureSize)
         {
             var sprite = sprites[spriteIndex];
+
+            var source = sprite.Source;
+            var destination = sprite.Destination;
+            var origin = sprite.Origin;
+
+            if (source.Width == 0) source.Width = float.Epsilon;
+            if (source.Height == 0) source.Height = float.Epsilon;
+
+            origin.X /= source.Width;
+            origin.Y /= source.Height;
+
+            if ((sprite.Flags & SourceInTexels) != 0)
+            {
+                source.X *= inverseTextureSize.X;
+                source.Y *= inverseTextureSize.Y;
+                source.Width *= inverseTextureSize.X;
+                source.Height *= inverseTextureSize.Y;
+            }
+            else
+            {
+                origin *= inverseTextureSize;
+            }
+
+            if ((sprite.Flags & DestSizeInPixels) == 0)
+            {
+                destination.Width *= textureSize.X;
+                destination.Height *= textureSize.Y;
+            }
 
             Vector2 rotation;
             if (sprite.Rotation == 0)
@@ -695,25 +720,6 @@ namespace Libra.Graphics
                     X = (float) Math.Cos(sprite.Rotation),
                     Y = (float) Math.Sin(sprite.Rotation)
                 };
-            }
-
-            var source = sprite.Source;
-            var destination = sprite.Destination;
-            var origin = sprite.Origin;
-
-            if (source.Width == 0) source.Width = float.Epsilon;
-            if (source.Height == 0) source.Height = float.Epsilon;
-
-            if ((sprite.Flags & SourceInTexels) != 0)
-            {
-                source.X *= inverseTextureSize.X;
-                source.Y *= inverseTextureSize.Y;
-                source.Width *= inverseTextureSize.X;
-                source.Height *= inverseTextureSize.Y;
-            }
-            else
-            {
-                origin *= inverseTextureSize;
             }
 
             // 本来の SpritEffects のビット値を取得。
