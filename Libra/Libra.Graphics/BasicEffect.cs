@@ -391,54 +391,54 @@ namespace Libra.Graphics
             // VSInput
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3)
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3)
             },
             // VSInputVc
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("COLOR",       InputElementFormat.Color),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
             },
             // VSInputTx
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
             },
             // VSInputTxVc
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
-                new InputElement("COLOR",       InputElementFormat.Color),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
+                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
             },
             // VSInputNm
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("NORMAL",      InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
             },
             // VSInputNmVc
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("NORMAL",      InputElementFormat.Vector3),
-                new InputElement("COLOR",       InputElementFormat.Color),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
             },
             // VSInputNmTx
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("NORMAL",      InputElementFormat.Vector3),
-                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
             },
             // VSInputNmTxVc
             new []
             {
-                new InputElement("SV_Position", InputElementFormat.Vector3),
-                new InputElement("NORMAL",      InputElementFormat.Vector3),
-                new InputElement("TEXCOORD",    InputElementFormat.Vector2),
-                new InputElement("COLOR",       InputElementFormat.Color),
+                new InputElement(InputElement.SemanticSVPosition,   InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticNormal,       InputElementFormat.Vector3),
+                new InputElement(InputElement.SemanticTexCoord,     InputElementFormat.Vector2),
+                new InputElement(InputElement.SemanticColor,        InputElementFormat.Color),
             },
         };
 

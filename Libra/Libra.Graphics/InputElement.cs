@@ -12,6 +12,14 @@ namespace Libra.Graphics
         // int の -1 は、uint へのキャストで 0xffffffff となる。
         public const int AppendAlignedElement = -1;
 
+        public const string SemanticSVPosition = "SV_Position";
+
+        public const string SemanticNormal = "NORMAL";
+
+        public const string SemanticColor = "COLOR";
+
+        public const string SemanticTexCoord = "TEXCOORD";
+
         public string SemanticName;
 
         public int SemanticIndex;
