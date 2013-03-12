@@ -8,8 +8,8 @@
     <ProjectGuid>{33E88FC2-87F2-41FE-8977-55DF51119156}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Libra.Compiler</RootNamespace>
-    <AssemblyName>Libra.Compiler</AssemblyName>
+    <RootNamespace>Libra.Graphics.Compiler</RootNamespace>
+    <AssemblyName>Libra.Graphics.Compiler</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

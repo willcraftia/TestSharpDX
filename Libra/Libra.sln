@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra", "Libra\Libra.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Graphics", "Libra.Graphics\Libra.Graphics.csproj", "{F42E063A-DBE6-430D-BC88-3A88F33754FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Compiler", "Libra.Compiler\Libra.Compiler.csproj", "{33E88FC2-87F2-41FE-8977-55DF51119156}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Games", "Libra.Games\Libra.Games.csproj", "{30A200CE-BC5F-4450-BDF2-EF8A30322464}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.MiniCube", "Libra.Samples.MiniCube\Libra.Samples.MiniCube.csproj", "{BC120E7F-186F-4690-AABF-664AF06926E4}"
@@ -26,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Input.Forms", "Libra.Input.Forms\Libra.Input.Forms.csproj", "{F9E7007E-C9BD-4C95-B9D8-8E50EDF6EAE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.BasicSprites", "Libra.Samples.BasicSprites\Libra.Samples.BasicSprites.csproj", "{91CB7A8C-08C2-402D-BADC-5851DE99B5FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Graphics.Compiler", "Libra.Graphics.Compiler\Libra.Graphics.Compiler.csproj", "{33E88FC2-87F2-41FE-8977-55DF51119156}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,16 +57,6 @@ Global
 		{F42E063A-DBE6-430D-BC88-3A88F33754FD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F42E063A-DBE6-430D-BC88-3A88F33754FD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F42E063A-DBE6-430D-BC88-3A88F33754FD}.Release|x86.ActiveCfg = Release|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|x86.ActiveCfg = Release|Any CPU
 		{30A200CE-BC5F-4450-BDF2-EF8A30322464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30A200CE-BC5F-4450-BDF2-EF8A30322464}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30A200CE-BC5F-4450-BDF2-EF8A30322464}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -167,6 +157,16 @@ Global
 		{91CB7A8C-08C2-402D-BADC-5851DE99B5FD}.Release|Mixed Platforms.Build.0 = Release|x86
 		{91CB7A8C-08C2-402D-BADC-5851DE99B5FD}.Release|x86.ActiveCfg = Release|x86
 		{91CB7A8C-08C2-402D-BADC-5851DE99B5FD}.Release|x86.Build.0 = Release|x86
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{33E88FC2-87F2-41FE-8977-55DF51119156}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

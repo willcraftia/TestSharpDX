@@ -4,7 +4,7 @@ using System;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
-using Libra.Compiler;
+using Libra.Graphics.Compiler;
 
 using SDXWRenderForm = SharpDX.Windows.RenderForm;
 

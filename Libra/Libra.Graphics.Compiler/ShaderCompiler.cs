@@ -14,7 +14,7 @@ using D3DCShaderSignature = SharpDX.D3DCompiler.ShaderSignature;
 
 #endregion
 
-namespace Libra.Compiler
+namespace Libra.Graphics.Compiler
 {
     public sealed class ShaderCompiler : IDisposable
     {

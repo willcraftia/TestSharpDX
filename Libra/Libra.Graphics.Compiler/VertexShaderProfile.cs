@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace Libra.Compiler
+namespace Libra.Graphics.Compiler
 {
     public enum VertexShaderProfile
     {

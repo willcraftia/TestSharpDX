@@ -8,8 +8,8 @@
     <ProjectGuid>{91CB7A8C-08C2-402D-BADC-5851DE99B5FD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Libra.Samples.SpriteBatch</RootNamespace>
-    <AssemblyName>Libra.Samples.SpriteBatch</AssemblyName>
+    <RootNamespace>Libra.Samples.BasicSprites</RootNamespace>
+    <AssemblyName>Libra.Samples.BasicSprites</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
