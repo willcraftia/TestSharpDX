@@ -18,47 +18,47 @@ namespace Libra.Content.Compiler
     public static class BitmapUtils
     {
         // Copies a rectangular area from one bitmap to another.
-        public static void CopyRect(Bitmap source, DrawingRectangle sourceRegion, Bitmap output, DrawingRectangle outputRegion)
-        {
-            if (sourceRegion.Width != outputRegion.Width ||
-                sourceRegion.Height != outputRegion.Height)
-            {
-                throw new ArgumentException();
-            }
+        //public static void CopyRect(Bitmap source, DrawingRectangle sourceRegion, Bitmap output, DrawingRectangle outputRegion)
+        //{
+        //    if (sourceRegion.Width != outputRegion.Width ||
+        //        sourceRegion.Height != outputRegion.Height)
+        //    {
+        //        throw new ArgumentException();
+        //    }
 
-            using (var sourceData = new PixelAccessor(source, ImageLockMode.ReadOnly, sourceRegion))
-            using (var outputData = new PixelAccessor(output, ImageLockMode.WriteOnly, outputRegion))
-            {
-                for (int y = 0; y < sourceRegion.Height; y++)
-                {
-                    for (int x = 0; x < sourceRegion.Width; x++)
-                    {
-                        outputData[x, y] = sourceData[x, y];
-                    }
-                }
-            }
-        }
+        //    using (var sourceData = new PixelAccessor(source, ImageLockMode.ReadOnly, sourceRegion))
+        //    using (var outputData = new PixelAccessor(output, ImageLockMode.WriteOnly, outputRegion))
+        //    {
+        //        for (int y = 0; y < sourceRegion.Height; y++)
+        //        {
+        //            for (int x = 0; x < sourceRegion.Width; x++)
+        //            {
+        //                outputData[x, y] = sourceData[x, y];
+        //            }
+        //        }
+        //    }
+        //}
 
 
         // Checks whether an area of a bitmap contains entirely the specified alpha value.
-        public static bool IsAlphaEntirely(byte expectedAlpha, Bitmap bitmap, DrawingRectangle? region = null)
-        {
-            using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadOnly, region))
-            {
-                for (int y = 0; y < bitmapData.Region.Height; y++)
-                {
-                    for (int x = 0; x < bitmapData.Region.Width; x++)
-                    {
-                        byte alpha = bitmapData[x, y].A;
+        //public static bool IsAlphaEntirely(byte expectedAlpha, Bitmap bitmap, DrawingRectangle? region = null)
+        //{
+        //    using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadOnly, region))
+        //    {
+        //        for (int y = 0; y < bitmapData.Region.Height; y++)
+        //        {
+        //            for (int x = 0; x < bitmapData.Region.Width; x++)
+        //            {
+        //                byte alpha = bitmapData[x, y].A;
 
-                        if (alpha != expectedAlpha)
-                            return false;
-                    }
-                }
-            }
+        //                if (alpha != expectedAlpha)
+        //                    return false;
+        //            }
+        //        }
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
 
         // Checks whether a bitmap contains entirely the specified RGB value.
@@ -90,47 +90,47 @@ namespace Libra.Content.Compiler
 
 
         // Converts greyscale luminosity to alpha data.
-        public static void ConvertGreyToAlpha(Bitmap bitmap)
-        {
-            using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadWrite))
-            {
-                for (int y = 0; y < bitmap.Height; y++)
-                {
-                    for (int x = 0; x < bitmap.Width; x++)
-                    {
-                        DrawingColor color = bitmapData[x, y];
+        //public static void ConvertGreyToAlpha(Bitmap bitmap)
+        //{
+        //    using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadWrite))
+        //    {
+        //        for (int y = 0; y < bitmap.Height; y++)
+        //        {
+        //            for (int x = 0; x < bitmap.Width; x++)
+        //            {
+        //                DrawingColor color = bitmapData[x, y];
 
-                        // Average the red, green and blue values to compute brightness.
-                        int alpha = (color.R + color.G + color.B) / 3;
+        //                // Average the red, green and blue values to compute brightness.
+        //                int alpha = (color.R + color.G + color.B) / 3;
 
-                        bitmapData[x, y] = DrawingColor.FromArgb(alpha, 255, 255, 255);
-                    }
-                }
-            }
-        }
+        //                bitmapData[x, y] = DrawingColor.FromArgb(alpha, 255, 255, 255);
+        //            }
+        //        }
+        //    }
+        //}
 
 
         // Converts a bitmap to premultiplied alpha format.
-        public static void PremultiplyAlpha(Bitmap bitmap)
-        {
-            using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadWrite))
-            {
-                for (int y = 0; y < bitmap.Height; y++)
-                {
-                    for (int x = 0; x < bitmap.Width; x++)
-                    {
-                        var color = bitmapData[x, y];
+        //public static void PremultiplyAlpha(Bitmap bitmap)
+        //{
+        //    using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadWrite))
+        //    {
+        //        for (int y = 0; y < bitmap.Height; y++)
+        //        {
+        //            for (int x = 0; x < bitmap.Width; x++)
+        //            {
+        //                var color = bitmapData[x, y];
 
-                        int a = color.A;
-                        int r = color.R * a / 255;
-                        int g = color.G * a / 255;
-                        int b = color.B * a / 255;
+        //                int a = color.A;
+        //                int r = color.R * a / 255;
+        //                int g = color.G * a / 255;
+        //                int b = color.B * a / 255;
 
-                        bitmapData[x, y] = DrawingColor.FromArgb(a, r, g, b);
-                    }
-                }
-            }
-        }
+        //                bitmapData[x, y] = DrawingColor.FromArgb(a, r, g, b);
+        //            }
+        //        }
+        //    }
+        //}
 
 
         // To avoid filtering artifacts when scaling or rotating fonts that do not use premultiplied alpha,
@@ -174,12 +174,12 @@ namespace Libra.Content.Compiler
 
 
         // Converts a bitmap to the specified pixel format.
-        public static Bitmap ChangePixelFormat(Bitmap bitmap, PixelFormat format)
-        {
-            var bounds = new DrawingRectangle(0, 0, bitmap.Width, bitmap.Height);
+        //public static Bitmap ChangePixelFormat(Bitmap bitmap, PixelFormat format)
+        //{
+        //    var bounds = new DrawingRectangle(0, 0, bitmap.Width, bitmap.Height);
 
-            return bitmap.Clone(bounds, format);
-        }
+        //    return bitmap.Clone(bounds, format);
+        //}
 
 
         // Helper for locking a bitmap and efficiently reading or writing its pixels.

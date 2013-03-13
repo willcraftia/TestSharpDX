@@ -12,8 +12,6 @@ namespace Libra.Content.Compiler
     {
         public char Character;
 
-        public DrawingBitmap Bitmap;
-
         public Rectangle Cropping;
 
         // TODO

@@ -42,18 +42,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitmapContent.cs" />
     <Compile Include="BitmapUtils.cs" />
+    <Compile Include="ColorExtension.cs" />
     <Compile Include="ContentProcessor.cs" />
     <Compile Include="ContentTypeWriter.cs" />
     <Compile Include="ContentWriter.cs" />
     <Compile Include="IContentTypeWriter.cs" />
     <Compile Include="FontDescriptionProcessor.cs" />
+    <Compile Include="MipmapChain.cs" />
+    <Compile Include="MipmapChainCollection.cs" />
+    <Compile Include="PixelBitmapContent.cs" />
     <Compile Include="RectangleExtension.cs" />
     <Compile Include="SpriteFontGlyph.cs" />
     <Compile Include="IContentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpriteFontContent.cs" />
     <Compile Include="SpriteFontWriter.cs" />
+    <Compile Include="Texture2DContent.cs" />
+    <Compile Include="TextureContent.cs" />
     <Compile Include="TextureProcessorOutputFormat.cs" />
   </ItemGroup>
   <ItemGroup>
