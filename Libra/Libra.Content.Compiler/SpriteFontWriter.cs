@@ -19,16 +19,16 @@ namespace Libra.Content.Compiler
 
         protected override void Write(ContentWriter writer, SpriteFontContent value)
         {
-            WriteBitmap(writer, value.Bitmap, value.PremultiplyAlpha);
+            //WriteBitmap(writer, value.Bitmap, value.PremultiplyAlpha);
 
-            WriteGlyphs(writer, value.Glyphs);
+            //WriteGlyphs(writer, value.Glyphs);
 
-            writer.Write(value.LineSpacing);
+            //writer.Write(value.LineSpacing);
 
-            if (value.DefaultCharacter.HasValue)
-            {
-                writer.Write(value.DefaultCharacter.Value);
-            }
+            //if (value.DefaultCharacter.HasValue)
+            //{
+            //    writer.Write(value.DefaultCharacter.Value);
+            //}
         }
 
         static void WriteGlyphs(ContentWriter writer, IList<SpriteFontGlyph> glyphs)
