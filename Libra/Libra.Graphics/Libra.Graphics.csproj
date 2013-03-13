@@ -153,6 +153,7 @@
     <Compile Include="DisplayModeScanlineOrder.cs" />
     <Compile Include="EnumerateDisplayModes.cs" />
     <Compile Include="FillMode.cs" />
+    <Compile Include="FormatHelper.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="IDevice.cs" />
     <Compile Include="IEffect.cs" />
