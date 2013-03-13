@@ -28,10 +28,16 @@ namespace Libra.Graphics
         // DXGI_FORMAT_B5G5R5A1_UNORM
         Bgra5551        = 86,
 
-        // SharpDX 未定義。
-        // DXGI_FORMAT_B4G4R4A4_UNORM は D11.1 で破棄のため、
-        // D11.1 ビルド用に自動生成したコードから除外されていると推測される。
-        //Bgra4444 = 3,
+        // 注意
+        //
+        // SharpDX の DXGI Format で未定義。
+        // MSDN によると、DXGI_FORMAT_B4G4R4A4_UNORM は D3D 11.1 から正式に対応されるとあり、
+        // SharpDX では D3D 11 対応の自動生成コードから除外していると推測される。
+        // このため、SharpDX の DXGI Format へのキャストでは、
+        // 対応する項目名が不明となる。
+        // ただし、数値としてキャストは成功するため、
+        // そのまま D3D へ渡して動作させる事は可能であると思われる。
+        Bgra4444        = 115,
 
         // DXGI_FORMAT_BC1_UNORM
         // D3D9 における Dxt1
