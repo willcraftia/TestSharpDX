@@ -5,6 +5,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
+using DrawingColor = System.Drawing.Color;
+using DrawingRectangle = System.Drawing.Rectangle;
+
 #endregion
 
 // DirectX Tool Kit: MakeSpriteFont.BitmapUtils より移植。
@@ -15,7 +18,7 @@ namespace Libra.Content.Compiler
     public static class BitmapUtils
     {
         // Copies a rectangular area from one bitmap to another.
-        public static void CopyRect(Bitmap source, Rectangle sourceRegion, Bitmap output, Rectangle outputRegion)
+        public static void CopyRect(Bitmap source, DrawingRectangle sourceRegion, Bitmap output, DrawingRectangle outputRegion)
         {
             if (sourceRegion.Width != outputRegion.Width ||
                 sourceRegion.Height != outputRegion.Height)
@@ -38,7 +41,7 @@ namespace Libra.Content.Compiler
 
 
         // Checks whether an area of a bitmap contains entirely the specified alpha value.
-        public static bool IsAlphaEntirely(byte expectedAlpha, Bitmap bitmap, Rectangle? region = null)
+        public static bool IsAlphaEntirely(byte expectedAlpha, Bitmap bitmap, DrawingRectangle? region = null)
         {
             using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadOnly, region))
             {
@@ -67,7 +70,7 @@ namespace Libra.Content.Compiler
                 {
                     for (int x = 0; x < bitmap.Width; x++)
                     {
-                        Color color = bitmapData[x, y];
+                        var color = bitmapData[x, y];
 
                         if (color.A == 0)
                             continue;
@@ -95,12 +98,12 @@ namespace Libra.Content.Compiler
                 {
                     for (int x = 0; x < bitmap.Width; x++)
                     {
-                        Color color = bitmapData[x, y];
+                        DrawingColor color = bitmapData[x, y];
 
                         // Average the red, green and blue values to compute brightness.
                         int alpha = (color.R + color.G + color.B) / 3;
 
-                        bitmapData[x, y] = Color.FromArgb(alpha, 255, 255, 255);
+                        bitmapData[x, y] = DrawingColor.FromArgb(alpha, 255, 255, 255);
                     }
                 }
             }
@@ -116,14 +119,14 @@ namespace Libra.Content.Compiler
                 {
                     for (int x = 0; x < bitmap.Width; x++)
                     {
-                        Color color = bitmapData[x, y];
+                        var color = bitmapData[x, y];
 
                         int a = color.A;
                         int r = color.R * a / 255;
                         int g = color.G * a / 255;
                         int b = color.B * a / 255;
 
-                        bitmapData[x, y] = Color.FromArgb(a, r, g, b);
+                        bitmapData[x, y] = DrawingColor.FromArgb(a, r, g, b);
                     }
                 }
             }
@@ -134,7 +137,7 @@ namespace Libra.Content.Compiler
         // make sure the one pixel border around each glyph contains the same RGB values as the edge of the
         // glyph itself, but with zero alpha. This processing is an elaborate no-op when using premultiplied
         // alpha, because the premultiply conversion will change the RGB of all such zero alpha pixels to black.
-        public static void PadBorderPixels(Bitmap bitmap, Rectangle region)
+        public static void PadBorderPixels(Bitmap bitmap, DrawingRectangle region)
         {
             using (var bitmapData = new PixelAccessor(bitmap, ImageLockMode.ReadWrite))
             {
@@ -164,16 +167,16 @@ namespace Libra.Content.Compiler
         // Copies a single pixel within a bitmap, preserving RGB but forcing alpha to zero.
         static void CopyBorderPixel(PixelAccessor bitmapData, int sourceX, int sourceY, int destX, int destY)
         {
-            Color color = bitmapData[sourceX, sourceY];
+            var color = bitmapData[sourceX, sourceY];
 
-            bitmapData[destX, destY] = Color.FromArgb(0, color);
+            bitmapData[destX, destY] = DrawingColor.FromArgb(0, color);
         }
 
 
         // Converts a bitmap to the specified pixel format.
         public static Bitmap ChangePixelFormat(Bitmap bitmap, PixelFormat format)
         {
-            Rectangle bounds = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            var bounds = new DrawingRectangle(0, 0, bitmap.Width, bitmap.Height);
 
             return bitmap.Clone(bounds, format);
         }
@@ -183,11 +186,11 @@ namespace Libra.Content.Compiler
         public sealed class PixelAccessor : IDisposable
         {
             // Constructor locks the bitmap.
-            public PixelAccessor(Bitmap bitmap, ImageLockMode mode, Rectangle? region = null)
+            public PixelAccessor(Bitmap bitmap, ImageLockMode mode, DrawingRectangle? region = null)
             {
                 this.bitmap = bitmap;
 
-                this.Region = region.GetValueOrDefault(new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+                Region = region.GetValueOrDefault(new DrawingRectangle(0, 0, bitmap.Width, bitmap.Height));
 
                 this.data = bitmap.LockBits(Region, mode, PixelFormat.Format32bppArgb);
             }
@@ -206,15 +209,15 @@ namespace Libra.Content.Compiler
 
 
             // Query what part of the bitmap is locked.
-            public Rectangle Region { get; private set; }
+            public DrawingRectangle Region { get; private set; }
 
 
             // Get or set a pixel value.
-            public Color this[int x, int y]
+            public DrawingColor this[int x, int y]
             {
                 get
                 {
-                    return Color.FromArgb(Marshal.ReadInt32(PixelAddress(x, y)));
+                    return DrawingColor.FromArgb(Marshal.ReadInt32(PixelAddress(x, y)));
                 }
 
                 set

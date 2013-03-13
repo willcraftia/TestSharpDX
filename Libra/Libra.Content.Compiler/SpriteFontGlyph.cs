@@ -1,11 +1,10 @@
 ﻿#region Using
 
 using System;
-using System.Drawing;
+
+using DrawingBitmap = System.Drawing.Bitmap;
 
 #endregion
-
-// DirectX Tool Kit より幾つかのクラスを移植して合成。
 
 namespace Libra.Content.Compiler
 {
@@ -13,21 +12,19 @@ namespace Libra.Content.Compiler
     {
         public char Character;
 
-        public Bitmap Bitmap;
+        public DrawingBitmap Bitmap;
 
-        public Rectangle Subrect;
+        public Rectangle Cropping;
+
+        // TODO
+        //
+        // 以下は、恐らく、カーニング情報だと思われるが、
+        // XNA の仕組みとは異なる可能性が高い。
 
         public float XOffset;
 
         public float YOffset;
 
         public float XAdvance;
-
-        public SpriteFontGlyph(char character, Bitmap bitmap, Rectangle? subrect = null)
-        {
-            Character = character;
-            Bitmap = bitmap;
-            Subrect = subrect.GetValueOrDefault(new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-        }
     }
 }

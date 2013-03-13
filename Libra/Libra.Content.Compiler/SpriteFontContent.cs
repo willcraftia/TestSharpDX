@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Libra.Graphics;
 
 #endregion
 
@@ -17,6 +18,8 @@ namespace Libra.Content.Compiler
         public char? DefaultCharacter { get; set; }
 
         public Bitmap Bitmap { get; set; }
+
+        public SurfaceFormat SurfaceFormat { get; set; }
 
         public bool PremultiplyAlpha { get; set; }
 

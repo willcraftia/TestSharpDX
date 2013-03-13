@@ -39,10 +39,10 @@ namespace Libra.Content.Compiler
             {
                 writer.Write((int) glyph.Character);
 
-                writer.Write(glyph.Subrect.Left);
-                writer.Write(glyph.Subrect.Top);
-                writer.Write(glyph.Subrect.Right);
-                writer.Write(glyph.Subrect.Bottom);
+                writer.Write(glyph.Cropping.Left);
+                writer.Write(glyph.Cropping.Top);
+                writer.Write(glyph.Cropping.Right);
+                writer.Write(glyph.Cropping.Bottom);
 
                 writer.Write(glyph.XOffset);
                 writer.Write(glyph.YOffset);
@@ -91,7 +91,7 @@ namespace Libra.Content.Compiler
                 {
                     for (int x = 0; x < bitmap.Width; x++)
                     {
-                        Color color = bitmapData[x, y];
+                        var color = bitmapData[x, y];
 
                         writer.Write(color.R);
                         writer.Write(color.G);
@@ -117,7 +117,7 @@ namespace Libra.Content.Compiler
                 {
                     for (int x = 0; x < bitmap.Width; x++)
                     {
-                        Color color = bitmapData[x, y];
+                        var color = bitmapData[x, y];
 
                         int r = color.R >> 4;
                         int g = color.G >> 4;

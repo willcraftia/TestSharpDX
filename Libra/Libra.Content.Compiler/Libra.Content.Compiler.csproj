@@ -48,6 +48,7 @@
     <Compile Include="ContentWriter.cs" />
     <Compile Include="IContentTypeWriter.cs" />
     <Compile Include="FontDescriptionProcessor.cs" />
+    <Compile Include="RectangleExtension.cs" />
     <Compile Include="SpriteFontGlyph.cs" />
     <Compile Include="IContentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +60,14 @@
     <ProjectReference Include="..\Libra.Content.Serialization\Libra.Content.Serialization.csproj">
       <Project>{8358BC02-FE12-44B5-8BBC-6328802868E0}</Project>
       <Name>Libra.Content.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Graphics\Libra.Graphics.csproj">
+      <Project>{F42E063A-DBE6-430D-BC88-3A88F33754FD}</Project>
+      <Name>Libra.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra\Libra.csproj">
+      <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>
+      <Name>Libra</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

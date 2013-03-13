@@ -11,6 +11,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Libra.Content.Serialization;
 
+using DrawingColor = System.Drawing.Color;
+using DrawingGraphics = System.Drawing.Graphics;
+using DrawingPoint = System.Drawing.Point;
+using DrawingRectangle = System.Drawing.Rectangle;
+
 #endregion
 
 // ロジックは DirectX Tool Kit: MakeSpriteFont.TrueTypeImporter を基本に移植。
@@ -71,10 +76,10 @@ namespace Libra.Content.Compiler
             var output = new SpriteFontContent();
 
             using (var font = CreateFont(input))
-            using (var brush = new SolidBrush(Color.White))
+            using (var brush = new SolidBrush(DrawingColor.White))
             using (var stringFormat = new StringFormat(StringFormatFlags.NoFontFallback))
             using (var bitmap = new Bitmap(MaxGlyphSize, MaxGlyphSize, PixelFormat.Format32bppArgb))
-            using (var graphics = Graphics.FromImage(bitmap))
+            using (var graphics = DrawingGraphics.FromImage(bitmap))
             {
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -95,11 +100,7 @@ namespace Libra.Content.Compiler
                 CropGlyph(glyph);
             }
 
-            output.Bitmap = ArrangeGlyphs(output.Glyphs.ToArray());
-
-            // TODO
-            // DXTK のようなオプションによる行間隔調整や文字幅調整は必要か？
-            // 当面、不要として実装を進める。
+            output.Bitmap = ArrangeGlyphs(output.Glyphs);
 
             if (PremultiplyAlpha)
             {
@@ -119,17 +120,20 @@ namespace Libra.Content.Compiler
 
         Font CreateFont(FontDescription description)
         {
-            var font = new Font(description.FontName, PointsToPixels(description.Size), (FontStyle) description.Style, GraphicsUnit.Pixel);
+            var fontName = description.FontName;
 
-            if (description.FontName.Equals(font.FontFamily.GetName(CultureInfo.CurrentCulture.LCID), StringComparison.OrdinalIgnoreCase) ||
-                description.FontName.Equals(font.FontFamily.GetName(CultureInfo.InvariantCulture.LCID), StringComparison.OrdinalIgnoreCase))
+            var font = new Font(fontName, PointsToPixels(description.Size), (FontStyle) description.Style, GraphicsUnit.Pixel);
+            var fontFamily = font.FontFamily;
+
+            if (fontName.Equals(fontFamily.GetName(CultureInfo.CurrentCulture.LCID), StringComparison.OrdinalIgnoreCase) ||
+                fontName.Equals(fontFamily.GetName(CultureInfo.InvariantCulture.LCID), StringComparison.OrdinalIgnoreCase))
             {
                 return font;
             }
 
             foreach (var culture in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
             {
-                if (description.FontName.Equals(font.FontFamily.GetName(culture.LCID), StringComparison.OrdinalIgnoreCase))
+                if (fontName.Equals(fontFamily.GetName(culture.LCID), StringComparison.OrdinalIgnoreCase))
                 {
                     return font;
                 }
@@ -138,12 +142,12 @@ namespace Libra.Content.Compiler
             throw new InvalidOperationException("Font not found: " + description.FontName);
         }
 
-        static SpriteFontGlyph ImportGlyph(char character, Font font, Brush brush, StringFormat stringFormat, Bitmap bitmap, Graphics graphics)
+        static SpriteFontGlyph ImportGlyph(char character, Font font, Brush brush, StringFormat stringFormat, Bitmap bitmap, DrawingGraphics graphics)
         {
             var characterString = character.ToString();
 
             // Measure the size of this character.
-            var size = graphics.MeasureString(characterString, font, Point.Empty, stringFormat);
+            var size = graphics.MeasureString(characterString, font, DrawingPoint.Empty, stringFormat);
 
             int characterWidth = (int) Math.Ceiling(size.Width);
             int characterHeight = (int) Math.Ceiling(size.Height);
@@ -159,12 +163,12 @@ namespace Libra.Content.Compiler
                 throw new Exception("Excessively large glyph won't fit in my lazily implemented fixed size temp surface.");
 
             // Render the character.
-            graphics.Clear(Color.Black);
+            graphics.Clear(DrawingColor.Black);
             graphics.DrawString(characterString, font, brush, padWidth, padHeight, stringFormat);
             graphics.Flush();
 
             // Clone the newly rendered image.
-            var glyphBitmap = bitmap.Clone(new Rectangle(0, 0, bitmapWidth, bitmapHeight), PixelFormat.Format32bppArgb);
+            var glyphBitmap = bitmap.Clone(new DrawingRectangle(0, 0, bitmapWidth, bitmapHeight), PixelFormat.Format32bppArgb);
 
             BitmapUtils.ConvertGreyToAlpha(glyphBitmap);
 
@@ -172,15 +176,17 @@ namespace Libra.Content.Compiler
             float? abc = GetCharacterWidth(character, font, graphics);
 
             // Construct the output Glyph object.
-            return new SpriteFontGlyph(character, glyphBitmap)
+            return new SpriteFontGlyph
             {
+                Character = character,
+                Bitmap = glyphBitmap,
                 XOffset = -padWidth,
                 XAdvance = abc.HasValue ? padWidth - bitmapWidth + abc.Value : -padWidth,
                 YOffset = -padHeight,
             };
         }
 
-        static float? GetCharacterWidth(char character, Font font, Graphics graphics)
+        static float? GetCharacterWidth(char character, Font font, DrawingGraphics graphics)
         {
             // Look up the native device context and font handles.
             IntPtr hdc = graphics.GetHdc();
@@ -229,52 +235,52 @@ namespace Libra.Content.Compiler
         public static void CropGlyph(SpriteFontGlyph glyph)
         {
             // Crop the top.
-            while ((glyph.Subrect.Height > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new Rectangle(glyph.Subrect.X, glyph.Subrect.Y, glyph.Subrect.Width, 1)))
+            while ((glyph.Cropping.Height > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new DrawingRectangle(glyph.Cropping.X, glyph.Cropping.Y, glyph.Cropping.Width, 1)))
             {
-                glyph.Subrect.Y++;
-                glyph.Subrect.Height--;
+                glyph.Cropping.Y++;
+                glyph.Cropping.Height--;
 
                 glyph.YOffset++;
             }
 
             // Crop the bottom.
-            while ((glyph.Subrect.Height > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new Rectangle(glyph.Subrect.X, glyph.Subrect.Bottom - 1, glyph.Subrect.Width, 1)))
+            while ((glyph.Cropping.Height > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new DrawingRectangle(glyph.Cropping.X, glyph.Cropping.Bottom - 1, glyph.Cropping.Width, 1)))
             {
-                glyph.Subrect.Height--;
+                glyph.Cropping.Height--;
             }
 
             // Crop the left.
-            while ((glyph.Subrect.Width > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new Rectangle(glyph.Subrect.X, glyph.Subrect.Y, 1, glyph.Subrect.Height)))
+            while ((glyph.Cropping.Width > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new DrawingRectangle(glyph.Cropping.X, glyph.Cropping.Y, 1, glyph.Cropping.Height)))
             {
-                glyph.Subrect.X++;
-                glyph.Subrect.Width--;
+                glyph.Cropping.X++;
+                glyph.Cropping.Width--;
 
                 glyph.XOffset++;
             }
 
             // Crop the right.
-            while ((glyph.Subrect.Width > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new Rectangle(glyph.Subrect.Right - 1, glyph.Subrect.Y, 1, glyph.Subrect.Height)))
+            while ((glyph.Cropping.Width > 1) && BitmapUtils.IsAlphaEntirely(0, glyph.Bitmap, new DrawingRectangle(glyph.Cropping.Right - 1, glyph.Cropping.Y, 1, glyph.Cropping.Height)))
             {
-                glyph.Subrect.Width--;
+                glyph.Cropping.Width--;
 
                 glyph.XAdvance++;
             }
         }
 
-        public static Bitmap ArrangeGlyphs(SpriteFontGlyph[] sourceGlyphs)
+        public static Bitmap ArrangeGlyphs(IList<SpriteFontGlyph> sourceGlyphs)
         {
             // Build up a list of all the glyphs needing to be arranged.
             var glyphs = new List<ArrangedGlyph>();
 
-            for (int i = 0; i < sourceGlyphs.Length; i++)
+            foreach (var sourceGlyph in sourceGlyphs)
             {
                 var glyph = new ArrangedGlyph();
 
-                glyph.Source = sourceGlyphs[i];
+                glyph.Source = sourceGlyph;
 
                 // Leave a one pixel border around every glyph in the output bitmap.
-                glyph.Width = sourceGlyphs[i].Subrect.Width + 2;
-                glyph.Height = sourceGlyphs[i].Subrect.Height + 2;
+                glyph.Width = sourceGlyph.Cropping.Width + 2;
+                glyph.Height = sourceGlyph.Cropping.Height + 2;
 
                 glyphs.Add(glyph);
             }
@@ -315,15 +321,15 @@ namespace Libra.Content.Compiler
         }
 
         // Heuristic guesses what might be a good output width for a list of glyphs.
-        static int GuessOutputWidth(SpriteFontGlyph[] sourceGlyphs)
+        static int GuessOutputWidth(IList<SpriteFontGlyph> sourceGlyphs)
         {
             int maxWidth = 0;
             int totalSize = 0;
 
             foreach (var glyph in sourceGlyphs)
             {
-                maxWidth = Math.Max(maxWidth, glyph.Subrect.Width);
-                totalSize += glyph.Subrect.Width * glyph.Subrect.Height;
+                maxWidth = Math.Max(maxWidth, glyph.Cropping.Width);
+                totalSize += glyph.Cropping.Width * glyph.Cropping.Height;
             }
 
             int width = Math.Max((int) Math.Sqrt(totalSize), maxWidth);
@@ -419,15 +425,15 @@ namespace Libra.Content.Compiler
             foreach (var glyph in glyphs)
             {
                 var sourceGlyph = glyph.Source;
-                var sourceRegion = sourceGlyph.Subrect;
-                var destinationRegion = new Rectangle(glyph.X + 1, glyph.Y + 1, sourceRegion.Width, sourceRegion.Height);
+                var sourceCropping = sourceGlyph.Cropping.ToDrawingRectangle();
+                var destinationCropping = new DrawingRectangle(glyph.X + 1, glyph.Y + 1, sourceCropping.Width, sourceCropping.Height);
 
-                BitmapUtils.CopyRect(sourceGlyph.Bitmap, sourceRegion, output, destinationRegion);
+                BitmapUtils.CopyRect(sourceGlyph.Bitmap, sourceCropping, output, destinationCropping);
 
-                BitmapUtils.PadBorderPixels(output, destinationRegion);
+                BitmapUtils.PadBorderPixels(output, destinationCropping);
 
                 sourceGlyph.Bitmap = output;
-                sourceGlyph.Subrect = destinationRegion;
+                sourceGlyph.Cropping.FromDrawingRectangle(destinationCropping);
             }
 
             return output;
