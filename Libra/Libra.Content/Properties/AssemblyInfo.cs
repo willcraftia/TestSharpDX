@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("Libra.Compiler")]
+[assembly: AssemblyTitle("Libra.Content")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Libra.Compiler")]
+[assembly: AssemblyProduct("Libra.Content")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 次の GUID は、このプロジェクトが COM に公開される場合の、typelib の ID です
-[assembly: Guid("7dc32b12-c67c-404b-b10e-6e3a34c48257")]
+[assembly: Guid("4cbac37d-d19e-4356-bee6-b7545ea2b551")]
 
 // アセンブリのバージョン情報は、以下の 4 つの値で構成されています:
 //
