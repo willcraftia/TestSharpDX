@@ -8,11 +8,23 @@ namespace Libra.PackedVector
 {
     public struct Bgr565 : IPackedVector<ushort>, IEquatable<Bgr565>
     {
-        // 5 ビットのスケール。
-        const float Bit5Scale = 0x1f;
+        const int Bit5 = 0x1f;
 
-        // 6 ビットのスケール。
-        const float Bit6Scale = 0x3f;
+        const int Bit6 = 0x3f;
+
+        const int RedShift = 11;
+
+        const int GreenShift = 5;
+
+        const int RedMask = (Bit5 << RedShift);
+
+        const int GreenMask = (Bit6 << GreenShift);
+
+        const int BlueMask = Bit5;
+
+        const float Bit5Scale = (float) Bit5;
+
+        const float Bit6Scale = (float) Bit6;
 
         ushort packedValue;
 
@@ -42,9 +54,9 @@ namespace Libra.PackedVector
             // 恐らく XNA と等価。
             // Scale で除算した場合の精度が完全に一致しているかは不明。
 
-            int r = (packedValue & 0xf800) >> 11;
-            int g = (packedValue & 0x07e0) >> 5;
-            int b = (packedValue & 0x001f);
+            int r = (packedValue & RedMask) >> RedShift;
+            int g = (packedValue & GreenMask) >> GreenShift;
+            int b = (packedValue & BlueMask);
 
             float z = b / Bit5Scale;
             float y = g / Bit6Scale;
@@ -64,7 +76,7 @@ namespace Libra.PackedVector
             int g = NormalizeBit6(y);
             int b = NormalizeBit5(z);
 
-            return (ushort) (b | (g << 5) | (r << 11));
+            return (ushort) (b | (g << GreenShift) | (r << RedShift));
         }
 
         static int NormalizeBit5(float value)
