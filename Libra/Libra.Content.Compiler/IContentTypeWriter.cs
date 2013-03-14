@@ -8,6 +8,6 @@ namespace Libra.Content.Compiler
 {
     public interface IContentTypeWriter
     {
-        void Write(ContentWriter writer, object value);
+        void Write(ContentWriter output, object value);
     }
 }
