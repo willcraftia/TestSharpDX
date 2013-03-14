@@ -10,6 +10,8 @@ namespace Libra.Content.Pipeline.Compiler
     {
         public Type TargetType { get; private set; }
 
+        internal bool Initialized { get; private set; }
+
         protected ContentTypeWriter(Type targetType)
         {
             if (targetType == null) throw new ArgumentNullException("targetType");
@@ -23,7 +25,11 @@ namespace Libra.Content.Pipeline.Compiler
 
         internal void InternalInitialize(ContentCompiler compiler)
         {
+            if (Initialized) return;
+
             Initialize(compiler);
+
+            Initialized = true;
         }
     }
 
