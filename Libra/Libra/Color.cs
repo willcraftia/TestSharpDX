@@ -12,8 +12,8 @@ using System.Runtime.InteropServices;
 namespace Libra
 {
     [Serializable]
-    [StructLayout(LayoutKind.Sequential, Size = 4)]
-    public struct Color : IEquatable<Color>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Color : IPackedVector<uint>, IEquatable<Color>
     {
         #region Palette
 
@@ -737,6 +737,21 @@ namespace Libra
 
         public byte A;
 
+        public uint PackedValue
+        {
+            get
+            {
+                return (uint) (R | G << 8 | B << 16 | A << 24);
+            }
+            set
+            {
+                A = (byte) ((value >> 24) & 255);
+                B = (byte) ((value >> 16) & 255);
+                G = (byte) ((value >> 8) & 255);
+                R = (byte) (value & 255);
+            }
+        }
+
         public Color(byte value)
         {
             A = R = G = B = value;
@@ -787,22 +802,12 @@ namespace Libra
             R = (byte) (rgba & 255);
         }
 
-        public Color(int rgba)
+        public void PackFromVector4(Vector4 vector)
         {
-            A = (byte) ((rgba >> 24) & 255);
-            B = (byte) ((rgba >> 16) & 255);
-            G = (byte) ((rgba >> 8) & 255);
-            R = (byte) (rgba & 255);
-        }
-
-        public int ToRgba()
-        {
-            int value = R;
-            value |= G << 8;
-            value |= B << 16;
-            value |= A << 24;
-
-            return (int) value;
+            R = ToByte(vector.X);
+            G = ToByte(vector.Y);
+            B = ToByte(vector.Z);
+            A = ToByte(vector.W);
         }
 
         public Vector3 ToVector3()
@@ -815,25 +820,16 @@ namespace Libra
             return new Vector4(R / 255.0f, G / 255.0f, B / 255.0f, A / 255.0f);
         }
 
-        public static Color FromRgba(int color)
-        {
-            return new Color(color);
-        }
-
-        public static Color FromRgba(uint color)
-        {
-            return new Color(color);
-        }
-
-        static Color FromBgra(int color)
+        // SharpDX からの移植の上で必要。やむなし。
+        static Color FromBgra(uint color)
         {
             return new Color((byte) ((color >> 16) & 255), (byte) ((color >> 8) & 255), (byte) (color & 255), (byte) ((color >> 24) & 255));
         }
 
-        static Color FromBgra(uint color)
-        {
-            return FromBgra(unchecked((int) color));
-        }
+        // TODO
+        //
+        // Math.Round しなくても XNA と等価なの？
+        // 要確認。
 
         static byte ToByte(float component)
         {
