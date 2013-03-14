@@ -7,6 +7,7 @@ using Libra.Graphics;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class Texture2DWriter : ContentTypeWriter<Texture2DContent>
     {
         // Int32:   Surface format (DXGI format value)

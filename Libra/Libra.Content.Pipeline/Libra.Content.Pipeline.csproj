@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapContent.cs" />
+    <Compile Include="Compiler\ContentTypeWriterAttribute.cs" />
     <Compile Include="Processors\BoxLayouter.cs" />
     <Compile Include="Processors\BoxLayoutItem.cs" />
     <Compile Include="Compiler\CharWriter.cs" />

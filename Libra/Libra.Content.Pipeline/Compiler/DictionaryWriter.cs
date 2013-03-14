@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class DictionaryWriter<K, V> : ContentTypeWriter<Dictionary<K, V>>
     {
         ContentTypeWriter keyWriter;

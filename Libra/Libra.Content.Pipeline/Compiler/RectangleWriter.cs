@@ -6,6 +6,7 @@ using System;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class RectangleWriter : ContentTypeWriter<Rectangle>
     {
         protected internal override void Write(ContentWriter output, Rectangle value)

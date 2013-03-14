@@ -6,6 +6,7 @@ using System;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class Vector3Writer : ContentTypeWriter<Vector3>
     {
         protected internal override void Write(ContentWriter output, Vector3 value)

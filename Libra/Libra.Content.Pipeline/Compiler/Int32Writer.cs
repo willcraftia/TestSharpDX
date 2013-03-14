@@ -6,6 +6,7 @@ using System;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class Int32Writer : ContentTypeWriter<int>
     {
         protected internal override void Write(ContentWriter output, int value)

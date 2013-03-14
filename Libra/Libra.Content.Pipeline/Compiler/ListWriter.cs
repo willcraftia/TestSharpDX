@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class ListWriter<T> : ContentTypeWriter<IList<T>>
     {
         ContentTypeWriter itemWriter;

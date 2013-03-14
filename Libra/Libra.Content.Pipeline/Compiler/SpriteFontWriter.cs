@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace Libra.Content.Pipeline.Compiler
 {
+    [ContentTypeWriter]
     public sealed class SpriteFontWriter : ContentTypeWriter<SpriteFontContent>
     {
         ContentTypeWriter textureWriter;
