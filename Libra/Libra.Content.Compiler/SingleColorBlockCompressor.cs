@@ -6,6 +6,7 @@ using Libra.PackedVector;
 #endregion
 
 // ひにけに GD: WpfFont より移植。
+// http://blogs.msdn.com/b/ito/archive/2012/02/19/wpf-font-processor.aspx
 
 namespace Libra.Content.Compiler
 {
