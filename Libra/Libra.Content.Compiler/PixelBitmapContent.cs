@@ -2,6 +2,8 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Libra.Graphics;
+using Libra.PackedVector;
 
 #endregion
 
@@ -67,6 +69,32 @@ namespace Libra.Content.Compiler
             {
                 handle.Free();
             }
+        }
+
+        public override bool TryGetFormat(out SurfaceFormat format)
+        {
+            var type = typeof(T);
+            
+            if (type == typeof(Color))
+            {
+                format = SurfaceFormat.Color;
+                return true;
+            }
+
+            if (type == typeof(Bgra4444))
+            {
+                format = SurfaceFormat.Bgra4444;
+                return true;
+            }
+
+            // TODO
+            //
+            // 残りは必要になった時に実装。
+            // 基本的には、Vector3 や Vecto4 などの基礎構造体、
+            // および、IPackedVector 構造体のみを T 型として許容する前提。
+
+            format = 0;
+            return false;
         }
     }
 }

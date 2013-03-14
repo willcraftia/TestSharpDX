@@ -9,6 +9,7 @@ using System.Drawing.Text;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Libra.PackedVector;
 using Libra.Content.Serialization;
 
 using DrawingColor = System.Drawing.Color;
@@ -81,6 +82,8 @@ namespace Libra.Content.Compiler
 
         public bool PremultiplyAlpha { get; set; }
 
+        public SpriteFontFormat Format { get; set; }
+
         public FontDescriptionProcessor()
         {
             glyphBitmaps = new List<PixelBitmapContent<Color>>();
@@ -100,12 +103,30 @@ namespace Libra.Content.Compiler
                 DoPremultiplyAlpha();
             }
 
-            // TODO
-            //
-            // 他のフォーマットへの変換。
-
-            spriteFontContent.Bitmap = spriteBitmap;
-            spriteFontContent.PremultiplyAlpha = PremultiplyAlpha;
+            switch (Format)
+            {
+                case SpriteFontFormat.Auto:
+                    if (IsRgbEntirely(Color.White, spriteBitmap))
+                    {
+                        // 単色の場合
+                        // TODO
+                        // 常に単色なのでは・・・？
+                        spriteFontContent.Texture.Mipmaps = SingleColorBlockCompressor.Compress(spriteBitmap, Color.White);
+                    }
+                    else
+                    {
+                        // 単色ではない場合は変換不要。
+                        spriteFontContent.Texture.Mipmaps = spriteBitmap;
+                    }
+                    break;
+                case SpriteFontFormat.Bgra4444:
+                    spriteFontContent.Texture.Mipmaps = ConvertToBgra4444(spriteBitmap);
+                    break;
+                case SpriteFontFormat.Color:
+                    // 変換不要。
+                    spriteFontContent.Texture.Mipmaps = spriteBitmap;
+                    break;
+            }
 
             spriteFontContent.DefaultCharacter = input.DefaultCharacter;
 
@@ -222,6 +243,7 @@ namespace Libra.Content.Compiler
             var glyph = new SpriteFontGlyph
             {
                 Character = character,
+                Rectangle = new Rectangle(0, 0, glyphBitmap.Width, glyphBitmap.Height),
                 XOffset = -padWidth,
                 XAdvance = abc.HasValue ? padWidth - bitmapWidth + abc.Value : -padWidth,
                 YOffset = -padHeight,
@@ -296,37 +318,37 @@ namespace Libra.Content.Compiler
         void CropGlyph(SpriteFontGlyph glyph, PixelBitmapContent<Color> glyphBitmap)
         {
             // Crop the top.
-            while ((glyph.Cropping.Height > 1) &&
-                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Cropping.X, glyph.Cropping.Y, glyph.Cropping.Width, 1)))
+            while ((glyph.Rectangle.Height > 1) &&
+                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Rectangle.X, glyph.Rectangle.Y, glyph.Rectangle.Width, 1)))
             {
-                glyph.Cropping.Y++;
-                glyph.Cropping.Height--;
+                glyph.Rectangle.Y++;
+                glyph.Rectangle.Height--;
 
                 glyph.YOffset++;
             }
 
             // Crop the bottom.
-            while ((glyph.Cropping.Height > 1) &&
-                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Cropping.X, glyph.Cropping.Bottom - 1, glyph.Cropping.Width, 1)))
+            while ((glyph.Rectangle.Height > 1) &&
+                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Rectangle.X, glyph.Rectangle.Bottom - 1, glyph.Rectangle.Width, 1)))
             {
-                glyph.Cropping.Height--;
+                glyph.Rectangle.Height--;
             }
 
             // Crop the left.
-            while ((glyph.Cropping.Width > 1) &&
-                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Cropping.X, glyph.Cropping.Y, 1, glyph.Cropping.Height)))
+            while ((glyph.Rectangle.Width > 1) &&
+                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Rectangle.X, glyph.Rectangle.Y, 1, glyph.Rectangle.Height)))
             {
-                glyph.Cropping.X++;
-                glyph.Cropping.Width--;
+                glyph.Rectangle.X++;
+                glyph.Rectangle.Width--;
 
                 glyph.XOffset++;
             }
 
             // Crop the right.
-            while ((glyph.Cropping.Width > 1) &&
-                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Cropping.Right - 1, glyph.Cropping.Y, 1, glyph.Cropping.Height)))
+            while ((glyph.Rectangle.Width > 1) &&
+                IsAlphaEntirely(0, glyphBitmap, new Rectangle(glyph.Rectangle.Right - 1, glyph.Rectangle.Y, 1, glyph.Rectangle.Height)))
             {
-                glyph.Cropping.Width--;
+                glyph.Rectangle.Width--;
 
                 glyph.XAdvance++;
             }
@@ -360,8 +382,8 @@ namespace Libra.Content.Compiler
                 {
                     Target = glyph,
                     Bitmap = glyphBitmap,
-                    Width = glyph.Cropping.Width + 2,
-                    Height = glyph.Cropping.Height + 2
+                    Width = glyph.Rectangle.Width + 2,
+                    Height = glyph.Rectangle.Height + 2
                 };
                 arrangedGlyphs.Add(arrangedGlyph);
             }
@@ -391,14 +413,14 @@ namespace Libra.Content.Compiler
                 var arrangedGlyph = arrangedGlyphs[i];
                 var glyph = arrangedGlyph.Target;
                 var glyphBitmap = arrangedGlyph.Bitmap;
-                var sourceRegion = glyph.Cropping;
+                var sourceRegion = glyph.Rectangle;
                 var destinationRegion = new Rectangle(arrangedGlyph.X + 1, arrangedGlyph.Y + 1, sourceRegion.Width, sourceRegion.Height);
 
                 CopyRect(glyphBitmap, sourceRegion, spriteBitmap, destinationRegion);
 
                 PadBorderPixels(spriteBitmap, destinationRegion);
 
-                glyph.Cropping = destinationRegion;
+                glyph.Rectangle = destinationRegion;
             }
         }
 
@@ -424,8 +446,8 @@ namespace Libra.Content.Compiler
 
             foreach (var glyph in sourceGlyphs)
             {
-                maxWidth = Math.Max(maxWidth, glyph.Cropping.Width);
-                totalSize += glyph.Cropping.Width * glyph.Cropping.Height;
+                maxWidth = Math.Max(maxWidth, glyph.Rectangle.Width);
+                totalSize += glyph.Rectangle.Width * glyph.Rectangle.Height;
             }
 
             int width = Math.Max((int) Math.Sqrt(totalSize), maxWidth);
@@ -580,9 +602,39 @@ namespace Libra.Content.Compiler
             }
         }
 
-        // TODO
-        //
-        //
+        PixelBitmapContent<Bgra4444> ConvertToBgra4444(PixelBitmapContent<Color> source)
+        {
+            var destination = new PixelBitmapContent<Bgra4444>(source.Width, source.Height);
+            
+            for (int y = 0; y < source.Height; y++)
+            {
+                for (int x = 0; x < source.Width; x++)
+                {
+                    var vector4 = source.GetPixel(x, y).ToVector4();
+                    destination.SetPixel(x, y, new Bgra4444(vector4));
+                }
+            }
 
+            return destination;
+        }
+
+        bool IsRgbEntirely(Color expectedRgb, PixelBitmapContent<Color> bitmap)
+        {
+            for (int y = 0; y < bitmap.Height; y++)
+            {
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    var color = bitmap.GetPixel(x, y);
+
+                    if (color.A == 0)
+                        continue;
+
+                    if (expectedRgb != color)
+                        return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

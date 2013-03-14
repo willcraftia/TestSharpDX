@@ -31,7 +31,7 @@ namespace Libra.Graphics
         // 注意
         //
         // SharpDX の DXGI Format で未定義。
-        // MSDN によると、DXGI_FORMAT_B4G4R4A4_UNORM は D3D 11.1 から正式に対応されるとあり、
+        // MSDN によると、DXGI_FORMAT_B4G4R4A4_UNORM は D3D 11.1 (DXGI 1.2) から正式に対応されるとあり、
         // SharpDX では D3D 11 対応の自動生成コードから除外していると推測される。
         // このため、SharpDX の DXGI Format へのキャストでは、
         // 対応する項目名が不明となる。

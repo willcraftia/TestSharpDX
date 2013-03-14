@@ -12,7 +12,7 @@ namespace Libra.Content.Compiler
     {
         public char Character;
 
-        public Rectangle Cropping;
+        public Rectangle Rectangle;
 
         // TODO
         //

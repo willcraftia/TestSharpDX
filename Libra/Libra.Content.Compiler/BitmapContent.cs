@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using Libra.Graphics;
 
 #endregion
 
@@ -21,5 +22,7 @@ namespace Libra.Content.Compiler
         public abstract byte[] GetPixelData();
 
         public abstract void SetPixelData(byte[] bytes);
+
+        public abstract bool TryGetFormat(out SurfaceFormat format);
     }
 }

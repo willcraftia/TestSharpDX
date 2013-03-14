@@ -19,6 +19,8 @@ namespace Libra.Content.Compiler
 
         protected override void Write(ContentWriter writer, SpriteFontContent value)
         {
+            writer.WriteObject(value.Texture);
+
             //WriteBitmap(writer, value.Bitmap, value.PremultiplyAlpha);
 
             //WriteGlyphs(writer, value.Glyphs);
@@ -39,10 +41,10 @@ namespace Libra.Content.Compiler
             {
                 writer.Write((int) glyph.Character);
 
-                writer.Write(glyph.Cropping.Left);
-                writer.Write(glyph.Cropping.Top);
-                writer.Write(glyph.Cropping.Right);
-                writer.Write(glyph.Cropping.Bottom);
+                writer.Write(glyph.Rectangle.Left);
+                writer.Write(glyph.Rectangle.Top);
+                writer.Write(glyph.Rectangle.Right);
+                writer.Write(glyph.Rectangle.Bottom);
 
                 writer.Write(glyph.XOffset);
                 writer.Write(glyph.YOffset);
