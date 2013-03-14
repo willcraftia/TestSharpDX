@@ -17,17 +17,17 @@ namespace Libra.Content.Compiler
         /// <summary>
         /// 文字グリフ領域の取得/設定
         /// </summary>
-        public List<Rectangle> Glyphs { get; set; }
+        public IList<Rectangle> Glyphs { get; set; }
 
         /// <summary>
         /// 文字グリフクリップ領域の取得/設定
         /// </summary>
-        public List<Rectangle> Cropping { get; set; }
+        public IList<Rectangle> Cropping { get; set; }
 
         /// <summary>
         /// 文字マップの取得/設定
         /// </summary>
-        public List<char> CharacterMap { get; set; }
+        public IList<char> CharacterMap { get; set; }
 
         /// <summary>
         /// 行間スペースの取得/設定
@@ -42,7 +42,7 @@ namespace Libra.Content.Compiler
         /// <summary>
         /// カーニングの取得/設定
         /// </summary>
-        public List<Vector3> Kerning { get; set; }
+        public IList<Vector3> Kerning { get; set; }
 
         /// <summary>
         /// デフォルト文字の取得/設定

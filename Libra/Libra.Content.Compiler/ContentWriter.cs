@@ -1,7 +1,6 @@
 ﻿#region Using
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 #endregion
@@ -10,33 +9,25 @@ namespace Libra.Content.Compiler
 {
     public sealed class ContentWriter : BinaryWriter
     {
-        public Dictionary<Type, IContentTypeWriter> TypeWriters { get; private set; }
+        ContentCompiler compiler;
 
-        public ContentWriter(Stream stream)
+        internal ContentWriter(Stream stream, ContentCompiler compiler)
             : base(stream)
         {
-            TypeWriters = new Dictionary<Type, IContentTypeWriter>();
+            if (compiler == null) throw new ArgumentNullException("compiler");
+
+            this.compiler = compiler;
         }
 
         public void WriteObject<T>(T value)
         {
-            var type = typeof(T);
+            var typeWriter = compiler.GetTypeWriter(typeof(T));
+            typeWriter.Write(this, value);
+        }
 
-            IContentTypeWriter typeWriter;
-            if (!TypeWriters.TryGetValue(type, out typeWriter))
-            {
-                if (type.IsGenericType)
-                {
-                    var genericTypeDefinition = type.GetGenericTypeDefinition();
-                    TypeWriters.TryGetValue(genericTypeDefinition, out typeWriter);
-                }
-            }
-
-            if (typeWriter == null)
-            {
-                throw new InvalidOperationException("IContentTypeWriter not found: " + type);
-            }
-
+        public void WriteObject<T>(T value, ContentTypeWriter typeWriter)
+        {
+            if (typeWriter == null) throw new ArgumentNullException("typeWriter");
             typeWriter.Write(this, value);
         }
     }

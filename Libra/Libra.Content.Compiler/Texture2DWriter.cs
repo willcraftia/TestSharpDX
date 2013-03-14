@@ -19,7 +19,7 @@ namespace Libra.Content.Compiler
         //      Byte[data size]:    Image data
         // }
 
-        protected override void Write(ContentWriter writer, Texture2DContent value)
+        protected internal override void Write(ContentWriter writer, Texture2DContent value)
         {
             if (value.Mipmaps == null) throw new InvalidOperationException("Mipmaps is null.");
             if (value.Mipmaps.Count == 0) throw new InvalidOperationException("Mipmaps is empty.");

@@ -47,20 +47,26 @@
     <Compile Include="BitmapContent.cs" />
     <Compile Include="BoxLayouter.cs" />
     <Compile Include="BoxLayoutItem.cs" />
+    <Compile Include="CharWriter.cs" />
+    <Compile Include="ContentCompiler.cs" />
     <Compile Include="ContentProcessor.cs" />
     <Compile Include="ContentTypeWriter.cs" />
     <Compile Include="ContentWriter.cs" />
     <Compile Include="BC2BitmapContent.cs" />
     <Compile Include="BCBitmapContent.cs" />
-    <Compile Include="IContentTypeWriter.cs" />
+    <Compile Include="DictionaryWriter.cs" />
     <Compile Include="FontDescriptionProcessor.cs" />
+    <Compile Include="Int32Writer.cs" />
     <Compile Include="JisCode.cs" />
+    <Compile Include="ListWriter.cs" />
     <Compile Include="MipmapChain.cs" />
     <Compile Include="MipmapChainCollection.cs" />
     <Compile Include="PixelBitmapContent.cs" />
+    <Compile Include="RectangleWriter.cs" />
     <Compile Include="SingleColorBlockCompressor.cs" />
     <Compile Include="IContentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingleWriter.cs" />
     <Compile Include="SpriteFontContent.cs" />
     <Compile Include="SpriteFontFormat.cs" />
     <Compile Include="SpriteFontOutlineStroke.cs" />
@@ -69,6 +75,7 @@
     <Compile Include="Texture2DWriter.cs" />
     <Compile Include="TextureContent.cs" />
     <Compile Include="TextureProcessorOutputFormat.cs" />
+    <Compile Include="Vector3Writer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libra.Content.Serialization\Libra.Content.Serialization.csproj">
