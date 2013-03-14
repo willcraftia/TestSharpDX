@@ -51,6 +51,7 @@
     <Compile Include="IPackedVector.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="Matrix.cs" />
+    <Compile Include="PackedVector\Bgr565.cs" />
     <Compile Include="PackedVector\Bgra4444.cs" />
     <Compile Include="Plane.cs" />
     <Compile Include="PlaneIntersectionType.cs" />
