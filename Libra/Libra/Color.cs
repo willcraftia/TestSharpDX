@@ -729,6 +729,8 @@ namespace Libra
 
         #endregion
 
+        const float Scale = (float) 0xff;
+
         public byte R;
 
         public byte G;
@@ -820,21 +822,18 @@ namespace Libra
             return new Vector4(R / 255.0f, G / 255.0f, B / 255.0f, A / 255.0f);
         }
 
-        // SharpDX からの移植の上で必要。やむなし。
+        // SharpDX からの移植の上で必要。
+        // ビルトイン カラーの定義を全て書くのは面倒なので、やむなし。
         static Color FromBgra(uint color)
         {
             return new Color((byte) ((color >> 16) & 255), (byte) ((color >> 8) & 255), (byte) (color & 255), (byte) ((color >> 24) & 255));
         }
 
-        // TODO
-        //
-        // Math.Round しなくても XNA と等価なの？
-        // 要確認。
-
-        static byte ToByte(float component)
+        static byte ToByte(float value)
         {
-            var value = (int) (component * 255.0f);
-            return (byte) (value < 0 ? 0 : value > 255 ? 255 : value);
+            // 恐らく XNA と等価。
+            // SharpDX のロジックでは Scale 倍での丸めが XNA と異なる。
+            return (byte) MathHelper.Clamp((float) Math.Round(value * Scale), 0, Scale);
         }
 
         #region IEquatable
