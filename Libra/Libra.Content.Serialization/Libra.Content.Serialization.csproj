@@ -44,7 +44,6 @@
     <Compile Include="CharacterRegion.cs" />
     <Compile Include="ContentSerializerAttribute.cs" />
     <Compile Include="ContentSerializerCollection.cs" />
-    <Compile Include="ContentSerializerManager.cs" />
     <Compile Include="FontDescription.cs" />
     <Compile Include="FontDescriptionStyle.cs" />
     <Compile Include="IContentSerializer.cs" />
