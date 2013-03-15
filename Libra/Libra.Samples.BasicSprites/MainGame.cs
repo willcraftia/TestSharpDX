@@ -6,6 +6,8 @@ using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Input;
 
+using Libra.Content.Pipeline.Compiler;
+
 #endregion
 
 namespace Libra.Samples.BasicSprites
@@ -32,6 +34,15 @@ namespace Libra.Samples.BasicSprites
         {
             platform = new SdxFormGamePlatform(this);
             graphicsManager = new GraphicsManager(this);
+        }
+
+        protected override void Initialize()
+        {
+            var compilerFactory = new ContentCompilerFactory(AppDomain.CurrentDomain);
+            var compiler = compilerFactory.CreateCompiler();
+            var outputPath = compiler.Compile("Fonts/SpriteFont.json", "FontDescriptionProcessor");
+
+            base.Initialize();
         }
 
         protected override void LoadContent()
