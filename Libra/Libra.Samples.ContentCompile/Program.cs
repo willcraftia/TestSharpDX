@@ -12,12 +12,7 @@ namespace Libra.Samples.ContentCompile
     {
         static void Main(string[] args)
         {
-            var factory = new ContentCompilerFactory();
-
-            factory.Serializers.FindAndAddFrom(AppDomain.CurrentDomain);
-            factory.ProcessorTypes.FindAndAddFrom(AppDomain.CurrentDomain);
-            factory.TypeWriters.FindAndAddFrom(AppDomain.CurrentDomain);
-
+            var factory = new ContentCompilerFactory(AppDomain.CurrentDomain);
             var compiler = factory.CreateCompiler();
 
             var outputPath = compiler.Compile("SpriteFont.json", "FontDescriptionProcessor", null);

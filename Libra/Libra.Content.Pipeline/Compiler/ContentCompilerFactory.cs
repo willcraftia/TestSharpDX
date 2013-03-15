@@ -23,6 +23,19 @@ namespace Libra.Content.Pipeline.Compiler
             TypeWriters = new ContentTypeWriterManager();
         }
 
+        public ContentCompilerFactory(AppDomain appDomain)
+            : this()
+        {
+            FindAndAddAllFrom(appDomain);
+        }
+
+        public void FindAndAddAllFrom(AppDomain appDomain)
+        {
+            Serializers.FindAndAddFrom(appDomain);
+            ProcessorTypes.FindAndAddFrom(appDomain);
+            TypeWriters.FindAndAddFrom(appDomain);
+        }
+
         public ContentCompiler CreateCompiler()
         {
             return new ContentCompiler(this);
