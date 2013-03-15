@@ -98,6 +98,10 @@ namespace Libra.Content.Pipeline.Compiler
                 outputPath = Path.Combine(factory.OutputRootDirectory, filePath);
             }
 
+            var outputDirectory = Path.GetDirectoryName(outputPath);
+            if (!Directory.Exists(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+
             using (var stream = File.Create(outputPath))
             {
                 Write(stream, content);
