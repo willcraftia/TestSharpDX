@@ -45,11 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapContent.cs" />
-    <Compile Include="Build\BuildTargetItem.cs" />
-    <Compile Include="Build\ContentProcessorItem.cs" />
-    <Compile Include="Build\ContentProject.cs" />
-    <Compile Include="Build\ContentProjectDescription.cs" />
-    <Compile Include="Build\ContentSerializerItem.cs" />
+    <Compile Include="Compiler\ContentCompilerFactory.cs" />
     <Compile Include="Compiler\ContentTypeWriterAttribute.cs" />
     <Compile Include="Processors\BoxLayouter.cs" />
     <Compile Include="Processors\BoxLayoutItem.cs" />
@@ -62,6 +58,7 @@
     <Compile Include="BCBitmapContent.cs" />
     <Compile Include="Compiler\DictionaryWriter.cs" />
     <Compile Include="Processors\ContentProcessorAttribute.cs" />
+    <Compile Include="Processors\ContentProcessorTypeCollection.cs" />
     <Compile Include="Processors\ContentProcessorManager.cs" />
     <Compile Include="Processors\FontDescriptionProcessor.cs" />
     <Compile Include="Compiler\Int32Writer.cs" />

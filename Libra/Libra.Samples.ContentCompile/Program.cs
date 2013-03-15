@@ -2,9 +2,7 @@
 
 using System;
 using System.IO;
-using Libra.Content.Pipeline.Build;
 using Libra.Content.Pipeline.Compiler;
-using Libra.Content.Serialization;
 
 #endregion
 
@@ -14,44 +12,19 @@ namespace Libra.Samples.ContentCompile
     {
         static void Main(string[] args)
         {
-            //var jsonSerializer = new JsonFontSerializer();
+            var factory = new ContentCompilerFactory();
 
-            //var fontDescription = new FontDescription
-            //{
-            //    FontName = "メイリオ",
-            //    Size = 14,
-            //    Style = FontDescriptionStyle.Regular,
-            //};
+            factory.Serializers.FindAndAddFrom(AppDomain.CurrentDomain);
+            factory.ProcessorTypes.FindAndAddFrom(AppDomain.CurrentDomain);
 
-            //using (var stream = File.Create("Test.json"))
-            //{
-            //    jsonSerializer.Serialize(stream, fontDescription);
-            //}
+            var compiler = factory.CreateCompiler();
 
-            //FontDescription result;
-            //using (var stream = File.OpenRead("Test.json"))
-            //{
-            //    result = jsonSerializer.Deserialize(stream) as FontDescription;
-            //}
+            var outputPath = compiler.Compile("SpriteFont.json", "FontDescriptionProcessor", null);
 
-            var project = new ContentProject();
-
-            var projectDescription = new ContentProjectDescription
-            {
-                OutputDirectory = "",
-                DetectSerializers = true,
-                DetectProcessors = true
-            };
-
-            projectDescription.BuildTargets.Add(new BuildTargetItem
-            {
-                Path = "SpriteFont.json",
-                ProcessorName = "FontDescriptionProcessor",
-            });
-
-            project.Initialize(projectDescription);
-            project.Build();
-
+            Console.WriteLine("outputPath: {0}", outputPath);
+            
+            Console.WriteLine("Press enter key to exit...");
+            Console.ReadLine();
         }
     }
 }
