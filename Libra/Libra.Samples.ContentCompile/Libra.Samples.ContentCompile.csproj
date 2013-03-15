@@ -2,18 +2,20 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8358BC02-FE12-44B5-8BBC-6328802868E0}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{B998F8B2-D578-41AE-9DD3-E94AB13548A0}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Libra.Content.Serialization</RootNamespace>
-    <AssemblyName>Libra.Content.Serialization</AssemblyName>
+    <RootNamespace>Libra.Samples.ContentCompile</RootNamespace>
+    <AssemblyName>Libra.Samples.ContentCompile</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,7 +24,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,7 +36,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,14 +43,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharacterRegion.cs" />
-    <Compile Include="ContentSerializerAttribute.cs" />
-    <Compile Include="ContentSerializerManager.cs" />
-    <Compile Include="FontDescription.cs" />
-    <Compile Include="FontDescriptionStyle.cs" />
-    <Compile Include="IContentSerializer.cs" />
-    <Compile Include="JsonFontSerializer.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libra.Content.Pipeline\Libra.Content.Pipeline.csproj">
+      <Project>{1EB74EB0-4148-4B6F-A78C-2D8508288961}</Project>
+      <Name>Libra.Content.Pipeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Content.Serialization\Libra.Content.Serialization.csproj">
+      <Project>{8358BC02-FE12-44B5-8BBC-6328802868E0}</Project>
+      <Name>Libra.Content.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Graphics\Libra.Graphics.csproj">
+      <Project>{F42E063A-DBE6-430D-BC88-3A88F33754FD}</Project>
+      <Name>Libra.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra\Libra.csproj">
+      <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>
+      <Name>Libra</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SpriteFont.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -51,7 +51,7 @@ namespace Libra.Content.Serialization
             get { return spacing; }
             set
             {
-                if (value <= 0) throw new ArgumentOutOfRangeException("value");
+                if (value < 0) throw new ArgumentOutOfRangeException("value");
 
                 spacing = value;
             }
@@ -70,17 +70,18 @@ namespace Libra.Content.Serialization
         [DataMember]
         public List<CharacterRegion> CharacterRegions { get; private set; }
 
-        [IgnoreDataMember]
+        //[IgnoreDataMember]
         public ICollection<char> Characters { get; private set; }
 
         public FontDescription()
         {
             CharacterRegions = new List<CharacterRegion>();
-            Characters = new List<char>();
         }
 
         public void InitializeCharacters()
         {
+            Characters = new List<char>();
+
             if (CharacterRegions.Any())
             {
                 var characters = CharacterRegions.SelectMany(region => region.Characters).Distinct();

@@ -19,6 +19,7 @@ using Libra.Content.Serialization;
 
 namespace Libra.Content.Pipeline.Processors
 {
+    [ContentProcessorAttribute]
     public sealed class FontDescriptionProcessor : ContentProcessor<FontDescription, SpriteFontContent>
     {
         /// <summary>

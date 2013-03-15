@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 #endregion
 
@@ -21,36 +22,66 @@ namespace Libra.Content.Pipeline.Compiler
             CollectTypeWriters();
         }
 
+        public void Compile(Stream stream, object content)
+        {
+            using (var writer = new ContentWriter(stream, this))
+            {
+                writer.WriteObject(content);
+                writer.Flush();
+            }
+        }
+
         public ContentTypeWriter GetTypeWriter(Type type)
         {
+            // 型に対応するインスタンスの検索。
             var typeWriter = FindExistingTypeWriter(type);
-            if (typeWriter != null)
-            {
-                if (!typeWriter.Initialized)
-                    typeWriter.InternalInitialize(this);
 
-                return typeWriter;
+            // ジェネリクス型定義からのインスタンスの検索。
+            if (typeWriter == null && type.IsGenericType)
+            {
+                typeWriter = FindGenericTypeWriter(type);
             }
 
-            // ジェネリクス型定義からのインスタンス化を試行。
-            if (type.IsGenericType)
+            // インスタンスが見つからない場合はエラー。
+            if (typeWriter == null)
+                throw new InvalidOperationException("ContentTypeWriter not found: " + type);
+
+            // インスタンスが見つかった場合は必要に応じて初期化。
+            if (!typeWriter.Initialized)
+                typeWriter.InternalInitialize(this);
+
+            return typeWriter;
+        }
+
+        ContentTypeWriter FindGenericTypeWriter(Type type)
+        {
+            var genericArguments = type.GetGenericArguments();
+
+            foreach (var genericWriterTypeDefinition in genericTypeWriterDefinitions.Keys)
             {
-                var genericTypeDefinition = type.GetGenericTypeDefinition();
-                var genericTypeWriterDefinition = FindGenericTypeWriterDefinition(genericTypeDefinition);
-                if (genericTypeWriterDefinition != null)
+                var targetGenericArguments = genericWriterTypeDefinition.GetGenericArguments();
+                if (genericArguments.Length != targetGenericArguments.Length)
+                    continue;
+
+                Type concreteTypeWriterType;
+                try
                 {
-                    var genericTypeWriterType = genericTypeWriterDefinition.MakeGenericType(type.GetGenericArguments());
-                    typeWriter = Activator.CreateInstance(genericTypeWriterType) as ContentTypeWriter;
-                    typeWriters[typeWriter.TargetType] = typeWriter;
+                    concreteTypeWriterType = genericWriterTypeDefinition.MakeGenericType(genericArguments);
+                }
+                catch
+                {
+                    continue;
+                }
 
-                    if (!typeWriter.Initialized)
-                        typeWriter.InternalInitialize(this);
-
-                    return typeWriter;
+                var concreteTypeWriter = Activator.CreateInstance(concreteTypeWriterType) as ContentTypeWriter;
+                if (concreteTypeWriter.TargetType.IsAssignableFrom(type))
+                {
+                    typeWriters[concreteTypeWriter.TargetType] = concreteTypeWriter;
+                    return concreteTypeWriter;
                 }
             }
 
-            throw new InvalidOperationException("ContentTypeWriter not found: " + type);
+            return null;
         }
 
         ContentTypeWriter FindExistingTypeWriter(Type type)

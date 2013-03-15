@@ -17,6 +17,7 @@ namespace Libra.Content.Pipeline
         public Texture2DContent()
             : base(new MipmapChainCollection())
         {
+            Faces.Add(new MipmapChain());
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Json;
 
 namespace Libra.Content.Serialization
 {
+    [ContentSerializer(".json")]
     public sealed class JsonFontSerializer : IContentSerializer
     {
         DataContractJsonSerializer serializer;
