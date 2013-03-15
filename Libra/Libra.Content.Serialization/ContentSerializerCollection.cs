@@ -38,7 +38,7 @@ namespace Libra.Content.Serialization
         {
             if (type == null) throw new ArgumentNullException("type");
 
-            if (!IsSerializer(type))
+            if (!IsSerializerType(type))
                 throw new ArgumentException("Type is not a IContentSerializer: " + type, "type");
 
             var serializerAttribute = GetSerializerAttribute(type);
@@ -69,7 +69,7 @@ namespace Libra.Content.Serialization
 
             foreach (var type in types)
             {
-                if (!IsSerializer(type))
+                if (!IsSerializerType(type))
                     continue;
 
                 if (!HasSerializerAttribute(type))
@@ -97,7 +97,7 @@ namespace Libra.Content.Serialization
             serializerMap.Clear();
         }
 
-        static bool IsSerializer(Type type)
+        static bool IsSerializerType(Type type)
         {
             return !type.IsAbstract && typeof(IContentSerializer).IsAssignableFrom(type);
         }

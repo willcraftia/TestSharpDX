@@ -21,7 +21,7 @@ namespace Libra.Content.Pipeline.Processors
             get { return processorMap[name]; }
             set
             {
-                if (!IsProcessor(value))
+                if (!IsProcessorType(value))
                     throw new ArgumentException("Type is not a IContentProcessor: " + value, "value");
                 if (HasProcessorAttribute(value))
                     throw new ArgumentException("Type does not have ContentProcessorAttribute: " + value, "value");
@@ -42,7 +42,7 @@ namespace Libra.Content.Pipeline.Processors
 
         public void Add(Type type)
         {
-            if (!IsProcessor(type))
+            if (!IsProcessorType(type))
                 throw new ArgumentException("Type is not a IContentProcessor: " + type, "type");
             if (!HasProcessorAttribute(type))
                 throw new ArgumentException("Type does not have ContentProcessorAttribute: " + type, "type");
@@ -65,7 +65,7 @@ namespace Libra.Content.Pipeline.Processors
 
             foreach (var type in types)
             {
-                if (!IsProcessor(type))
+                if (!IsProcessorType(type))
                     continue;
 
                 if (!HasProcessorAttribute(type))
@@ -93,7 +93,7 @@ namespace Libra.Content.Pipeline.Processors
             processorMap.Clear();
         }
 
-        static bool IsProcessor(Type type)
+        static bool IsProcessorType(Type type)
         {
             return typeof(IContentProcessor).IsAssignableFrom(type);
         }
