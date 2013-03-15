@@ -20,7 +20,9 @@ namespace Libra.Content.Pipeline.Compiler
             this.factory = factory;
         }
 
-        public string Compile(string sourcePath, IContentProcessor processor, string outputDirectory = null)
+        // sourcePath には、factory の SourceRootDirectory からの相対パスを指定。
+
+        public string Compile(string sourcePath, IContentProcessor processor)
         {
             if (string.IsNullOrEmpty(sourcePath)) throw new ArgumentException("sourcePath must be not null/empty.", "sourcePath");
             if (processor == null) throw new ArgumentNullException("processor");
@@ -32,20 +34,19 @@ namespace Libra.Content.Pipeline.Compiler
             var artifact = processor.Process(source);
 
             // バイナリ永続化。
-            return Write(sourcePath, outputDirectory, artifact);
+            return Write(sourcePath, artifact);
         }
 
         public string Compile(
-            string contentDescriptionPath,
-            string processorName, Dictionary<string, string> processorProperties = null,
-            string outputDirectory = null)
+            string sourcePath,
+            string processorName, Dictionary<string, string> processorProperties = null)
         {
             if (string.IsNullOrEmpty(processorName))
                 throw new ArgumentException("processorName must be not null/empty.", "processorName");
 
             var processor = CreateProcessor(processorName, processorProperties);
 
-            return Compile(contentDescriptionPath, processor, outputDirectory);
+            return Compile(sourcePath, processor);
         }
 
         object DeserializeSource(string path)
@@ -53,7 +54,9 @@ namespace Libra.Content.Pipeline.Compiler
             var extension = Path.GetExtension(path);
             var serializer = factory.Serializers[extension];
 
-            using (var stream = File.OpenRead(path))
+            var targetPath = (factory.SourceRootDirectory == null) ? path : Path.Combine(factory.SourceRootDirectory, path);
+
+            using (var stream = File.OpenRead(targetPath))
             {
                 return serializer.Deserialize(stream);
             }
@@ -76,19 +79,23 @@ namespace Libra.Content.Pipeline.Compiler
             return processor;
         }
 
-        string Write(string contentDescriptionPath, string outputDirectory, object content)
+        string Write(string sourcePath, object content)
         {
             // .ccb (Compiled Content Binary)
-            var filename = Path.GetFileNameWithoutExtension(contentDescriptionPath) + ".ccb";
+            var filename = Path.GetFileNameWithoutExtension(sourcePath) + ".ccb";
+
+            var sourceDirectoryPath = Path.GetDirectoryName(sourcePath);
+
+            var filePath = Path.Combine(sourceDirectoryPath, filename);
 
             string outputPath;
-            if (string.IsNullOrEmpty(outputDirectory))
+            if (factory.OutputRootDirectory == null)
             {
-                outputPath = filename;
+                outputPath = filePath;
             }
             else
             {
-                outputPath = Path.Combine(outputDirectory, filename);
+                outputPath = Path.Combine(factory.OutputRootDirectory, filePath);
             }
 
             using (var stream = File.Create(outputPath))

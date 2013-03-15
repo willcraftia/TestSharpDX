@@ -16,6 +16,10 @@ namespace Libra.Content.Pipeline.Compiler
 
         public ContentTypeWriterManager TypeWriters { get; private set; }
 
+        public string SourceRootDirectory { get; set; }
+
+        public string OutputRootDirectory { get; set; }
+
         public ContentCompilerFactory()
         {
             Serializers = new ContentSerializerManager();
