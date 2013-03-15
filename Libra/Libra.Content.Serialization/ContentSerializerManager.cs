@@ -13,7 +13,7 @@ namespace Libra.Content.Serialization
     // インデクサで明示的にインスタンスを設定する場合は、
     // ContentSerializerAttribute を参照せずに拡張子の明示で設定。
 
-    public sealed class ContentSerializerCollection
+    public sealed class ContentSerializerManager
     {
         // キー: 拡張子 (ドット付き)
         Dictionary<string, IContentSerializer> serializerMap;
@@ -24,7 +24,7 @@ namespace Libra.Content.Serialization
             set { serializerMap[extension] = value; }
         }
 
-        public ContentSerializerCollection()
+        public ContentSerializerManager()
         {
             serializerMap = new Dictionary<string, IContentSerializer>();
         }

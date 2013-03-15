@@ -12,7 +12,7 @@ namespace Libra.Content.Pipeline.Processors
     // インデクサは任意の名前で登録。
     // いずれも、型が IContentProcessor かつ ContentProcessorAttribute を設定している事が条件。
 
-    public sealed class ContentProcessorTypeCollection
+    public sealed class ContentProcessorManager
     {
         Dictionary<string, Type> processorMap;
 
@@ -30,7 +30,7 @@ namespace Libra.Content.Pipeline.Processors
             }
         }
 
-        public ContentProcessorTypeCollection()
+        public ContentProcessorManager()
         {
             processorMap = new Dictionary<string, Type>();
         }

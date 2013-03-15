@@ -59,7 +59,7 @@
     <Compile Include="BCBitmapContent.cs" />
     <Compile Include="Compiler\DictionaryWriter.cs" />
     <Compile Include="Processors\ContentProcessorAttribute.cs" />
-    <Compile Include="Processors\ContentProcessorTypeCollection.cs" />
+    <Compile Include="Processors\ContentProcessorManager.cs" />
     <Compile Include="Processors\FontDescriptionProcessor.cs" />
     <Compile Include="Compiler\Int32Writer.cs" />
     <Compile Include="Processors\JisCode.cs" />

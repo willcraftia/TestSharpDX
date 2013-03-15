@@ -10,16 +10,16 @@ namespace Libra.Content.Pipeline.Compiler
 {
     public sealed class ContentCompilerFactory
     {
-        public ContentSerializerCollection Serializers { get; private set; }
+        public ContentSerializerManager Serializers { get; private set; }
 
-        public ContentProcessorTypeCollection ProcessorTypes { get; private set; }
+        public ContentProcessorManager ProcessorTypes { get; private set; }
 
         public ContentTypeWriterManager TypeWriters { get; private set; }
 
         public ContentCompilerFactory()
         {
-            Serializers = new ContentSerializerCollection();
-            ProcessorTypes = new ContentProcessorTypeCollection();
+            Serializers = new ContentSerializerManager();
+            ProcessorTypes = new ContentProcessorManager();
             TypeWriters = new ContentTypeWriterManager();
         }
 
