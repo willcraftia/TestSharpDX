@@ -14,10 +14,13 @@ namespace Libra.Content.Pipeline.Compiler
 
         public ContentProcessorTypeCollection ProcessorTypes { get; private set; }
 
+        public ContentTypeWriterManager TypeWriterManager { get; private set; }
+
         public ContentCompilerFactory()
         {
             Serializers = new ContentSerializerCollection();
             ProcessorTypes = new ContentProcessorTypeCollection();
+            TypeWriterManager = new ContentTypeWriterManager();
         }
 
         public ContentCompiler CreateCompiler()

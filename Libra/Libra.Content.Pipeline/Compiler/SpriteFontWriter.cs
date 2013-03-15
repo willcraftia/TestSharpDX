@@ -21,14 +21,14 @@ namespace Libra.Content.Pipeline.Compiler
 
         ContentTypeWriter vector3Writer;
 
-        protected override void Initialize(ContentCompiler compiler)
+        protected override void Initialize(ContentTypeWriterManager manager)
         {
-            textureWriter = compiler.GetTypeWriter(typeof(Texture2DContent));
-            rectangleListWriter = compiler.GetTypeWriter(typeof(IList<Rectangle>));
-            charListWriter = compiler.GetTypeWriter(typeof(IList<char>));
-            vector3Writer = compiler.GetTypeWriter(typeof(IList<Vector3>));
+            textureWriter = manager.GetTypeWriter(typeof(Texture2DContent));
+            rectangleListWriter = manager.GetTypeWriter(typeof(IList<Rectangle>));
+            charListWriter = manager.GetTypeWriter(typeof(IList<char>));
+            vector3Writer = manager.GetTypeWriter(typeof(IList<Vector3>));
 
-            base.Initialize(compiler);
+            base.Initialize(manager);
         }
 
         protected internal override void Write(ContentWriter output, SpriteFontContent value)

@@ -21,13 +21,13 @@ namespace Libra.Content.Pipeline.Compiler
 
         protected internal abstract void Write(ContentWriter output, Object value);
 
-        protected virtual void Initialize(ContentCompiler compiler) { }
+        protected virtual void Initialize(ContentTypeWriterManager manager) { }
 
-        internal void InternalInitialize(ContentCompiler compiler)
+        internal void InternalInitialize(ContentTypeWriterManager manager)
         {
             if (Initialized) return;
 
-            Initialize(compiler);
+            Initialize(manager);
 
             Initialized = true;
         }

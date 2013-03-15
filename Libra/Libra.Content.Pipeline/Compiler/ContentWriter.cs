@@ -9,19 +9,19 @@ namespace Libra.Content.Pipeline.Compiler
 {
     public sealed class ContentWriter : BinaryWriter
     {
-        ContentCompiler compiler;
+        ContentTypeWriterManager manager;
 
-        internal ContentWriter(Stream stream, ContentCompiler compiler)
+        internal ContentWriter(Stream stream, ContentTypeWriterManager manager)
             : base(stream)
         {
-            if (compiler == null) throw new ArgumentNullException("compiler");
+            if (manager == null) throw new ArgumentNullException("manager");
 
-            this.compiler = compiler;
+            this.manager = manager;
         }
 
         public void WriteObject<T>(T value)
         {
-            var typeWriter = compiler.GetTypeWriter(value.GetType());
+            var typeWriter = manager.GetTypeWriter(value.GetType());
             typeWriter.Write(this, value);
         }
 

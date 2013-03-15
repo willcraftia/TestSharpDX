@@ -14,12 +14,12 @@ namespace Libra.Content.Pipeline.Compiler
 
         ContentTypeWriter valueWriter;
 
-        protected override void Initialize(ContentCompiler compiler)
+        protected override void Initialize(ContentTypeWriterManager manager)
         {
-            keyWriter = compiler.GetTypeWriter(typeof(K));
-            valueWriter = compiler.GetTypeWriter(typeof(V));
+            keyWriter = manager.GetTypeWriter(typeof(K));
+            valueWriter = manager.GetTypeWriter(typeof(V));
 
-            base.Initialize(compiler);
+            base.Initialize(manager);
         }
 
         protected internal override void Write(ContentWriter output, Dictionary<K, V> value)
