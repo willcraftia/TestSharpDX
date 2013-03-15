@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 #endregion
 
@@ -13,34 +14,97 @@ namespace Libra.Content.Pipeline.Compiler
 
         Dictionary<Type, Type> genericTypeWriterDefinitions;
 
+        public ContentTypeWriter this[Type type]
+        {
+            get
+            {
+                // 型に対応するインスタンスの検索。
+                var typeWriter = FindExistingTypeWriter(type);
+
+                // ジェネリクス型定義からのインスタンスの検索。
+                if (typeWriter == null && type.IsGenericType)
+                {
+                    typeWriter = FindGenericTypeWriter(type);
+                }
+
+                // インスタンスが見つからない場合はエラー。
+                if (typeWriter == null)
+                    throw new InvalidOperationException("ContentTypeWriter not found: " + type);
+
+                // インスタンスが見つかった場合は必要に応じて初期化。
+                if (!typeWriter.Initialized)
+                    typeWriter.InternalInitialize(this);
+
+                return typeWriter;
+            }
+            set
+            {
+                typeWriters[type] = value;
+            }
+        }
+
         public ContentTypeWriterManager()
         {
             typeWriters = new Dictionary<Type, ContentTypeWriter>();
             genericTypeWriterDefinitions = new Dictionary<Type, Type>();
-
-            CollectTypeWriters();
         }
 
-        public ContentTypeWriter GetTypeWriter(Type type)
+        public void Add(Type type)
         {
-            // 型に対応するインスタンスの検索。
-            var typeWriter = FindExistingTypeWriter(type);
+            if (type == null) throw new ArgumentNullException("type");
+            if (type.IsAbstract)
+                throw new ArgumentException("Type must be not abstract: " + type, "type");
+            if (!IsTypeWriterType(type))
+                throw new ArgumentException("Type is not a ContentTypeWriter: " + type, "type");
+            if (!HasTypeWriterAttribute(type))
+                throw new ArgumentException("Type does not have ContentTypeWriterAttribute: " + type, "type");
 
-            // ジェネリクス型定義からのインスタンスの検索。
-            if (typeWriter == null && type.IsGenericType)
+            if (type.IsGenericTypeDefinition)
             {
-                typeWriter = FindGenericTypeWriter(type);
+                // ListWriter などのジェネリクス型定義はここに入る。
+                // 具体的な型引数によるインスタンス化は、
+                // 型引数を決定できる状態になるまで保留される。
+                genericTypeWriterDefinitions[type] = type;
+            }
+            else
+            {
+                // 型が明確な場合は、ここでインスタンス化して登録する。
+                var typeWriter = Activator.CreateInstance(type) as ContentTypeWriter;
+                typeWriters[typeWriter.TargetType] = typeWriter;
+            }
+        }
+
+        public void FindAndAddFrom(Assembly assembly)
+        {
+            if (assembly == null) throw new ArgumentException("assembly");
+
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch
+            {
+                return;
             }
 
-            // インスタンスが見つからない場合はエラー。
-            if (typeWriter == null)
-                throw new InvalidOperationException("ContentTypeWriter not found: " + type);
+            foreach (var type in types)
+            {
+                if (type.IsAbstract || !IsTypeWriterType(type) || !HasTypeWriterAttribute(type))
+                    continue;
 
-            // インスタンスが見つかった場合は必要に応じて初期化。
-            if (!typeWriter.Initialized)
-                typeWriter.InternalInitialize(this);
+                Add(type);
+            }
+        }
 
-            return typeWriter;
+        public void FindAndAddFrom(AppDomain appDomain)
+        {
+            if (appDomain == null) throw new ArgumentNullException("appDomain");
+
+            foreach (var assembly in appDomain.GetAssemblies())
+            {
+                FindAndAddFrom(assembly);
+            }
         }
 
         ContentTypeWriter FindGenericTypeWriter(Type type)
@@ -99,50 +163,14 @@ namespace Libra.Content.Pipeline.Compiler
             return null;
         }
 
-        void CollectTypeWriters()
+        static bool IsTypeWriterType(Type type)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
-            {
-                Type[] types;
-                try
-                {
-                    types = assembly.GetTypes();
-                }
-                catch
-                {
-                    continue;
-                }
+            return typeof(ContentTypeWriter).IsAssignableFrom(type);
+        }
 
-                var typeWriterType = typeof(ContentTypeWriter);
-                var typeWriterAttributeType = typeof(ContentTypeWriterAttribute);
-
-                foreach (var type in types)
-                {
-                    if (type.IsAbstract)
-                        continue;
-
-                    if (!typeWriterType.IsAssignableFrom(type))
-                        continue;
-
-                    if (!Attribute.IsDefined(type, typeWriterAttributeType))
-                        continue;
-
-                    if (type.IsGenericTypeDefinition)
-                    {
-                        // ListWriter などのジェネリクス型定義はここに入る。
-                        // 具体的な型引数によるインスタンス化は、
-                        // 型引数を決定できる状態になるまで保留される。
-                        genericTypeWriterDefinitions[type] = type;
-                    }
-                    else
-                    {
-                        // 型が明確な場合は、ここでインスタンス化して登録する。
-                        var typeWriter = Activator.CreateInstance(type) as ContentTypeWriter;
-                        typeWriters[typeWriter.TargetType] = typeWriter;
-                    }
-                }
-            }
+        static bool HasTypeWriterAttribute(Type type)
+        {
+            return Attribute.IsDefined(type, typeof(ContentTypeWriterAttribute));
         }
     }
 }

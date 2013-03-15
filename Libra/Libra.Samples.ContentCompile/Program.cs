@@ -16,6 +16,7 @@ namespace Libra.Samples.ContentCompile
 
             factory.Serializers.FindAndAddFrom(AppDomain.CurrentDomain);
             factory.ProcessorTypes.FindAndAddFrom(AppDomain.CurrentDomain);
+            factory.TypeWriters.FindAndAddFrom(AppDomain.CurrentDomain);
 
             var compiler = factory.CreateCompiler();
 

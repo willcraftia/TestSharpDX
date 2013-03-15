@@ -16,8 +16,8 @@ namespace Libra.Content.Pipeline.Compiler
 
         protected override void Initialize(ContentTypeWriterManager manager)
         {
-            keyWriter = manager.GetTypeWriter(typeof(K));
-            valueWriter = manager.GetTypeWriter(typeof(V));
+            keyWriter = manager[typeof(K)];
+            valueWriter = manager[typeof(V)];
 
             base.Initialize(manager);
         }

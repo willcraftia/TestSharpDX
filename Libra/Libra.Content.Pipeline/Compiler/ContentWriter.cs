@@ -21,7 +21,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         public void WriteObject<T>(T value)
         {
-            var typeWriter = manager.GetTypeWriter(value.GetType());
+            var typeWriter = manager[value.GetType()];
             typeWriter.Write(this, value);
         }
 

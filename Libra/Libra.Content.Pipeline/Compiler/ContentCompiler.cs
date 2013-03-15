@@ -101,7 +101,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         void Write(Stream stream, object content)
         {
-            using (var writer = new ContentWriter(stream, factory.TypeWriterManager))
+            using (var writer = new ContentWriter(stream, factory.TypeWriters))
             {
                 writer.WriteObject(content);
                 writer.Flush();

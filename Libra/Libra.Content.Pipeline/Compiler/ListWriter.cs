@@ -14,7 +14,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         protected override void Initialize(ContentTypeWriterManager manager)
         {
-            itemWriter = manager.GetTypeWriter(typeof(T));
+            itemWriter = manager[typeof(T)];
 
             base.Initialize(manager);
         }

@@ -23,10 +23,10 @@ namespace Libra.Content.Pipeline.Compiler
 
         protected override void Initialize(ContentTypeWriterManager manager)
         {
-            textureWriter = manager.GetTypeWriter(typeof(Texture2DContent));
-            rectangleListWriter = manager.GetTypeWriter(typeof(IList<Rectangle>));
-            charListWriter = manager.GetTypeWriter(typeof(IList<char>));
-            vector3Writer = manager.GetTypeWriter(typeof(IList<Vector3>));
+            textureWriter = manager[typeof(Texture2DContent)];
+            rectangleListWriter = manager[typeof(IList<Rectangle>)];
+            charListWriter = manager[typeof(IList<char>)];
+            vector3Writer = manager[typeof(IList<Vector3>)];
 
             base.Initialize(manager);
         }
