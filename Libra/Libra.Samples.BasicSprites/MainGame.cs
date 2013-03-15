@@ -39,6 +39,7 @@ namespace Libra.Samples.BasicSprites
         protected override void Initialize()
         {
             var compilerFactory = new ContentCompilerFactory(AppDomain.CurrentDomain);
+            compilerFactory.SourceRootDirectory = "../../";
             var compiler = compilerFactory.CreateCompiler();
             var outputPath = compiler.Compile("Fonts/SpriteFont.json", "FontDescriptionProcessor");
 

@@ -104,9 +104,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fonts\SpriteFont.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Fonts\SpriteFont.json" />
     <None Include="Shaders\SpriteEffect.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
