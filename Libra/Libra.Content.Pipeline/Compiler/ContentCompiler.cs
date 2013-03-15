@@ -195,23 +195,6 @@ namespace Libra.Content.Pipeline.Compiler
             return null;
         }
 
-        Type FindGenericTypeWriterDefinition(Type type)
-        {
-            if (genericTypeWriterDefinitions.ContainsKey(type))
-                return type;
-
-            foreach (var interfaceType in type.GetInterfaces())
-            {
-                var genericTypeWriterTypeByInterface = FindGenericTypeWriterDefinition(interfaceType);
-                if (genericTypeWriterTypeByInterface != null)
-                {
-                    return genericTypeWriterTypeByInterface;
-                }
-            }
-
-            return null;
-        }
-
         void CollectTypeWriters()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
