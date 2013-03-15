@@ -199,6 +199,7 @@
       <DependentUpon>SpriteBatch.cs</DependentUpon>
     </Compile>
     <Compile Include="SpriteEffects.cs" />
+    <Compile Include="SpriteFont.cs" />
     <Compile Include="SpriteSortMode.cs" />
     <Compile Include="State.cs" />
     <Compile Include="StencilOperation.cs" />
