@@ -37,7 +37,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         public string Compile(
             string contentDescriptionPath,
-            string processorName, Dictionary<string, string> processorProperties,
+            string processorName, Dictionary<string, string> processorProperties = null,
             string outputDirectory = null)
         {
             if (string.IsNullOrEmpty(processorName))

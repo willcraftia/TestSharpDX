@@ -15,7 +15,7 @@ namespace Libra.Samples.ContentCompile
             var factory = new ContentCompilerFactory(AppDomain.CurrentDomain);
             var compiler = factory.CreateCompiler();
 
-            var outputPath = compiler.Compile("SpriteFont.json", "FontDescriptionProcessor", null);
+            var outputPath = compiler.Compile("SpriteFont.json", "FontDescriptionProcessor");
 
             Console.WriteLine("outputPath: {0}", outputPath);
             
