@@ -12,7 +12,7 @@ namespace Libra.Content.Pipeline.Compiler
     {
         ContentTypeWriter itemWriter;
 
-        protected override void Initialize(ContentTypeWriterManager manager)
+        protected internal override void Initialize(ContentTypeWriterManager manager)
         {
             itemWriter = manager[typeof(T)];
 

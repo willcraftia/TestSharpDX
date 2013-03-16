@@ -14,7 +14,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         ContentTypeWriter valueWriter;
 
-        protected override void Initialize(ContentTypeWriterManager manager)
+        protected internal override void Initialize(ContentTypeWriterManager manager)
         {
             keyWriter = manager[typeof(K)];
             valueWriter = manager[typeof(V)];

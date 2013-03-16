@@ -33,7 +33,7 @@ namespace Libra.Content.Pipeline.Compiler
 
                 // インスタンスが見つかった場合は必要に応じて初期化。
                 if (!typeWriter.Initialized)
-                    typeWriter.InternalInitialize(this);
+                    typeWriter.Initialize(this);
 
                 return typeWriter;
             }

@@ -21,7 +21,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         ContentTypeWriter vector3Writer;
 
-        protected override void Initialize(ContentTypeWriterManager manager)
+        protected internal override void Initialize(ContentTypeWriterManager manager)
         {
             textureWriter = manager[typeof(Texture2DContent)];
             rectangleListWriter = manager[typeof(IList<Rectangle>)];
