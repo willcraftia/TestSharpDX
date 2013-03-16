@@ -69,6 +69,10 @@
       <Project>{8358BC02-FE12-44B5-8BBC-6328802868E0}</Project>
       <Name>Libra.Content.Serialization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libra.Content\Libra.Content.csproj">
+      <Project>{E73ADB43-7144-448C-B841-620A0A903600}</Project>
+      <Name>Libra.Content</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libra.Games.SharpDX\Libra.Games.SharpDX.csproj">
       <Project>{18B2993B-626D-4337-91A2-ED0239B8D843}</Project>
       <Name>Libra.Games.SharpDX</Name>

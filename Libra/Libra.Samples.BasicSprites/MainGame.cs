@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using Libra.Content;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
@@ -23,6 +24,8 @@ namespace Libra.Samples.BasicSprites
         ShaderResourceView textureView;
 
         SpriteBatch spriteBatch;
+
+        SpriteFont spriteFont;
 
         IKeyboard keyboard;
 
@@ -60,6 +63,11 @@ namespace Libra.Samples.BasicSprites
             textureView.Initialize(texture);
 
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
+
+            var loaderFactory = new ContentLoaderFactory(Device, AppDomain.CurrentDomain);
+            var loader = loaderFactory.CreateLoader();
+
+            spriteFont = loader.Load<SpriteFont>("Fonts/SpriteFont");
 
             keyboard = platform.CreateKeyboard();
 
