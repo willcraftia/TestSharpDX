@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharReader.cs" />
+    <Compile Include="ContentLoader.cs" />
+    <Compile Include="ContentLoaderFactory.cs" />
     <Compile Include="ContentReader.cs" />
     <Compile Include="ContentTypeReader.cs" />
     <Compile Include="ContentTypeReaderAttribute.cs" />
