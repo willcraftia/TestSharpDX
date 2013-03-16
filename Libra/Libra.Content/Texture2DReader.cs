@@ -57,14 +57,10 @@ namespace Libra.Content
                 var size = (int) input.ReadUInt32();
                 var bytes = input.ReadBytes(size);
 
-                // ミップマップのサイズ。
-                var width = texture.Width >> i;
-                var height = texture.Height >> i;
-
-                // TODO
+                texture.SetData(context, 0, bytes);
             }
 
-            throw new NotImplementedException();
+            return texture;
         }
     }
 }
