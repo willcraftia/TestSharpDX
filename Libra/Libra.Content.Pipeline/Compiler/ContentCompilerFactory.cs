@@ -30,6 +30,8 @@ namespace Libra.Content.Pipeline.Compiler
         public ContentCompilerFactory(AppDomain appDomain)
             : this()
         {
+            if (appDomain == null) throw new ArgumentNullException("appDomain");
+
             FindAndAddAllFrom(appDomain);
         }
 
