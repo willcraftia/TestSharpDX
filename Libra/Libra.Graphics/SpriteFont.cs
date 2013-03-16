@@ -88,7 +88,7 @@ namespace Libra.Graphics
 
         #endregion
 
-        ShaderResourceView texture;
+        public ShaderResourceView texture;
 
         Dictionary<char, Glyph> glyphMap;
 

@@ -146,6 +146,8 @@ namespace Libra.Content.Pipeline.Processors
             GradientBeginColor = new Color(64, 128, 255, 255);
             GradientEndColor = new Color(0, 0, 128, 255);
             GradientAngle = 90;
+
+            TextureFormat = FontTextureFormat.Color;
         }
 
         /// <summary>

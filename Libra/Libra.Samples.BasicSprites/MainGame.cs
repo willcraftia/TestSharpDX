@@ -69,6 +69,20 @@ namespace Libra.Samples.BasicSprites
 
             spriteFont = loader.Load<SpriteFont>("Fonts/SpriteFont");
 
+            {
+                var texture2D = spriteFont.texture.Resource as Texture2D;
+
+                using (var stream = System.IO.File.Create("Test.png"))
+                {
+                    texture2D.Save(Device.ImmediateContext, stream);
+                }
+
+                var colors = new Color[texture2D.Width * texture2D.Height];
+                texture2D.GetData(Device.ImmediateContext, colors);
+
+                Console.WriteLine();
+            }
+
             keyboard = platform.CreateKeyboard();
 
             base.LoadContent();
@@ -94,7 +108,10 @@ namespace Libra.Samples.BasicSprites
             context.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(textureView, Vector2.Zero, Color.White);
+            //spriteBatch.Draw(textureView, Vector2.Zero, Color.White);
+            //spriteBatch.Draw(textureView, new Vector2(128, 0), Color.Red);
+            spriteBatch.Draw(spriteFont.texture, Vector2.Zero, Color.White);
+            //spriteBatch.DrawString(spriteFont, "ABCDEFG", new Vector2(0, 128), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

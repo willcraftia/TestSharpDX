@@ -90,13 +90,26 @@ namespace Libra.Graphics.SharpDX
 
         public override void GetData<T>(DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount)
         {
-            var mipWidth = Width >> level;
-            var mipHeight = Height >> level;
+            int w;
+            int h;
+
+            if (rectangle.HasValue)
+            {
+                // 矩形が設定されているならば、これにサイズを合わせる。
+                w = rectangle.Value.Width;
+                h = rectangle.Value.Height;
+            }
+            else
+            {
+                // ミップマップのサイズ。
+                w = Width >> level;
+                h = Height >> level;
+            }
 
             var description = new D3D11Texture2DDescription
             {
-                Width = mipWidth,
-                Height = mipHeight,
+                Width = w,
+                Height = h,
                 MipLevels = 1,
                 ArraySize = 1,
                 Format = (DXGIFormat) Format,

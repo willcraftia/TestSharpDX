@@ -2,16 +2,22 @@
 
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using D3D11BindFlags = SharpDX.Direct3D11.BindFlags;
+using D3D11CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags;
 using D3D11Device = SharpDX.Direct3D11.Device;
 using D3D11ImageFileFormat = SharpDX.Direct3D11.ImageFileFormat;
+using D3D11MapFlags = SharpDX.Direct3D11.MapFlags;
+using D3D11MapMode = SharpDX.Direct3D11.MapMode;
 using D3D11Resource = SharpDX.Direct3D11.Resource;
 using D3D11ResourceOptionFlags = SharpDX.Direct3D11.ResourceOptionFlags;
+using D3D11ResourceRegion = SharpDX.Direct3D11.ResourceRegion;
 using D3D11ResourceUsage = SharpDX.Direct3D11.ResourceUsage;
 using D3D11Texture2D = SharpDX.Direct3D11.Texture2D;
 using D3D11Texture2DDescription = SharpDX.Direct3D11.Texture2DDescription;
 using DXGIFormat = SharpDX.DXGI.Format;
+using SDXUtilities = SharpDX.Utilities;
 
 #endregion
 
@@ -116,7 +122,88 @@ namespace Libra.Graphics.SharpDX
 
         public override void GetData<T>(DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount)
         {
-            throw new NotImplementedException();
+            // TODO
+            //
+            // SdxTexture2D と同じコード。
+            // 共通化したいが、継承関係が無いため困難。
+
+            int w;
+            int h;
+
+            if (rectangle.HasValue)
+            {
+                // 矩形が設定されているならば、これにサイズを合わせる。
+                w = rectangle.Value.Width;
+                h = rectangle.Value.Height;
+            }
+            else
+            {
+                // ミップマップのサイズ。
+                w = Width >> level;
+                h = Height >> level;
+            }
+
+            var description = new D3D11Texture2DDescription
+            {
+                Width = w,
+                Height = h,
+                MipLevels = 1,
+                ArraySize = 1,
+                Format = (DXGIFormat) Format,
+                SampleDescription =
+                {
+                    Count = 1,
+                    Quality = 0
+                },
+                Usage = D3D11ResourceUsage.Staging,
+                BindFlags = D3D11BindFlags.None,
+                CpuAccessFlags = D3D11CpuAccessFlags.Read,
+                OptionFlags = D3D11ResourceOptionFlags.None
+            };
+
+            D3D11ResourceRegion? d3d11ResourceRegion = null;
+            if (rectangle.HasValue)
+            {
+                d3d11ResourceRegion = new D3D11ResourceRegion
+                {
+                    Left = rectangle.Value.Left,
+                    Top = rectangle.Value.Top,
+                    Right = rectangle.Value.Right,
+                    Bottom = rectangle.Value.Bottom
+                };
+            }
+
+            var d3dDeviceContext = (context as SdxDeviceContext).D3D11DeviceContext;
+            using (var staging = new D3D11Texture2D(D3D11Device, description))
+            {
+                d3dDeviceContext.CopySubresourceRegion(D3D11Texture2D, level, d3d11ResourceRegion, staging, 1);
+
+                var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+                try
+                {
+                    unsafe
+                    {
+                        var dataPointer = gcHandle.AddrOfPinnedObject();
+                        var sizeOfT = Marshal.SizeOf(typeof(T));
+                        var destinationPtr = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
+                        var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+
+                        var dataBox = d3dDeviceContext.MapSubresource(staging, level, D3D11MapMode.Read, D3D11MapFlags.None);
+                        try
+                        {
+                            SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
+                        }
+                        finally
+                        {
+                            d3dDeviceContext.UnmapSubresource(staging, level);
+                        }
+                    }
+                }
+                finally
+                {
+                    gcHandle.Free();
+                }
+            }
         }
 
         void CreateD3D11Texture2DDescription(out D3D11Texture2DDescription result)
