@@ -44,6 +44,8 @@
     <Compile Include="ContentTypeReader.cs" />
     <Compile Include="ContentTypeReaderAttribute.cs" />
     <Compile Include="ContentTypeReaderManager.cs" />
+    <Compile Include="DictionaryReader.cs" />
+    <Compile Include="ListReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RectangleReader.cs" />
     <Compile Include="SpriteFontReader.cs" />
