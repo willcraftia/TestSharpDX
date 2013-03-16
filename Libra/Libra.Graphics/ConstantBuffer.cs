@@ -19,9 +19,9 @@ namespace Libra.Graphics
             context.GetData(this, 0, data, 0, data.Length);
         }
 
-        public void SetData<T>(DeviceContext context, params T[] data) where T : struct
+        public void SetData<T>(DeviceContext context, T data) where T : struct
         {
-            context.SetData(this, 0, data, 0, data.Length);
+            context.SetData(this, 0, data);
         }
     }
 }

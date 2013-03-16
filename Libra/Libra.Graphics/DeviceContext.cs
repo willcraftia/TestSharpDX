@@ -130,6 +130,56 @@ namespace Libra.Graphics
             }
         }
 
+        internal void SetData<T>(Resource resource, int subresource, T data) where T : struct
+        {
+            if (resource == null) throw new ArgumentNullException("resource");
+
+            if (resource.Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Data can not be set from CPU.");
+
+            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            try
+            {
+                var sourcePointer = gcHandle.AddrOfPinnedObject();
+                var sizeInBytes = Marshal.SizeOf(typeof(T));
+
+                unsafe
+                {
+                    if (resource.Usage == ResourceUsage.Default)
+                    {
+                        // TODO
+                        //
+                        // Immutable と Dynamic 以外は UpdateSubresource で更新可能。
+                        // Staging は Map/Unmap で行えるので、Default の場合にのみ UpdateSubresource で更新。
+                        // それで良いのか？
+                        UpdateSubresource(sourcePointer, resource, subresource);
+                    }
+                    else
+                    {
+                        // TODO
+                        //
+                        // Dynamic だと D3D11MapMode.Write はエラーになる。
+                        // 対応関係を MSDN から把握できないが、どうすべきか。
+                        // ひとまず WriteDiscard とする。
+
+                        var destinationPointer = Map(resource, subresource, MapMode.WriteDiscard);
+                        try
+                        {
+                            CopyMemory(destinationPointer, sourcePointer, sizeInBytes);
+                        }
+                        finally
+                        {
+                            Unmap(resource, subresource);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                gcHandle.Free();
+            }
+        }
+
         internal void SetData<T>(Resource resource, int subresource, T[] data, int startIndex, int elementCount) where T : struct
         {
             if (resource == null) throw new ArgumentNullException("resource");
