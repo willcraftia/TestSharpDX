@@ -43,24 +43,27 @@ namespace Libra.Graphics
 
         public abstract void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png);
 
-        public void GetData<T>(DeviceContext context, int level, T[] data, int startIndex, int elementCount) where T : struct
-        {
-            context.GetData(this, level, data, startIndex, elementCount);
-        }
+        public abstract void GetData<T>(
+            DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount) where T : struct;
+
+        //public void GetData<T>(DeviceContext context, int level, T[] data, int startIndex, int elementCount) where T : struct
+        //{
+        //    context.GetData(this, level, data, startIndex, elementCount);
+        //}
 
         public void GetData<T>(DeviceContext context, int level, T[] data) where T : struct
         {
-            GetData(context, level, data, 0, data.Length);
+            GetData(context, level, null, data, 0, data.Length);
         }
 
         public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
-            GetData(context, 0, data, startIndex, elementCount);
+            GetData(context, 0, null, data, startIndex, elementCount);
         }
 
         public void GetData<T>(DeviceContext context, T[] data) where T : struct
         {
-            GetData(context, 0, data, 0, data.Length);
+            GetData(context, 0, null, data, 0, data.Length);
         }
 
         public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct

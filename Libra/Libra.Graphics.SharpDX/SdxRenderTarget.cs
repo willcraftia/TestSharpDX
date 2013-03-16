@@ -114,6 +114,11 @@ namespace Libra.Graphics.SharpDX
             D3D11Resource.ToStream(d3d11DeviceContext, D3D11Texture2D, (D3D11ImageFileFormat) format, stream);
         }
 
+        public override void GetData<T>(DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount)
+        {
+            throw new NotImplementedException();
+        }
+
         void CreateD3D11Texture2DDescription(out D3D11Texture2DDescription result)
         {
             result = new D3D11Texture2DDescription
