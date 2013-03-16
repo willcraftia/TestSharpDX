@@ -14,12 +14,12 @@ namespace Libra.Content
         protected internal override SpriteFont Read(ContentReader input, SpriteFont existingInstance)
         {
             var texture2D = input.ReadObject<Texture2D>();
-            var bounds = input.ReadObject<List<Rectangle>>();
-            var cropping = input.ReadObject<List<Rectangle>>();
-            var characters = input.ReadObject<List<char>>();
+            var bounds = input.ReadObject<IList<Rectangle>>();
+            var cropping = input.ReadObject<IList<Rectangle>>();
+            var characters = input.ReadObject<IList<char>>();
             var lineSpacing = input.ReadInt32();
             var spacing = input.ReadSingle();
-            var kerning = input.ReadObject<List<Vector3>>();
+            var kerning = input.ReadObject<IList<Vector3>>();
             char? defaultCharacter = null;
             if (input.ReadBoolean())
             {
