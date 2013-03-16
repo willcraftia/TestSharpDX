@@ -130,7 +130,9 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
         }
 
-        public override void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount)
+        protected override void GetData<T>(
+            Resource resource, int subresource,
+            T[] data, int startIndex, int elementCount)
         {
             if (resource == null) throw new ArgumentNullException("resource");
             if (data == null) throw new ArgumentNullException("data");
@@ -145,10 +147,10 @@ namespace Libra.Graphics.SharpDX
                 unsafe
                 {
                     var dataPointer = gcHandle.AddrOfPinnedObject();
-                    var sizeOfT = SdxUtilities.SizeOf<T>();
+                    var sizeOfT = Marshal.SizeOf(typeof(T));
                     var destinationPtr = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
                     var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-                    GetData(resource, level, destinationPtr, sizeInBytes);
+                    GetData(resource, subresource, destinationPtr, sizeInBytes);
                 }
             }
             finally
@@ -187,7 +189,9 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.UnmapSubresource(d3d11Resource, level);
         }
 
-        public override void SetData<T>(Resource resource, T[] data, int startIndex, int elementCount)
+        protected override void SetData<T>(
+            Resource resource, int subresource,
+            T[] data, int startIndex, int elementCount)
         {
             if (resource == null) throw new ArgumentNullException("resource");
             if (data == null) throw new ArgumentNullException("data");
@@ -203,13 +207,13 @@ namespace Libra.Graphics.SharpDX
             try
             {
                 var dataPointer = gcHandle.AddrOfPinnedObject();
-                var sizeOfT = SdxUtilities.SizeOf<T>();
+                var sizeOfT = Marshal.SizeOf(typeof(T));
 
                 unsafe
                 {
                     var sourcePointer = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
                     var sizeInBytesOfData = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-                    SetData(resource, sourcePointer, sizeInBytesOfData);
+                    SetData(resource, subresource, sourcePointer, sizeInBytesOfData);
                 }
             }
             finally
@@ -219,7 +223,7 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        void SetData(Resource resource, IntPtr sourcePointer, int sizeInBytes)
+        void SetData(Resource resource, int subresource, IntPtr sourcePointer, int sizeInBytes)
         {
             var d3d11Resource = GetD3D11Resource(resource);
 
@@ -227,7 +231,7 @@ namespace Libra.Graphics.SharpDX
             {
                 // Immutable と Dynamic 以外は UpdateSubresource で更新可能。
                 // Staging は Map/Unmap で行えるので、Default の場合にのみ UpdateSubresource で更新。
-                D3D11DeviceContext.UpdateSubresource(new SDXDataBox(sourcePointer), d3d11Resource);
+                D3D11DeviceContext.UpdateSubresource(new SDXDataBox(sourcePointer), d3d11Resource, subresource);
             }
             else
             {
@@ -237,17 +241,25 @@ namespace Libra.Graphics.SharpDX
                 // 対応関係を MSDN から把握できないが、どうすべきか。
                 // ひとまず WriteDiscard とする。
 
-                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, D3D11MapMode.WriteDiscard, D3D11MapFlags.None);
-                
-                SDXUtilities.CopyMemory(dataBox.DataPointer, sourcePointer, sizeInBytes);
-                
-                D3D11DeviceContext.UnmapSubresource(d3d11Resource, 0);
+                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, D3D11MapMode.WriteDiscard, D3D11MapFlags.None);
+                try
+                {
+                    SDXUtilities.CopyMemory(dataBox.DataPointer, sourcePointer, sizeInBytes);
+                }
+                finally
+                {
+                    D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
+                }
             }
         }
 
-        public override void SetData<T>(Resource resource, T[] data, int sourceIndex, int elementCount,
+        protected override void SetData<T>(
+            Resource resource, int subresource,
+            T[] data, int sourceIndex, int elementCount,
             int destinationIndex, SetDataOptions options = SetDataOptions.None)
         {
+            if (subresource < 0) throw new ArgumentOutOfRangeException("subresource");
+
             if (resource.Usage != ResourceUsage.Dynamic && resource.Usage != ResourceUsage.Staging)
                 throw new InvalidOperationException("Resource not writable.");
 
@@ -262,7 +274,7 @@ namespace Libra.Graphics.SharpDX
             try
             {
                 var dataPointer = gcHandle.AddrOfPinnedObject();
-                var sizeOfT = SdxUtilities.SizeOf<T>();
+                var sizeOfT = Marshal.SizeOf(typeof(T));
 
                 unsafe
                 {
@@ -277,7 +289,7 @@ namespace Libra.Graphics.SharpDX
                     // D3D11MapFlags.DoNotWait は、Discard と NoOverwite では使えない。
                     // D3D11MapFlags 参照のこと。
 
-                    var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, 0, d3d11MapMode, D3D11MapFlags.None);
+                    var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, d3d11MapMode, D3D11MapFlags.None);
                     var destinationPtr = (IntPtr) ((byte*) dataBox.DataPointer + destinationIndex * sizeOfT);
 
                     try
@@ -287,7 +299,7 @@ namespace Libra.Graphics.SharpDX
                     finally
                     {
                         // Unmap
-                        D3D11DeviceContext.UnmapSubresource(d3d11Resource, 0);
+                        D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
                     }
                 }
             }

@@ -46,7 +46,7 @@ namespace Libra.Graphics.SharpDX
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Usage must be not immutable.");
 
-            ByteWidth = SdxUtilities.SizeOf<T>();
+            ByteWidth = Marshal.SizeOf(typeof(T));
 
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);

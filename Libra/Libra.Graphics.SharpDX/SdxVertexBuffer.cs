@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Runtime.InteropServices;
 
 using D3D11BindFlags = SharpDX.Direct3D11.BindFlags;
 using D3D11Buffer = SharpDX.Direct3D11.Buffer;
@@ -41,7 +42,7 @@ namespace Libra.Graphics.SharpDX
 
         protected override int InitializeCore<T>(T[] data)
         {
-            var stride = SdxUtilities.SizeOf<T>();
+            var stride = Marshal.SizeOf(typeof(T));
 
             ByteWidth = stride * data.Length;
 

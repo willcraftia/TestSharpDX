@@ -55,7 +55,7 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
-            context.SetData(this, data, startIndex, elementCount);
+            context.SetData(this, 0, data, startIndex, elementCount);
         }
 
         public void SetData<T>(DeviceContext context, params T[] data) where T : struct

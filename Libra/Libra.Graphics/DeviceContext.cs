@@ -81,16 +81,17 @@ namespace Libra.Graphics
 
         public abstract void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0);
 
-        public abstract void GetData<T>(Resource resource, int level, T[] data, int startIndex, int elementCount) where T : struct;
+        internal protected abstract void GetData<T>(
+            Resource resource, int subresource,
+            T[] data, int startIndex, int elementCount) where T : struct;
 
-        public void SetData<T>(Resource resource, params T[] data) where T : struct
-        {
-            SetData(resource, data, 0, data.Length);
-        }
+        internal protected abstract void SetData<T>(
+            Resource resource, int subresource,
+            T[] data, int startIndex, int elementCount) where T : struct;
 
-        public abstract void SetData<T>(Resource resource, T[] data, int startIndex, int elementCount) where T : struct;
-
-        public abstract void SetData<T>(Resource resource, T[] data, int sourceIndex, int elementCount,
+        internal protected abstract void SetData<T>(
+            Resource resource, int subresource,
+            T[] data, int sourceIndex, int elementCount,
             int destinationIndex, SetDataOptions options = SetDataOptions.None) where T : struct;
 
         // メモ

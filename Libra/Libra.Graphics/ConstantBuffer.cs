@@ -21,7 +21,7 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, params T[] data) where T : struct
         {
-            context.SetData(this, data, 0, data.Length);
+            context.SetData(this, 0, data, 0, data.Length);
         }
     }
 }
