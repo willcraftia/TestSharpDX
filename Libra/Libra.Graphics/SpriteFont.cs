@@ -237,28 +237,24 @@ namespace Libra.Graphics
             new Vector2(1, 1)
         };
 
-        public void DrawString(
-            SpriteBatch spriteBatch,
-            string text, Vector2 position, Color color,
+        internal void DrawString(SpriteBatch spriteBatch, string text, Vector2 position, Color color,
             float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float depth)
         {
             var sharacterSource = new CharacterSource(text);
-            DrawString(spriteBatch, ref sharacterSource, position, color, rotation, origin, scale, effects, depth);
+            DrawString(spriteBatch, ref sharacterSource, ref position, ref color, rotation, ref origin, ref scale, effects, depth);
         }
 
-        public void DrawString(
-            SpriteBatch spriteBatch,
-            StringBuilder text, Vector2 position, Color color,
+        internal void DrawString(SpriteBatch spriteBatch, StringBuilder text, Vector2 position, Color color,
             float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float depth)
         {
             var sharacterSource = new CharacterSource(text);
-            DrawString(spriteBatch, ref sharacterSource, position, color, rotation, origin, scale, effects, depth);
+            DrawString(spriteBatch, ref sharacterSource, ref position, ref color, rotation, ref origin, ref scale, effects, depth);
         }
 
         void DrawString(
             SpriteBatch spriteBatch,
-            ref CharacterSource text, Vector2 position, Color color,
-            float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float depth)
+            ref CharacterSource text, ref Vector2 position, ref Color color,
+            float rotation, ref Vector2 origin, ref Vector2 scale, SpriteEffects effects, float depth)
         {
             // MonoGame のコードとは SpriteBatch の設計が異なるため、
             // ここは MonoGame と DirectX TK の両方を参考に自作した結果。

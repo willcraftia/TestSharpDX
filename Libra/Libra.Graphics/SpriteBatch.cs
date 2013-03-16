@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 #endregion
 
@@ -772,6 +773,46 @@ namespace Libra.Graphics
             result.M22 = -yScale;
             result.M41 = -1;
             result.M42 = 1;
+        }
+
+        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color)
+        {
+            DrawString(spriteFont, text, position, color, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
+        }
+
+        public void DrawString(SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color)
+        {
+            DrawString(spriteFont, text, position, color, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
+        }
+
+        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color,
+            float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
+        {
+            DrawString(spriteFont, text, position, color, rotation, origin, new Vector2(scale), effects, depth);
+        }
+
+        public void DrawString(SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
+            float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
+        {
+            DrawString(spriteFont, text, position, color, rotation, origin, new Vector2(scale), effects, depth);
+        }
+
+        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color,
+            float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float depth)
+        {
+            if (spriteFont == null) throw new ArgumentNullException("spriteFont");
+            if (text == null) throw new ArgumentNullException("text");
+
+            spriteFont.DrawString(this, text, position, color, rotation, origin, scale, effects, depth);
+        }
+
+        public void DrawString(SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
+            float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float depth)
+        {
+            if (spriteFont == null) throw new ArgumentNullException("spriteFont");
+            if (text == null) throw new ArgumentNullException("text");
+
+            spriteFont.DrawString(this, text, position, color, rotation, origin, scale, effects, depth);
         }
 
         #region IDisposable
