@@ -183,10 +183,14 @@ namespace Libra.Graphics.SharpDX
             var d3d11Resource = GetD3D11Resource(resource);
 
             var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, level, D3D11MapMode.Read, D3D11MapFlags.None);
-
-            SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
-
-            D3D11DeviceContext.UnmapSubresource(d3d11Resource, level);
+            try
+            {
+                SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
+            }
+            finally
+            {
+                D3D11DeviceContext.UnmapSubresource(d3d11Resource, level);
+            }
         }
 
         protected override void SetData<T>(
