@@ -26,6 +26,11 @@ namespace Libra.Content.Pipeline.Compiler
         {
             output.Write(value.Count);
 
+            // TODO
+            //
+            // クラス型での null および多態性に関する考慮が必要。
+            // 当面、null 禁止および多態性禁止として進める。
+
             foreach (var entry in value)
             {
                 output.WriteObject(entry.Key, keyWriter);
