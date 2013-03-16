@@ -141,7 +141,6 @@ namespace Libra.Graphics
             try
             {
                 var sourcePointer = gcHandle.AddrOfPinnedObject();
-                var sizeInBytes = Marshal.SizeOf(typeof(T));
 
                 unsafe
                 {
@@ -156,6 +155,8 @@ namespace Libra.Graphics
                     }
                     else
                     {
+                        var sizeInBytes = Marshal.SizeOf(typeof(T));
+
                         // TODO
                         //
                         // Dynamic だと D3D11MapMode.Write はエラーになる。
@@ -197,7 +198,6 @@ namespace Libra.Graphics
                 unsafe
                 {
                     var sourcePointer = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
 
                     if (resource.Usage == ResourceUsage.Default)
                     {
@@ -210,6 +210,8 @@ namespace Libra.Graphics
                     }
                     else
                     {
+                        var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+
                         // TODO
                         //
                         // Dynamic だと D3D11MapMode.Write はエラーになる。
