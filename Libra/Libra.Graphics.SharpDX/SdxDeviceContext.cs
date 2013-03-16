@@ -130,33 +130,23 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
         }
 
-        protected override void GetData<T>(
-            Resource resource, int subresource,
-            T[] data, int startIndex, int elementCount)
+        protected override IntPtr Map(Resource resource, int subresource, DeviceContext.MapMode mapMode)
         {
-            if (resource == null) throw new ArgumentNullException("resource");
-            if (data == null) throw new ArgumentNullException("data");
+            var d3d11Resource = GetD3D11Resource(resource);
+            var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, (D3D11MapMode) mapMode, D3D11MapFlags.None);
+            return dataBox.DataPointer;
+        }
 
-            if (resource.Usage != ResourceUsage.Staging)
-                throw new InvalidOperationException("Data can not be get from CPU.");
+        protected override void Unmap(Resource resource, int subresource)
+        {
+            var d3d11Resource = GetD3D11Resource(resource);
+            D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
+        }
 
-            // アドレスを固定。
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                unsafe
-                {
-                    var dataPointer = gcHandle.AddrOfPinnedObject();
-                    var sizeOfT = Marshal.SizeOf(typeof(T));
-                    var destinationPtr = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-                    GetData(resource, subresource, destinationPtr, sizeInBytes);
-                }
-            }
-            finally
-            {
-                gcHandle.Free();
-            }
+        protected override void UpdateSubresource(IntPtr sourcePointer, Resource resource, int subresource)
+        {
+            var d3d11Resource = GetD3D11Resource(resource);
+            D3D11DeviceContext.UpdateSubresource(new SDXDataBox(sourcePointer), d3d11Resource, subresource);
         }
 
         D3D11Resource GetD3D11Resource(Resource resource)
@@ -174,156 +164,6 @@ namespace Libra.Graphics.SharpDX
                 return texture2D.D3D11Texture2D;
 
             throw new ArgumentException("Unknown resource specified: " + resource.GetType(), "resource");
-        }
-
-        void GetData(Resource resource, int level, IntPtr destinationPtr, int sizeInBytes)
-        {
-            if (resource == null) throw new ArgumentNullException("resource");
-
-            var d3d11Resource = GetD3D11Resource(resource);
-
-            var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, level, D3D11MapMode.Read, D3D11MapFlags.None);
-            try
-            {
-                SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
-            }
-            finally
-            {
-                D3D11DeviceContext.UnmapSubresource(d3d11Resource, level);
-            }
-        }
-
-        protected override void SetData<T>(
-            Resource resource, int subresource,
-            T[] data, int startIndex, int elementCount)
-        {
-            if (resource == null) throw new ArgumentNullException("resource");
-            if (data == null) throw new ArgumentNullException("data");
-
-            if (resource.Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Data can not be set from CPU.");
-
-            // TODO
-            // width * height との比較で範囲検査。
-
-            // アドレスを固定。
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                var dataPointer = gcHandle.AddrOfPinnedObject();
-                var sizeOfT = Marshal.SizeOf(typeof(T));
-
-                unsafe
-                {
-                    var sourcePointer = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-                    var sizeInBytesOfData = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-                    SetData(resource, subresource, sourcePointer, sizeInBytesOfData);
-                }
-            }
-            finally
-            {
-                // アドレス固定を解放。
-                gcHandle.Free();
-            }
-        }
-
-        void SetData(Resource resource, int subresource, IntPtr sourcePointer, int sizeInBytes)
-        {
-            var d3d11Resource = GetD3D11Resource(resource);
-
-            if (resource.Usage == ResourceUsage.Default)
-            {
-                // Immutable と Dynamic 以外は UpdateSubresource で更新可能。
-                // Staging は Map/Unmap で行えるので、Default の場合にのみ UpdateSubresource で更新。
-                D3D11DeviceContext.UpdateSubresource(new SDXDataBox(sourcePointer), d3d11Resource, subresource);
-            }
-            else
-            {
-                // TODO
-                //
-                // Dynamic だと D3D11MapMode.Write はエラーになる。
-                // 対応関係を MSDN から把握できないが、どうすべきか。
-                // ひとまず WriteDiscard とする。
-
-                var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, D3D11MapMode.WriteDiscard, D3D11MapFlags.None);
-                try
-                {
-                    SDXUtilities.CopyMemory(dataBox.DataPointer, sourcePointer, sizeInBytes);
-                }
-                finally
-                {
-                    D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
-                }
-            }
-        }
-
-        protected override void SetData<T>(
-            Resource resource, int subresource,
-            T[] data, int sourceIndex, int elementCount,
-            int destinationIndex, SetDataOptions options = SetDataOptions.None)
-        {
-            if (subresource < 0) throw new ArgumentOutOfRangeException("subresource");
-
-            if (resource.Usage != ResourceUsage.Dynamic && resource.Usage != ResourceUsage.Staging)
-                throw new InvalidOperationException("Resource not writable.");
-
-            if (options == SetDataOptions.Discard && resource.Usage != ResourceUsage.Dynamic)
-                throw new InvalidOperationException("Resource.Usage must be dynamic for discard option.");
-
-            if ((options == SetDataOptions.Discard || options == SetDataOptions.NoOverwrite) &&
-                resource is ConstantBuffer)
-                throw new InvalidOperationException("Resource must be not a constant buffer for discard/no overwite option.");
-
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                var dataPointer = gcHandle.AddrOfPinnedObject();
-                var sizeOfT = Marshal.SizeOf(typeof(T));
-
-                unsafe
-                {
-                    var sourcePointer = (IntPtr) ((byte*) dataPointer + sourceIndex * sizeOfT);
-                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-
-                    var d3d11Resource = GetD3D11Resource(resource);
-                    var d3d11MapMode = (D3D11MapMode) options;
-
-                    // メモ
-                    //
-                    // D3D11MapFlags.DoNotWait は、Discard と NoOverwite では使えない。
-                    // D3D11MapFlags 参照のこと。
-
-                    var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, d3d11MapMode, D3D11MapFlags.None);
-                    var destinationPtr = (IntPtr) ((byte*) dataBox.DataPointer + destinationIndex * sizeOfT);
-
-                    try
-                    {
-                        SDXUtilities.CopyMemory(destinationPtr, sourcePointer, sizeInBytes);
-                    }
-                    finally
-                    {
-                        // Unmap
-                        D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
-                    }
-                }
-            }
-            finally
-            {
-                gcHandle.Free();
-            }
-        }
-
-        protected override IntPtr Map(Resource resource, int subresource, DeviceContext.MapMode mapMode)
-        {
-            var d3d11Resource = GetD3D11Resource(resource);
-            var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, (D3D11MapMode) mapMode, D3D11MapFlags.None);
-            return dataBox.DataPointer;
-        }
-
-        protected override void Unmap(Resource resource, int subresource)
-        {
-            var d3d11Resource = GetD3D11Resource(resource);
-            D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
         }
 
         #region IDisposable
