@@ -49,7 +49,15 @@ namespace Libra.Samples.BasicSprites
             var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
             processorProperties["HasHiragana"] = true;
             processorProperties["HasKatakana"] = true;
-            processorProperties["Text"] = "漢字可能";
+            processorProperties["Text"] = "漢字可能(*´∀｀*)ー";
+            processorProperties["OutlineThickness"] = 3.0f;
+            processorProperties["OutlineColor"] = Color.Black;
+            processorProperties["OutlineShape"] = System.Windows.Media.PenLineJoin.Bevel;
+            // TODO
+            // グラデーションが効いていない。
+            processorProperties["UseGradient"] = true;
+            processorProperties["GradientBeginColor"] = Color.Navy;
+            processorProperties["GradientEndColor"] = Color.LightBlue;
 
             var outputPath = compiler.Compile("Fonts/SpriteFont.json", "FontDescriptionProcessor", processorProperties);
 
@@ -97,9 +105,16 @@ namespace Libra.Samples.BasicSprites
             context.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            //spriteBatch.Draw(textureView, Vector2.Zero, Color.White);
-            //spriteBatch.Draw(textureView, new Vector2(128, 0), Color.Red);
-            spriteBatch.DrawString(spriteFont, "ひらがなカタカナ漢字可能", new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(textureView, Vector2.Zero, Color.White);
+            spriteBatch.Draw(textureView, new Vector2(128, 0), Color.Red);
+            spriteBatch.Draw(textureView, new Vector2(128 * 2, 0), null, Color.White,
+                0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally);
+            spriteBatch.Draw(textureView, new Vector2(128 * 3, 0), null, Color.White,
+                0, Vector2.Zero, 1, SpriteEffects.FlipVertically);
+            spriteBatch.Draw(textureView, new Vector2(128 * 4, 0), null, Color.White,
+                0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically);
+            spriteBatch.DrawString(spriteFont, "ひらがなカタカナ漢字可能(*´∀｀*)", new Vector2(0, 128), Color.White);
+            spriteBatch.DrawString(spriteFont, "スケール", new Vector2(0, 128 + 64), Color.White, 0, Vector2.Zero, 0.5f);
             //spriteBatch.DrawString(spriteFont, "RGB", new Vector2(0, 140), Color.Red);
             spriteBatch.End();
 

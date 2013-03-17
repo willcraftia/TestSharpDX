@@ -37,6 +37,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="SharpDX">
       <HintPath>..\..\..\SharpDX\SharpDX-Full-2.4.2\Bin\Standard-net40\SharpDX.dll</HintPath>
     </Reference>

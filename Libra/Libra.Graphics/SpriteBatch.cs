@@ -755,19 +755,19 @@ namespace Libra.Graphics
         }
 
         public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color,
-            float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
+            float rotation, Vector2 origin, float scale, SpriteEffects effects = SpriteEffects.None, float depth = 0.0f)
         {
             DrawString(spriteFont, text, position, color, rotation, origin, new Vector2(scale), effects, depth);
         }
 
         public void DrawString(SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
-            float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
+            float rotation, Vector2 origin, float scale, SpriteEffects effects = SpriteEffects.None, float depth = 0.0f)
         {
             DrawString(spriteFont, text, position, color, rotation, origin, new Vector2(scale), effects, depth);
         }
 
         public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color color,
-            float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects, float depth)
+            float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects = SpriteEffects.None, float depth = 0.0f)
         {
             if (spriteFont == null) throw new ArgumentNullException("spriteFont");
             if (text == null) throw new ArgumentNullException("text");
