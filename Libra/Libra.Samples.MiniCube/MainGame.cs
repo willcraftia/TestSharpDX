@@ -55,7 +55,7 @@ namespace Libra.Samples.MiniCube
 
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Immutable;
-            vertexBuffer.Initialize(new []
+            vertexBuffer.Initialize(new[]
                 {
                     new InputPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
                     new InputPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 0, 255) },
