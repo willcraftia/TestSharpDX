@@ -43,8 +43,15 @@ namespace Libra.Samples.BasicSprites
         {
             var compilerFactory = new ContentCompilerFactory(AppDomain.CurrentDomain);
             compilerFactory.SourceRootDirectory = "../../";
+
             var compiler = compilerFactory.CreateCompiler();
-            var outputPath = compiler.Compile("Fonts/SpriteFont.json", "FontDescriptionProcessor");
+
+            var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
+            processorProperties["HasHiragana"] = true;
+            processorProperties["HasKatakana"] = true;
+            processorProperties["Text"] = "漢字可能";
+
+            var outputPath = compiler.Compile("Fonts/SpriteFont.json", "FontDescriptionProcessor", processorProperties);
 
             base.Initialize();
         }
@@ -54,10 +61,6 @@ namespace Libra.Samples.BasicSprites
             texture = Device.CreateTexture2D();
             texture.Usage = ResourceUsage.Immutable;
             texture.Initialize("Textures/Libra.png");
-            //texture.Width = 1;
-            //texture.Height = 1;
-            //texture.Initialize();
-            //texture.SetData(Device.ImmediateContext, Color.White);
 
             textureView = Device.CreateShaderResourceView();
             textureView.Initialize(texture);
@@ -68,20 +71,6 @@ namespace Libra.Samples.BasicSprites
             var loader = loaderFactory.CreateLoader();
 
             spriteFont = loader.Load<SpriteFont>("Fonts/SpriteFont");
-
-            {
-                var texture2D = spriteFont.texture.Resource as Texture2D;
-
-                using (var stream = System.IO.File.Create("Test.png"))
-                {
-                    texture2D.Save(Device.ImmediateContext, stream);
-                }
-
-                var colors = new Color[texture2D.Width * texture2D.Height];
-                texture2D.GetData(Device.ImmediateContext, colors);
-
-                Console.WriteLine();
-            }
 
             keyboard = platform.CreateKeyboard();
 
@@ -110,8 +99,8 @@ namespace Libra.Samples.BasicSprites
             spriteBatch.Begin();
             //spriteBatch.Draw(textureView, Vector2.Zero, Color.White);
             //spriteBatch.Draw(textureView, new Vector2(128, 0), Color.Red);
-            spriteBatch.Draw(spriteFont.texture, Vector2.Zero, Color.White);
-            //spriteBatch.DrawString(spriteFont, "ABCDEFG", new Vector2(0, 128), Color.White);
+            spriteBatch.DrawString(spriteFont, "ひらがなカタカナ漢字可能", new Vector2(0, 0), Color.White);
+            //spriteBatch.DrawString(spriteFont, "RGB", new Vector2(0, 140), Color.Red);
             spriteBatch.End();
 
             base.Draw(gameTime);

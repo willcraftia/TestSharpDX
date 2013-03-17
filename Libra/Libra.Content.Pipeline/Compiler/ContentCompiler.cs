@@ -39,7 +39,7 @@ namespace Libra.Content.Pipeline.Compiler
 
         public string Compile(
             string sourcePath,
-            string processorName, Dictionary<string, string> processorProperties = null)
+            string processorName, Dictionary<string, object> processorProperties = null)
         {
             if (string.IsNullOrEmpty(processorName))
                 throw new ArgumentException("processorName must be not null/empty.", "processorName");
@@ -62,7 +62,7 @@ namespace Libra.Content.Pipeline.Compiler
             }
         }
 
-        IContentProcessor CreateProcessor(string name, Dictionary<string, string> propertyMap)
+        IContentProcessor CreateProcessor(string name, Dictionary<string, object> propertyMap)
         {
             var type = factory.ProcessorTypes[name];
             var processor = Activator.CreateInstance(type) as IContentProcessor;
