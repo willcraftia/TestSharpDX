@@ -9,10 +9,23 @@ namespace Libra.Graphics
 {
     public abstract class DeviceContext : IDisposable
     {
-        #region DllImport
+        #region MappedSubresource
 
-        [DllImport("kernel32.dll")]
-        static extern void CopyMemory(IntPtr destinationPointer, IntPtr sourcePointer, int size);
+        internal protected struct MappedSubresource
+        {
+            public IntPtr Pointer;
+
+            public int RowPitch;
+
+            public int DepthPitch;
+
+            public MappedSubresource(IntPtr pointer, int rowPitch, int depthPitch)
+            {
+                Pointer = pointer;
+                RowPitch = rowPitch;
+                DepthPitch = depthPitch;
+            }
+        }
 
         #endregion
 
@@ -89,205 +102,13 @@ namespace Libra.Graphics
 
         public abstract void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0);
 
-        internal protected abstract IntPtr Map(Resource resource, int subresource, MapMode mapMode);
+        internal protected abstract MappedSubresource Map(Resource resource, int subresource, MapMode mapMode);
 
         internal protected abstract void Unmap(Resource resource, int subresource);
 
-        internal protected abstract void UpdateSubresource(IntPtr sourcePointer, Resource resource, int subresource);
-
-        internal void GetData<T>(Resource resource, int subresource, T[] data, int startIndex, int elementCount) where T : struct
-        {
-            if (resource == null) throw new ArgumentNullException("resource");
-            if (data == null) throw new ArgumentNullException("data");
-
-            if (resource.Usage != ResourceUsage.Staging)
-                throw new InvalidOperationException("Data can not be get from CPU.");
-
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                unsafe
-                {
-                    var dataPointer = gcHandle.AddrOfPinnedObject();
-                    var sizeOfT = Marshal.SizeOf(typeof(T));
-                    var destinationPointer = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-
-                    var sourcePointer = Map(resource, subresource, MapMode.Read);
-                    try
-                    {
-                        CopyMemory(destinationPointer, sourcePointer, sizeInBytes);
-                    }
-                    finally
-                    {
-                        Unmap(resource, subresource);
-                    }
-                }
-            }
-            finally
-            {
-                gcHandle.Free();
-            }
-        }
-
-        internal void SetData<T>(Resource resource, int subresource, T data) where T : struct
-        {
-            if (resource == null) throw new ArgumentNullException("resource");
-
-            if (resource.Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Data can not be set from CPU.");
-
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                var sourcePointer = gcHandle.AddrOfPinnedObject();
-
-                unsafe
-                {
-                    if (resource.Usage == ResourceUsage.Default)
-                    {
-                        // TODO
-                        //
-                        // Immutable と Dynamic 以外は UpdateSubresource で更新可能。
-                        // Staging は Map/Unmap で行えるので、Default の場合にのみ UpdateSubresource で更新。
-                        // それで良いのか？
-                        UpdateSubresource(sourcePointer, resource, subresource);
-                    }
-                    else
-                    {
-                        var sizeInBytes = Marshal.SizeOf(typeof(T));
-
-                        // TODO
-                        //
-                        // Dynamic だと D3D11MapMode.Write はエラーになる。
-                        // 対応関係を MSDN から把握できないが、どうすべきか。
-                        // ひとまず WriteDiscard とする。
-
-                        var destinationPointer = Map(resource, subresource, MapMode.WriteDiscard);
-                        try
-                        {
-                            CopyMemory(destinationPointer, sourcePointer, sizeInBytes);
-                        }
-                        finally
-                        {
-                            Unmap(resource, subresource);
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                gcHandle.Free();
-            }
-        }
-
-        internal void SetData<T>(Resource resource, int subresource, T[] data, int startIndex, int elementCount) where T : struct
-        {
-            if (resource == null) throw new ArgumentNullException("resource");
-            if (data == null) throw new ArgumentNullException("data");
-
-            if (resource.Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Data can not be set from CPU.");
-
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                var dataPointer = gcHandle.AddrOfPinnedObject();
-                var sizeOfT = Marshal.SizeOf(typeof(T));
-
-                unsafe
-                {
-                    var sourcePointer = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-
-                    if (resource.Usage == ResourceUsage.Default)
-                    {
-                        // TODO
-                        //
-                        // Immutable と Dynamic 以外は UpdateSubresource で更新可能。
-                        // Staging は Map/Unmap で行えるので、Default の場合にのみ UpdateSubresource で更新。
-                        // それで良いのか？
-                        UpdateSubresource(sourcePointer, resource, subresource);
-                    }
-                    else
-                    {
-                        var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-
-                        // TODO
-                        //
-                        // Dynamic だと D3D11MapMode.Write はエラーになる。
-                        // 対応関係を MSDN から把握できないが、どうすべきか。
-                        // ひとまず WriteDiscard とする。
-
-                        var destinationPointer = Map(resource, subresource, MapMode.WriteDiscard);
-                        try
-                        {
-                            CopyMemory(destinationPointer, sourcePointer, sizeInBytes);
-                        }
-                        finally
-                        {
-                            Unmap(resource, subresource);
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                gcHandle.Free();
-            }
-        }
-
-        internal void SetData<T>(
-            Resource resource, int subresource,
-            T[] data, int sourceIndex, int elementCount,
-            int destinationIndex, SetDataOptions options = SetDataOptions.None) where T : struct
-        {
-            if (subresource < 0) throw new ArgumentOutOfRangeException("subresource");
-
-            if (resource.Usage != ResourceUsage.Dynamic && resource.Usage != ResourceUsage.Staging)
-                throw new InvalidOperationException("Resource not writable.");
-
-            if (options == SetDataOptions.Discard && resource.Usage != ResourceUsage.Dynamic)
-                throw new InvalidOperationException("Resource.Usage must be dynamic for discard option.");
-
-            if ((options == SetDataOptions.Discard || options == SetDataOptions.NoOverwrite) &&
-                resource is ConstantBuffer)
-                throw new InvalidOperationException("Resource must be not a constant buffer for discard/no overwite option.");
-
-            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                var dataPointer = gcHandle.AddrOfPinnedObject();
-                var sizeOfT = Marshal.SizeOf(typeof(T));
-
-                unsafe
-                {
-                    var sourcePointer = (IntPtr) ((byte*) dataPointer + sourceIndex * sizeOfT);
-                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-
-                    // メモ
-                    //
-                    // D3D11MapFlags.DoNotWait は、Discard と NoOverwite では使えない。
-                    // D3D11MapFlags 参照のこと。
-
-                    var mappedPointer = Map(resource, subresource, (MapMode) options);
-                    var destinationPtr = (IntPtr) ((byte*) mappedPointer + destinationIndex * sizeOfT);
-
-                    try
-                    {
-                        CopyMemory(destinationPtr, sourcePointer, sizeInBytes);
-                    }
-                    finally
-                    {
-                        // Unmap
-                        Unmap(resource, subresource);
-                    }
-                }
-            }
-            finally
-            {
-                gcHandle.Free();
-            }
-        }
+        internal protected abstract void UpdateSubresource(
+            Resource destinationResource, int destinationSubresource, Box? destinationBox,
+            IntPtr sourcePointer, int sourceRowPitch, int sourceDepthPitch);
 
         protected virtual void OnDisposing(object sender, EventArgs e)
         {

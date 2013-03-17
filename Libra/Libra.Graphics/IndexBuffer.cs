@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Runtime.InteropServices;
 
 #endregion
 
@@ -43,10 +44,7 @@ namespace Libra.Graphics
 
         protected abstract void InitializeCore<T>(T[] data) where T : struct;
 
-        public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
-        {
-            context.GetData(this, 0, data, startIndex, elementCount);
-        }
+        public abstract void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct;
 
         public void GetData<T>(DeviceContext context, T[] data) where T : struct
         {
@@ -55,7 +53,48 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
-            context.SetData(this, 0, data, startIndex, elementCount);
+            if (data == null) throw new ArgumentNullException("data");
+
+            if (Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Data can not be set from CPU.");
+
+            var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            try
+            {
+                var dataPointer = gcHandle.AddrOfPinnedObject();
+                var sizeOfT = Marshal.SizeOf(typeof(T));
+
+                var sourcePointer = (IntPtr) (dataPointer + startIndex * sizeOfT);
+
+                if (Usage == ResourceUsage.Default)
+                {
+                    context.UpdateSubresource(this, 0, null, sourcePointer, 0, 0);
+                }
+                else
+                {
+                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+
+                    // TODO
+                    //
+                    // Dynamic だと D3D11MapMode.Write はエラーになる。
+                    // 対応関係を MSDN から把握できないが、どうすべきか。
+                    // ひとまず WriteDiscard とする。
+
+                    var mappedResource = context.Map(this, 0, DeviceContext.MapMode.WriteDiscard);
+                    try
+                    {
+                        GraphicsHelper.CopyMemory(mappedResource.Pointer, sourcePointer, sizeInBytes);
+                    }
+                    finally
+                    {
+                        context.Unmap(this, 0);
+                    }
+                }
+            }
+            finally
+            {
+                gcHandle.Free();
+            }
         }
 
         public void SetData<T>(DeviceContext context, params T[] data) where T : struct

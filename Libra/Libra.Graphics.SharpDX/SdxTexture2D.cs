@@ -65,6 +65,10 @@ namespace Libra.Graphics.SharpDX
 
         public override void Initialize(Stream stream)
         {
+            // TODO
+            //
+            // ImageLoadInformation で明示しないと Usage が Default 固定になってしまう。
+
             D3D11Texture2D = D3D11Resource.FromStream<D3D11Texture2D>(D3D11Device, stream, (int) stream.Length);
 
             var description = D3D11Texture2D.Description;
@@ -106,7 +110,7 @@ namespace Libra.Graphics.SharpDX
                 h = Height >> level;
             }
 
-            var description = new D3D11Texture2DDescription
+            var stagingDescription = new D3D11Texture2DDescription
             {
                 Width = w,
                 Height = h,
@@ -137,29 +141,31 @@ namespace Libra.Graphics.SharpDX
             }
 
             var d3dDeviceContext = (context as SdxDeviceContext).D3D11DeviceContext;
-            using (var staging = new D3D11Texture2D(D3D11Device, description))
+            using (var staging = new D3D11Texture2D(D3D11Device, stagingDescription))
             {
-                d3dDeviceContext.CopySubresourceRegion(D3D11Texture2D, level, d3d11ResourceRegion, staging, 1);
-
+                d3dDeviceContext.CopySubresourceRegion(D3D11Texture2D, level, d3d11ResourceRegion, staging, 0);
+                
                 var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
                 try
                 {
-                    unsafe
-                    {
-                        var dataPointer = gcHandle.AddrOfPinnedObject();
-                        var sizeOfT = Marshal.SizeOf(typeof(T));
-                        var destinationPtr = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-                        var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+                    var dataPointer = gcHandle.AddrOfPinnedObject();
+                    var sizeOfT = Marshal.SizeOf(typeof(T));
+                    var destinationPtr = (IntPtr) (dataPointer + startIndex * sizeOfT);
+                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
 
-                        var dataBox = d3dDeviceContext.MapSubresource(staging, level, D3D11MapMode.Read, D3D11MapFlags.None);
-                        try
-                        {
-                            SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
-                        }
-                        finally
-                        {
-                            d3dDeviceContext.UnmapSubresource(staging, level);
-                        }
+                    var dataBox = d3dDeviceContext.MapSubresource(staging, 0, D3D11MapMode.Read, D3D11MapFlags.None);
+                    try
+                    {
+                        // TODO
+                        //
+                        // データ取得の場合、RowPitch を気にせずに取得できる。
+                        // MipLevels = 1 固定でステージングに複製しているからなのだろうか？
+
+                        SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
+                    }
+                    finally
+                    {
+                        d3dDeviceContext.UnmapSubresource(staging, 0);
                     }
                 }
                 finally

@@ -649,12 +649,13 @@ namespace Libra.Graphics
                 // SharpDX ToolKit によると、x64 では、
                 // Map されたリソースへ直接書き込むと極端に低速になるとのこと。
                 // 要調査。
+                // 恐らく、64 ビット ポインタであるから、ではないだろうか？
 
                 var mappedBuffer = context.Map(contextResoruces.VertexBuffer, 0, mapMode);
                 unsafe
                 {
-                    var vs = (InputPositionColorTexture*) mappedBuffer;
-                    var vertices = (InputPositionColorTexture*) mappedBuffer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
+                    var vs = (InputPositionColorTexture*) mappedBuffer.Pointer;
+                    var vertices = (InputPositionColorTexture*) mappedBuffer.Pointer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
 
                     for (int i = 0; i < batchSize; i++)
                     {

@@ -9,6 +9,7 @@ using D3D11DeviceContextType = SharpDX.Direct3D11.DeviceContextType;
 using D3D11MapFlags = SharpDX.Direct3D11.MapFlags;
 using D3D11MapMode = SharpDX.Direct3D11.MapMode;
 using D3D11Resource = SharpDX.Direct3D11.Resource;
+using D3D11ResourceRegion = SharpDX.Direct3D11.ResourceRegion;
 using SDXColor4 = SharpDX.Color4;
 using SDXDataBox = SharpDX.DataBox;
 using SDXUtilities = SharpDX.Utilities;
@@ -130,11 +131,11 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
         }
 
-        protected override IntPtr Map(Resource resource, int subresource, DeviceContext.MapMode mapMode)
+        protected override MappedSubresource Map(Resource resource, int subresource, MapMode mapMode)
         {
             var d3d11Resource = GetD3D11Resource(resource);
             var dataBox = D3D11DeviceContext.MapSubresource(d3d11Resource, subresource, (D3D11MapMode) mapMode, D3D11MapFlags.None);
-            return dataBox.DataPointer;
+            return new MappedSubresource(dataBox.DataPointer, dataBox.RowPitch, dataBox.SlicePitch);
         }
 
         protected override void Unmap(Resource resource, int subresource)
@@ -143,10 +144,26 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.UnmapSubresource(d3d11Resource, subresource);
         }
 
-        protected override void UpdateSubresource(IntPtr sourcePointer, Resource resource, int subresource)
+        protected override void UpdateSubresource(
+            Resource destinationResource, int destinationSubresource, Box? destinationBox,
+            IntPtr sourcePointer, int sourceRowPitch, int sourceDepthPitch)
         {
-            var d3d11Resource = GetD3D11Resource(resource);
-            D3D11DeviceContext.UpdateSubresource(new SDXDataBox(sourcePointer), d3d11Resource, subresource);
+            var d3d11Resource = GetD3D11Resource(destinationResource);
+            D3D11ResourceRegion? d3d11ResourceRegion = null;
+            if (destinationBox.HasValue)
+            {
+                d3d11ResourceRegion = new D3D11ResourceRegion
+                {
+                    Left = destinationBox.Value.Left,
+                    Top = destinationBox.Value.Top,
+                    Front = destinationBox.Value.Front,
+                    Right = destinationBox.Value.Right,
+                    Bottom = destinationBox.Value.Bottom,
+                    Back = destinationBox.Value.Back
+                };
+            }
+            D3D11DeviceContext.UpdateSubresource(
+                d3d11Resource, destinationSubresource, d3d11ResourceRegion, sourcePointer, sourceRowPitch, sourceDepthPitch);
         }
 
         D3D11Resource GetD3D11Resource(Resource resource)
