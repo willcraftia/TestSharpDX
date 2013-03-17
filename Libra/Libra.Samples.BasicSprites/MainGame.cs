@@ -37,6 +37,8 @@ namespace Libra.Samples.BasicSprites
         {
             platform = new SdxFormGamePlatform(this);
             graphicsManager = new GraphicsManager(this);
+            graphicsManager.PreferredBackBufferWidth = 800;
+            graphicsManager.PreferredBackBufferHeight = 300;
         }
 
         protected override void Initialize()
