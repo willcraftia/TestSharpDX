@@ -125,7 +125,7 @@ namespace Libra.Games.SharpDX
             if (game == null) throw new ArgumentNullException("game");
 
             this.game = game;
-            Form = form ?? new SDXWRenderForm();
+            Form = form ?? new SDXWRenderForm(game.GetType().Name);
             Form.Activated += OnActivated;
             Form.Deactivate += OnDeactivated;
             Form.FormClosing += OnClosing;
