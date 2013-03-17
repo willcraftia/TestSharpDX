@@ -621,7 +621,7 @@ namespace Libra.Graphics
             var inverseTextureSize = new Vector2(1.0f / textureSize.X, 1.0f / textureSize.Y);
 
             int count = spriteCount;
-            int baseSpriteIndex = 0;
+            int baseSpriteIndex = startIndex;
 
             while (0 < count)
             {
