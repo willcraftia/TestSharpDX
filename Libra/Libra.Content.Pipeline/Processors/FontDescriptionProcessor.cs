@@ -213,7 +213,7 @@ namespace Libra.Content.Pipeline.Processors
                     filename = filename.Trim(new char[] { '"' });
                     filename = filename.Trim(); // '"'内の余分な余白も取り除く
 
-                    AddCharacters(filename);
+                    AddCharactersFromFile(filename);
                 }
             }
 
@@ -226,7 +226,7 @@ namespace Libra.Content.Pipeline.Processors
         /// 指定されたテキストファイル内の文字を追加する
         /// </summary>
         /// <param name="filename">テキストファイル名</param>
-        void AddCharacters(string filename)
+        void AddCharactersFromFile(string filename)
         {
             // 指定されたファイルから文字列を読み込む
             // FontDescription.Charctarsに追加する
