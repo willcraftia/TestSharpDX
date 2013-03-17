@@ -21,7 +21,7 @@ namespace Libra.Graphics
 
             public char Character;
 
-            public Rectangle BoundsInTexture;
+            public Rectangle Bounds;
             
             public Rectangle Cropping;
             
@@ -37,7 +37,7 @@ namespace Libra.Graphics
 
             public override string ToString()
             {
-                return "{Character:" + Character + ", Bounds:" + BoundsInTexture + ", Cropping:" + Cropping +
+                return "{Character:" + Character + ", Bounds:" + Bounds + ", Cropping:" + Cropping +
                     ", LeftSideBearing:" + LeftSideBearing + ", RightSideBearing" + ", Width:" + Width + "}";
             }
 
@@ -126,7 +126,7 @@ namespace Libra.Graphics
             {
                 var glyph = new Glyph
                 {
-                    BoundsInTexture = bounds[i],
+                    Bounds = bounds[i],
                     Cropping = cropping[i],
                     Character = characters[i],
                     LeftSideBearing = kerning[i].X,
@@ -318,7 +318,7 @@ namespace Libra.Graphics
 
                 if (effects != SpriteEffects.None)
                 {
-                    var glyphSize = new Vector2(currentGlyph.BoundsInTexture.Width, currentGlyph.BoundsInTexture.Height);
+                    var glyphSize = new Vector2(currentGlyph.Bounds.Width, currentGlyph.Bounds.Height);
 
                     offset += glyphSize * AxisIsMirrored[mirrorBits];
                 }
@@ -326,7 +326,7 @@ namespace Libra.Graphics
                 p.X += currentGlyph.Cropping.X;
                 p.Y += currentGlyph.Cropping.Y;
 
-                spriteBatch.Draw(texture, position, currentGlyph.BoundsInTexture, color, rotation, offset, scale, effects, depth);
+                spriteBatch.Draw(texture, position, currentGlyph.Bounds, color, rotation, offset, scale, effects, depth);
             }
         }
 

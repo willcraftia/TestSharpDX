@@ -124,6 +124,15 @@ namespace Libra.Graphics
                 Width = rectangle.Width;
                 Height = rectangle.Height;
             }
+
+            #region ToString
+
+            public override string ToString()
+            {
+                return "{X:" + X + ", Y:" + Y + ", Width:" + Width + ", Height:" + Height + "}";
+            }
+
+            #endregion
         }
 
         #endregion
@@ -384,94 +393,53 @@ namespace Libra.Graphics
             Draw(texture, destination, null, color, 0, Vector2.Zero, 0, 0);
         }
 
-        public void Draw(
-            ShaderResourceView texture,
-            Vector2 position,
-            Nullable<Rectangle> sourceRectangle,
-            Color color)
+        public void Draw(ShaderResourceView texture, Vector2 position, Rectangle? sourceRectangle, Color color)
         {
             var destination = new RectangleF(position.X, position.Y, 1, 1);
 
             Draw(texture, destination, sourceRectangle, color, 0, Vector2.Zero, 0, 0);
         }
 
-        public void Draw(
-            ShaderResourceView texture,
-            Vector2 position,
-            Nullable<Rectangle> sourceRectangle,
-            Color color,
-            float rotation,
-            Vector2 origin,
-            float scale,
-            SpriteEffects effects = SpriteEffects.None,
-            float depth = 0)
+        public void Draw(ShaderResourceView texture, Vector2 position, Rectangle? sourceRectangle, Color color,
+            float rotation, Vector2 origin, float scale, SpriteEffects effects = SpriteEffects.None, float depth = 0)
         {
             var destination = new RectangleF(position.X, position.Y, scale, scale);
 
             Draw(texture, destination, sourceRectangle, color, rotation, origin, depth, (int) effects);
         }
 
-        public void Draw(
-            ShaderResourceView texture,
-            Vector2 position,
-            Nullable<Rectangle> sourceRectangle,
-            Color color,
-            float rotation,
-            Vector2 origin,
-            Vector2 scale,
-            SpriteEffects effects = SpriteEffects.None,
-            float depth = 0)
+        public void Draw(ShaderResourceView texture, Vector2 position, Rectangle? sourceRectangle, Color color,
+            float rotation, Vector2 origin, Vector2 scale, SpriteEffects effects = SpriteEffects.None, float depth = 0)
         {
             var destination = new RectangleF(position.X, position.Y, scale.X, scale.Y);
 
             Draw(texture, destination, sourceRectangle, color, rotation, origin, depth, (int) effects);
         }
 
-        public void Draw(
-            ShaderResourceView texture,
-            Rectangle destinationRectangle,
-            Color color)
+        public void Draw(ShaderResourceView texture, Rectangle destinationRectangle, Color color)
         {
             var destination = new RectangleF(destinationRectangle);
 
             Draw(texture, destination, null, color, 0, Vector2.Zero, 0, DestSizeInPixels);
         }
 
-        public void Draw(
-            ShaderResourceView texture,
-            Rectangle destinationRectangle,
-            Nullable<Rectangle> sourceRectangle,
-            Color color)
+        public void Draw(ShaderResourceView texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color)
         {
             var destination = new RectangleF(destinationRectangle);
 
             Draw(texture, destination, sourceRectangle, color, 0, Vector2.Zero, 0, DestSizeInPixels);
         }
 
-        public void Draw(
-            ShaderResourceView texture,
-            Rectangle destinationRectangle,
-            Nullable<Rectangle> sourceRectangle,
-            Color color,
-            float rotation,
-            Vector2 origin,
-            SpriteEffects effects = SpriteEffects.None,
-            float depth = 0)
+        public void Draw(ShaderResourceView texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color,
+            float rotation, Vector2 origin, SpriteEffects effects = SpriteEffects.None, float depth = 0)
         {
             var destination = new RectangleF(destinationRectangle);
 
             Draw(texture, destination, sourceRectangle, color, rotation, origin, depth, ((int) effects) | DestSizeInPixels);
         }
 
-        void Draw(
-            ShaderResourceView texture,
-            RectangleF destination,
-            Nullable<Rectangle> sourceRectangle,
-            Color color,
-            float rotation,
-            Vector2 origin,
-            float depth,
-            int flags)
+        void Draw(ShaderResourceView texture, RectangleF destination, Rectangle? sourceRectangle, Color color,
+            float rotation, Vector2 origin, float depth, int flags)
         {
             if (texture == null) throw new ArgumentNullException("texture");
             if (!(texture.Resource is Texture2D))
