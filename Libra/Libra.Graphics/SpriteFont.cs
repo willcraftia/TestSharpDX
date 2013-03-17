@@ -308,25 +308,25 @@ namespace Libra.Graphics
                 }
                 offset.X += currentGlyph.LeftSideBearing;
                 
-                var p = offset;
+                var finalOffset = offset;
+
+                finalOffset.X += currentGlyph.Cropping.X;
+                finalOffset.Y += currentGlyph.Cropping.Y;
 
                 var axisDirection = AxisDirections[mirrorBits];
-                p.X *= axisDirection.X;
-                p.Y *= axisDirection.Y;
+                finalOffset.X *= axisDirection.X;
+                finalOffset.Y *= axisDirection.Y;
 
-                p += baseOffset;
+                finalOffset += baseOffset;
 
                 if (effects != SpriteEffects.None)
                 {
                     var glyphSize = new Vector2(currentGlyph.Bounds.Width, currentGlyph.Bounds.Height);
 
-                    offset += glyphSize * AxisIsMirrored[mirrorBits];
+                    finalOffset += glyphSize * AxisIsMirrored[mirrorBits];
                 }
 
-                p.X += currentGlyph.Cropping.X;
-                p.Y += currentGlyph.Cropping.Y;
-
-                spriteBatch.Draw(texture, position, currentGlyph.Bounds, color, rotation, offset, scale, effects, depth);
+                spriteBatch.Draw(texture, position, currentGlyph.Bounds, color, rotation, finalOffset, scale, effects, depth);
             }
         }
 
