@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 namespace Libra
 {
     [Serializable]
-    [StructLayout(LayoutKind.Sequential, Pack = 4)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct Vector2 : IEquatable<Vector2>
     {
         public static readonly Vector2 Zero = new Vector2();
