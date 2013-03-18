@@ -11,12 +11,17 @@ namespace Libra.Content.Pipeline.Compiler
     {
         ContentTypeWriterManager manager;
 
-        internal ContentWriter(Stream stream, ContentTypeWriterManager manager)
+        // .NET 4.0 の BinaryWriter には引数 leaveOpen による制御がない。
+
+        bool leaveOpen;
+
+        internal ContentWriter(ContentTypeWriterManager manager, Stream stream, bool leaveOpen = false)
             : base(stream)
         {
             if (manager == null) throw new ArgumentNullException("manager");
 
             this.manager = manager;
+            this.leaveOpen = leaveOpen;
         }
 
         public void WriteObject<T>(T value)
@@ -29,6 +34,14 @@ namespace Libra.Content.Pipeline.Compiler
         {
             if (typeWriter == null) throw new ArgumentNullException("typeWriter");
             typeWriter.Write(this, value);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            // leaveOpen = false ならば元ストリームを閉じる。
+
+            if (disposing && !leaveOpen)
+                OutStream.Close();
         }
     }
 }

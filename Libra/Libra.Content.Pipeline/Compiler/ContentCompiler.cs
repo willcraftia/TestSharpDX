@@ -72,7 +72,20 @@ namespace Libra.Content.Pipeline.Compiler
             return Write(sourcePath, artifact);
         }
 
-        // ストリーム指定バージョンは、呼び出し元がそれらの解決を担う。
+        // ストリーム指定バージョンは、呼び出し元が入力元や出力先の解決を担う。
+
+        public void Compile<TSerializer, TProcessor>(string sourcePath, Stream outputStream,
+            Dictionary<string, object> processorProperties = null)
+            where TSerializer : IContentSerializer, new()
+            where TProcessor : IContentProcessor, new()
+        {
+            var serializer = new TSerializer();
+
+            var processor = new TProcessor();
+            PopulateProperties(processor, processorProperties);
+
+            Compile(sourcePath, serializer, processor);
+        }
 
         public void Compile<TSerializer, TProcessor>(Stream inputStream, Stream outputStream,
             Dictionary<string, object> processorProperties = null)
@@ -85,6 +98,21 @@ namespace Libra.Content.Pipeline.Compiler
             PopulateProperties(processor, processorProperties);
 
             Compile(inputStream, outputStream, serializer, processor);
+        }
+
+        public void Compile(string sourcePath, Stream outputStream,
+            string serializerName, string processorName, Dictionary<string, object> processorProperties = null)
+        {
+            if (string.IsNullOrEmpty(serializerName))
+                throw new ArgumentException("serializerName must be not null/empty.", "serializerName");
+            if (string.IsNullOrEmpty(processorName))
+                throw new ArgumentException("processorName must be not null/empty.", "processorName");
+
+            var serializer = GetSerializer(serializerName);
+
+            var processor = CreateProcessor(processorName, processorProperties);
+
+            Compile(sourcePath, outputStream, serializer, processor);
         }
 
         public void Compile(Stream inputStream, Stream outputStream,
@@ -102,6 +130,16 @@ namespace Libra.Content.Pipeline.Compiler
             Compile(inputStream, outputStream, serializer, processor);
         }
 
+        public void Compile(string sourcePath, Stream outputStream, IContentSerializer serializer, IContentProcessor processor)
+        {
+            if (string.IsNullOrEmpty(sourcePath)) throw new ArgumentException("sourcePath must be not null/empty.", "sourcePath");
+
+            using (var inputStream = OpenSourceStream(sourcePath))
+            {
+                Compile(inputStream, outputStream, serializer, processor);
+            }
+        }
+
         public void Compile(Stream inputStream, Stream outputStream, IContentSerializer serializer, IContentProcessor processor)
         {
             if (inputStream == null) throw new ArgumentNullException("inputStream");
@@ -116,14 +154,21 @@ namespace Libra.Content.Pipeline.Compiler
             var artifact = processor.Process(source);
 
             // バイナリ永続化。
-            Write(outputStream, artifact);
+            // クラス外部から指定されたストリームであるため leaveOpen = true とし、
+            // ストリームの破棄は呼び出し元の責務とする。
+            Write(outputStream, artifact, true);
+        }
+
+        Stream OpenSourceStream(string path)
+        {
+            var targetPath = (factory.SourceRootDirectory == null) ? path : Path.Combine(factory.SourceRootDirectory, path);
+
+            return File.OpenRead(targetPath);
         }
 
         object DeserializeSource(string path, IContentSerializer serializer)
         {
-            var targetPath = (factory.SourceRootDirectory == null) ? path : Path.Combine(factory.SourceRootDirectory, path);
-
-            using (var stream = File.OpenRead(targetPath))
+            using (var stream = OpenSourceStream(path))
             {
                 return serializer.Deserialize(stream);
             }
@@ -189,9 +234,12 @@ namespace Libra.Content.Pipeline.Compiler
             return outputPath;
         }
 
-        void Write(Stream stream, object content)
+        void Write(Stream stream, object content, bool leaveOpen = false)
         {
-            using (var writer = new ContentWriter(stream, factory.TypeWriters))
+            // 内部管理のストリームならば leaveOpen = false。
+            // クラス利用側が指定したストリームならば leaveOpen = true。
+
+            using (var writer = new ContentWriter(factory.TypeWriters, stream, leaveOpen))
             {
                 writer.WriteObject(content);
                 writer.Flush();
