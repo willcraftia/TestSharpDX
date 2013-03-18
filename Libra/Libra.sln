@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.ContentCompil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.Particles3D", "Libra.Samples.Particles3D\Libra.Samples.Particles3D.csproj", "{8DB72F28-F6C3-4B60-A244-E78612D4E090}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Graphics.Assimp", "Libra.Graphics.Assimp\Libra.Graphics.Assimp.csproj", "{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,6 +229,16 @@ Global
 		{8DB72F28-F6C3-4B60-A244-E78612D4E090}.Release|Mixed Platforms.Build.0 = Release|x86
 		{8DB72F28-F6C3-4B60-A244-E78612D4E090}.Release|x86.ActiveCfg = Release|x86
 		{8DB72F28-F6C3-4B60-A244-E78612D4E090}.Release|x86.Build.0 = Release|x86
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{877F3958-19B4-46E1-9CEF-B73EE3E4CA65}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
