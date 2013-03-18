@@ -81,11 +81,16 @@
     <Compile Include="TextureContent.cs" />
     <Compile Include="Processors\TextureProcessorOutputFormat.cs" />
     <Compile Include="Compiler\Vector3Writer.cs" />
+    <Compile Include="Utilities\AdhocContentLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libra.Content.Serialization\Libra.Content.Serialization.csproj">
       <Project>{8358BC02-FE12-44B5-8BBC-6328802868E0}</Project>
       <Name>Libra.Content.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Content\Libra.Content.csproj">
+      <Project>{E73ADB43-7144-448C-B841-620A0A903600}</Project>
+      <Name>Libra.Content</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libra.Graphics\Libra.Graphics.csproj">
       <Project>{F42E063A-DBE6-430D-BC88-3A88F33754FD}</Project>

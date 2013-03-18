@@ -9,6 +9,7 @@ using Libra.Input;
 
 using Libra.Content.Pipeline.Compiler;
 using Libra.Content.Pipeline.Processors;
+using Libra.Content.Pipeline.Utilities;
 using Libra.Content.Serialization;
 
 #endregion
@@ -45,26 +46,26 @@ namespace Libra.Samples.BasicSprites
 
         protected override void Initialize()
         {
-            var compilerFactory = new ContentCompilerFactory(AppDomain.CurrentDomain);
-            compilerFactory.SourceRootDirectory = "../../";
+            //var compilerFactory = new ContentCompilerFactory(AppDomain.CurrentDomain);
+            //compilerFactory.SourceRootDirectory = "../../";
 
-            var compiler = compilerFactory.CreateCompiler();
+            //var compiler = compilerFactory.CreateCompiler();
 
-            var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
-            processorProperties["HasAsciiCharacters"] = false;
-            processorProperties["HasHiragana"] = true;
-            processorProperties["HasKatakana"] = true;
-            processorProperties["Text"] = "漢字可能(*´∀｀*)ー";
-            processorProperties["OutlineThickness"] = 3.0f;
-            processorProperties["OutlineColor"] = Color.Black;
-            processorProperties["OutlineShape"] = System.Windows.Media.PenLineJoin.Bevel;
-            // TODO
-            // グラデーションが効いていない。
-            processorProperties["UseGradient"] = true;
-            processorProperties["GradientBeginColor"] = Color.Navy;
-            processorProperties["GradientEndColor"] = Color.LightBlue;
+            //var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
+            //processorProperties["HasAsciiCharacters"] = false;
+            //processorProperties["HasHiragana"] = true;
+            //processorProperties["HasKatakana"] = true;
+            //processorProperties["Text"] = "漢字可能(*´∀｀*)ー";
+            //processorProperties["OutlineThickness"] = 3.0f;
+            //processorProperties["OutlineColor"] = Color.Black;
+            //processorProperties["OutlineShape"] = System.Windows.Media.PenLineJoin.Bevel;
+            //// TODO
+            //// グラデーションが効いていない。
+            //processorProperties["UseGradient"] = true;
+            //processorProperties["GradientBeginColor"] = Color.Navy;
+            //processorProperties["GradientEndColor"] = Color.LightBlue;
 
-            var outputPath = compiler.Compile("Fonts/SpriteFont.json", "JsonFontSerializer", "FontDescriptionProcessor", processorProperties);
+            //var outputPath = compiler.Compile("Fonts/SpriteFont.json", "JsonFontSerializer", "FontDescriptionProcessor", processorProperties);
 
             base.Initialize();
         }
@@ -80,10 +81,30 @@ namespace Libra.Samples.BasicSprites
 
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
-            var loaderFactory = new ContentLoaderFactory(Device, AppDomain.CurrentDomain);
-            var loader = loaderFactory.CreateLoader();
+            //var loaderFactory = new ContentLoaderFactory(Device, AppDomain.CurrentDomain);
+            //var loader = loaderFactory.CreateLoader();
 
-            spriteFont = loader.Load<SpriteFont>("Fonts/SpriteFont");
+            //spriteFont = loader.Load<SpriteFont>("Fonts/SpriteFont");
+
+            var adhocLoader = new AdhocContentLoader(Device, AppDomain.CurrentDomain);
+            adhocLoader.CompilerFactory.SourceRootDirectory = "../../";
+
+            var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
+            processorProperties["HasAsciiCharacters"] = false;
+            processorProperties["HasHiragana"] = true;
+            processorProperties["HasKatakana"] = true;
+            processorProperties["Text"] = "漢字可能(*´∀｀*)ー";
+            processorProperties["OutlineThickness"] = 3.0f;
+            processorProperties["OutlineColor"] = Color.Black;
+            processorProperties["OutlineShape"] = System.Windows.Media.PenLineJoin.Bevel;
+            // TODO
+            // グラデーションが効いていない。
+            processorProperties["UseGradient"] = true;
+            processorProperties["GradientBeginColor"] = Color.Navy;
+            processorProperties["GradientEndColor"] = Color.LightBlue;
+
+            spriteFont = adhocLoader.Load<SpriteFont>(
+                "Fonts/SpriteFont.json", "JsonFontSerializer", "FontDescriptionProcessor", processorProperties);
 
             keyboard = platform.CreateKeyboard();
 
