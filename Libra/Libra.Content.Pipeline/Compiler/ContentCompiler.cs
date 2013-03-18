@@ -22,6 +22,8 @@ namespace Libra.Content.Pipeline.Compiler
         }
 
         // sourcePath には、factory の SourceRootDirectory からの相対パスを指定。
+        // sourcePath は出力先ファイルの命名に利用されるため、
+        // ファイルへ永続化する場合には sourcePath の指定が必須となる (ストリーム指定ではファイル名を解決できない)。
 
         public string Compile<TSerializer, TProcessor>(string sourcePath, Dictionary<string, object> processorProperties = null)
             where TSerializer : IContentSerializer, new()
@@ -33,22 +35,6 @@ namespace Libra.Content.Pipeline.Compiler
             PopulateProperties(processor, processorProperties);
 
             return Compile(sourcePath, serializer, processor);
-        }
-
-        public string Compile(string sourcePath, IContentSerializer serializer, IContentProcessor processor)
-        {
-            if (string.IsNullOrEmpty(sourcePath)) throw new ArgumentException("sourcePath must be not null/empty.", "sourcePath");
-            if (serializer == null) throw new ArgumentNullException("serializer");
-            if (processor == null) throw new ArgumentNullException("processor");
-
-            // ソースのオブジェクト化。
-            var source = DeserializeSource(sourcePath, serializer);
-
-            // 加工。
-            var artifact = processor.Process(source);
-
-            // バイナリ永続化。
-            return Write(sourcePath, artifact);
         }
 
         // シリアライザとプロセッサの名前指定は、ビルド ファイル等からの呼び出しを想定。
@@ -70,10 +56,71 @@ namespace Libra.Content.Pipeline.Compiler
             return Compile(sourcePath, serializer, processor);
         }
 
+        public string Compile(string sourcePath, IContentSerializer serializer, IContentProcessor processor)
+        {
+            if (string.IsNullOrEmpty(sourcePath)) throw new ArgumentException("sourcePath must be not null/empty.", "sourcePath");
+            if (serializer == null) throw new ArgumentNullException("serializer");
+            if (processor == null) throw new ArgumentNullException("processor");
+
+            // ソースのオブジェクト化。
+            var source = DeserializeSource(sourcePath, serializer);
+
+            // 加工。
+            var artifact = processor.Process(source);
+
+            // バイナリ永続化。
+            return Write(sourcePath, artifact);
+        }
+
+        // ストリーム指定バージョンは、呼び出し元がそれらの解決を担う。
+
+        public void Compile<TSerializer, TProcessor>(Stream inputStream, Stream outputStream,
+            Dictionary<string, object> processorProperties = null)
+            where TSerializer : IContentSerializer, new()
+            where TProcessor : IContentProcessor, new()
+        {
+            var serializer = new TSerializer();
+
+            var processor = new TProcessor();
+            PopulateProperties(processor, processorProperties);
+
+            Compile(inputStream, outputStream, serializer, processor);
+        }
+
+        public void Compile(Stream inputStream, Stream outputStream,
+            string serializerName, string processorName, Dictionary<string, object> processorProperties = null)
+        {
+            if (string.IsNullOrEmpty(serializerName))
+                throw new ArgumentException("serializerName must be not null/empty.", "serializerName");
+            if (string.IsNullOrEmpty(processorName))
+                throw new ArgumentException("processorName must be not null/empty.", "processorName");
+
+            var serializer = GetSerializer(serializerName);
+
+            var processor = CreateProcessor(processorName, processorProperties);
+
+            Compile(inputStream, outputStream, serializer, processor);
+        }
+
+        public void Compile(Stream inputStream, Stream outputStream, IContentSerializer serializer, IContentProcessor processor)
+        {
+            if (inputStream == null) throw new ArgumentNullException("inputStream");
+            if (outputStream == null) throw new ArgumentNullException("outputStream");
+            if (serializer == null) throw new ArgumentNullException("serializer");
+            if (processor == null) throw new ArgumentNullException("processor");
+
+            // ソースのオブジェクト化。
+            var source = serializer.Deserialize(inputStream);
+
+            // 加工。
+            var artifact = processor.Process(source);
+
+            // バイナリ永続化。
+            Write(outputStream, artifact);
+        }
+
         object DeserializeSource(string path, IContentSerializer serializer)
         {
-            var extension = Path.GetExtension(path);
-
             var targetPath = (factory.SourceRootDirectory == null) ? path : Path.Combine(factory.SourceRootDirectory, path);
 
             using (var stream = File.OpenRead(targetPath))
