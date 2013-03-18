@@ -31,6 +31,15 @@ namespace Libra.Samples.ContentCompile
             processorProperties["HasKatakana"] = true;
             processorProperties["Text"] = "明示的に追加する文字";
 
+            var serializer = new JsonFontSerializer();
+            var processor = new FontDescriptionProcessor
+            {
+                HasAsciiCharacters = false,
+                HasHiragana = true,
+                HasKatakana = true,
+                Text = "明示的に追加する文字"
+            };
+
             string outputPath;
 
             //----------------------------------------------------------------
@@ -53,14 +62,6 @@ namespace Libra.Samples.ContentCompile
             // 型を明示するためファクトリ内にシリアライザとプロセッサの情報が設定されていなくて良い。
             // プロセッサのプロパティはインスタンス化時に明示。
 
-            var serializer = new JsonFontSerializer();
-            var processor = new FontDescriptionProcessor
-            {
-                HasAsciiCharacters = false,
-                HasHiragana = true,
-                HasKatakana = true,
-                Text = "明示的に追加する文字"
-            };
             outputPath = compiler.Compile(sourcePath, serializer, processor);
             Console.WriteLine("By explicit instances: {0}", outputPath);
 
