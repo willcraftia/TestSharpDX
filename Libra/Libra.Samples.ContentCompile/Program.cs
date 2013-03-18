@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Libra.Content.Pipeline;
 using Libra.Content.Pipeline.Compiler;
 using Libra.Content.Pipeline.Processors;
 using Libra.Content.Serialization;
@@ -25,7 +26,7 @@ namespace Libra.Samples.ContentCompile
 
             var sourcePath = "SpriteFont.json";
 
-            var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
+            var processorProperties = new Properties();
             processorProperties["HasAsciiCharacters"] = false;
             processorProperties["HasHiragana"] = true;
             processorProperties["HasKatakana"] = true;
