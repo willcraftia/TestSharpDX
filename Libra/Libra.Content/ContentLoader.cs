@@ -44,6 +44,13 @@ namespace Libra.Content
             }
         }
 
+        public T Load<T>(Stream stream)
+        {
+            if (stream == null) throw new ArgumentNullException("stream");
+
+            return Read<T>(stream);
+        }
+
         T Read<T>(Stream stream)
         {
             using (var reader = new ContentReader(stream, factory.TypeReaders, factory.Device, context))
