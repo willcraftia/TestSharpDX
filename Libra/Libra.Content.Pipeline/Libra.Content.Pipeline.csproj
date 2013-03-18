@@ -68,6 +68,7 @@
     <Compile Include="MipmapChainCollection.cs" />
     <Compile Include="PixelBitmapContent.cs" />
     <Compile Include="Compiler\RectangleWriter.cs" />
+    <Compile Include="Properties.cs" />
     <Compile Include="Processors\SingleColorBlockCompressor.cs" />
     <Compile Include="Processors\IContentProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -37,7 +37,7 @@ namespace Libra.Content.Pipeline.Utilities
             this.LoaderFactory = loaderFactory;
         }
 
-        public TOutput Load<TOutput, TSerializer, TProcessor>(string sourcePath, Dictionary<string, object> processorProperties = null)
+        public TOutput Load<TOutput, TSerializer, TProcessor>(string sourcePath, Properties processorProperties = null)
             where TSerializer : IContentSerializer, new()
             where TProcessor : IContentProcessor, new()
         {
@@ -54,8 +54,7 @@ namespace Libra.Content.Pipeline.Utilities
             }
         }
 
-        public T Load<T>(string sourcePath,
-            string serializerName, string processorName, Dictionary<string, object> processorProperties = null)
+        public T Load<T>(string sourcePath, string serializerName, string processorName, Properties processorProperties = null)
         {
             var compiler = CompilerFactory.CreateCompiler();
             var loader = LoaderFactory.CreateLoader();

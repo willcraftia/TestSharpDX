@@ -25,7 +25,7 @@ namespace Libra.Content.Pipeline.Compiler
         // sourcePath は出力先ファイルの命名に利用されるため、
         // ファイルへ永続化する場合には sourcePath の指定が必須となる (ストリーム指定ではファイル名を解決できない)。
 
-        public string Compile<TSerializer, TProcessor>(string sourcePath, Dictionary<string, object> processorProperties = null)
+        public string Compile<TSerializer, TProcessor>(string sourcePath, Properties processorProperties = null)
             where TSerializer : IContentSerializer, new()
             where TProcessor : IContentProcessor, new()
         {
@@ -42,7 +42,7 @@ namespace Libra.Content.Pipeline.Compiler
         public string Compile(
             string sourcePath,
             string serializerName,
-            string processorName, Dictionary<string, object> processorProperties = null)
+            string processorName, Properties processorProperties = null)
         {
             if (string.IsNullOrEmpty(serializerName))
                 throw new ArgumentException("serializerName must be not null/empty.", "serializerName");
@@ -75,7 +75,7 @@ namespace Libra.Content.Pipeline.Compiler
         // ストリーム指定バージョンは、呼び出し元が入力元や出力先の解決を担う。
 
         public void Compile<TSerializer, TProcessor>(string sourcePath, Stream outputStream,
-            Dictionary<string, object> processorProperties = null)
+            Properties processorProperties = null)
             where TSerializer : IContentSerializer, new()
             where TProcessor : IContentProcessor, new()
         {
@@ -87,8 +87,7 @@ namespace Libra.Content.Pipeline.Compiler
             Compile(sourcePath, serializer, processor);
         }
 
-        public void Compile<TSerializer, TProcessor>(Stream inputStream, Stream outputStream,
-            Dictionary<string, object> processorProperties = null)
+        public void Compile<TSerializer, TProcessor>(Stream inputStream, Stream outputStream, Properties processorProperties = null)
             where TSerializer : IContentSerializer, new()
             where TProcessor : IContentProcessor, new()
         {
@@ -101,7 +100,7 @@ namespace Libra.Content.Pipeline.Compiler
         }
 
         public void Compile(string sourcePath, Stream outputStream,
-            string serializerName, string processorName, Dictionary<string, object> processorProperties = null)
+            string serializerName, string processorName, Properties processorProperties = null)
         {
             if (string.IsNullOrEmpty(serializerName))
                 throw new ArgumentException("serializerName must be not null/empty.", "serializerName");
@@ -116,7 +115,7 @@ namespace Libra.Content.Pipeline.Compiler
         }
 
         public void Compile(Stream inputStream, Stream outputStream,
-            string serializerName, string processorName, Dictionary<string, object> processorProperties = null)
+            string serializerName, string processorName, Properties processorProperties = null)
         {
             if (string.IsNullOrEmpty(serializerName))
                 throw new ArgumentException("serializerName must be not null/empty.", "serializerName");
@@ -179,7 +178,7 @@ namespace Libra.Content.Pipeline.Compiler
             return factory.Serializers[name];
         }
 
-        IContentProcessor CreateProcessor(string name, Dictionary<string, object> propertyMap)
+        IContentProcessor CreateProcessor(string name, Properties propertyMap)
         {
             var type = factory.ProcessorTypes[name];
             var processor = Activator.CreateInstance(type) as IContentProcessor;
@@ -189,7 +188,7 @@ namespace Libra.Content.Pipeline.Compiler
             return processor;
         }
 
-        void PopulateProperties(IContentProcessor processor, Dictionary<string, object> propertyMap)
+        void PopulateProperties(IContentProcessor processor, Properties propertyMap)
         {
             if (propertyMap != null && propertyMap.Count != 0)
             {
