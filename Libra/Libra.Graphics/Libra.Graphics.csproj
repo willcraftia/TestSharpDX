@@ -176,6 +176,13 @@
     <Compile Include="IOutput.cs" />
     <Compile Include="IOutputCollection.cs" />
     <Compile Include="ISwapChain.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="ModelBone.cs" />
+    <Compile Include="ModelBoneCollection.cs" />
+    <Compile Include="ModelMesh.cs" />
+    <Compile Include="ModelMeshCollection.cs" />
+    <Compile Include="ModelMeshPart.cs" />
+    <Compile Include="ModelMeshPartCollection.cs" />
     <Compile Include="OutputMergerStage.cs" />
     <Compile Include="PixelShader.cs" />
     <Compile Include="PixelShaderStage.cs" />
