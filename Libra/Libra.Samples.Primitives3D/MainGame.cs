@@ -2,6 +2,9 @@
 
 using System;
 using System.Collections.Generic;
+using Libra.Content.Pipeline;
+using Libra.Content.Pipeline.Utilities;
+using Libra.Content;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
@@ -16,6 +19,10 @@ namespace Libra.Samples.Primitives3D
         IGamePlatform platform;
 
         GraphicsManager graphicsManager;
+
+        SpriteBatch spriteBatch;
+
+        SpriteFont spriteFont;
 
         IKeyboard keyboard;
 
@@ -65,6 +72,12 @@ namespace Libra.Samples.Primitives3D
 
         protected override void LoadContent()
         {
+            spriteBatch = new SpriteBatch(Device.ImmediateContext);
+
+            var contentLoader = new AdhocContentLoader(Device, AppDomain.CurrentDomain);
+            contentLoader.CompilerFactory.SourceRootDirectory = "../../Content/";
+            spriteFont = contentLoader.Load<SpriteFont>("hudFont.json", "JsonFontSerializer", "FontDescriptionProcessor");
+
             primitives.Add(new CubePrimitive(Device));
             primitives.Add(new SpherePrimitive(Device));
             primitives.Add(new CylinderPrimitive(Device));
@@ -111,9 +124,9 @@ namespace Libra.Samples.Primitives3D
             float pitch = time * 0.7f;
             float roll = time * 1.1f;
 
-            Vector3 cameraPosition = new Vector3(0, 0, 2.5f);
+            var cameraPosition = new Vector3(0, 0, 2.5f);
 
-            float aspect = context.RasterizerStage.Viewport.AspectRatio;
+            var aspect = context.RasterizerStage.Viewport.AspectRatio;
 
             var world = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
             var view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
@@ -125,6 +138,14 @@ namespace Libra.Samples.Primitives3D
             currentPrimitive.Draw(context, world, view, projection, color);
 
             context.RasterizerStage.RasterizerState = RasterizerState.CullBack;
+
+            var text = "A or tap top of screen = Change primitive\n" +
+                       "B or tap bottom left of screen = Change color\n" +
+                       "Y or tap bottom right of screen = Toggle wireframe";
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(spriteFont, text, new Vector2(48, 48), Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

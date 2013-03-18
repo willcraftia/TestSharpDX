@@ -1,0 +1,14 @@
+{
+	"CharacterRegions":[
+		{
+			"Start":" ",
+			"End":"~"
+		}
+	],
+	"DefaultCharacter":null,
+	"FontName":"Segoe UI Mono",
+	"Size":10,
+	"Spacing":0,
+	"Style":0,
+	"UseKerning":false
+}

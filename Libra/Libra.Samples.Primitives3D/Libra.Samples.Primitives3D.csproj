@@ -74,6 +74,18 @@
     <Compile Include="TorusPrimitive.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libra.Content.Pipeline\Libra.Content.Pipeline.csproj">
+      <Project>{1EB74EB0-4148-4B6F-A78C-2D8508288961}</Project>
+      <Name>Libra.Content.Pipeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Content.Serialization\Libra.Content.Serialization.csproj">
+      <Project>{8358BC02-FE12-44B5-8BBC-6328802868E0}</Project>
+      <Name>Libra.Content.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Content\Libra.Content.csproj">
+      <Project>{E73ADB43-7144-448C-B841-620A0A903600}</Project>
+      <Name>Libra.Content</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libra.Games.SharpDX\Libra.Games.SharpDX.csproj">
       <Project>{18B2993B-626D-4337-91A2-ED0239B8D843}</Project>
       <Name>Libra.Games.SharpDX</Name>
@@ -108,18 +120,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\BasicEffect.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Common.fxh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Lighting.fxh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Shaders\Structures.fxh">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Content\hudFont.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.txt" />
