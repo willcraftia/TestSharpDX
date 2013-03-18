@@ -2,30 +2,22 @@
 
 using System;
 using System.IO;
-using System.Runtime.Serialization.Json;
 
 #endregion
 
 namespace Libra.Content.Serialization
 {
-    [ContentSerializer(".json")]
-    public sealed class JsonFontSerializer : IContentSerializer
+    [ContentSerializer]
+    public sealed class JsonFontSerializer : JsonContentSerializer
     {
-        DataContractJsonSerializer serializer;
-
         public JsonFontSerializer()
+            : base(typeof(FontDescription))
         {
-            serializer = new DataContractJsonSerializer(typeof(FontDescription));
         }
 
-        public void Serialize(Stream stream, object content)
+        public override object Deserialize(Stream stream)
         {
-            serializer.WriteObject(stream, content);
-        }
-
-        public object Deserialize(Stream stream)
-        {
-            var description = serializer.ReadObject(stream) as FontDescription;
+            var description = base.Deserialize(stream) as FontDescription;
             
             description.InitializeCharacters();
             

@@ -10,18 +10,15 @@ namespace Libra.Content.Serialization
 {
     // 型やアセンブリからシリアライザを検索して登録する機能は、
     // IContentSerializer かつ ContentSerializerAttribute が設定されていることが条件。
-    // インデクサで明示的にインスタンスを設定する場合は、
-    // ContentSerializerAttribute を参照せずに拡張子の明示で設定。
 
     public sealed class ContentSerializerManager
     {
-        // キー: 拡張子 (ドット付き)
         Dictionary<string, IContentSerializer> serializerMap;
 
-        public IContentSerializer this[string extension]
+        public IContentSerializer this[string name]
         {
-            get { return serializerMap[extension]; }
-            set { serializerMap[extension] = value; }
+            get { return serializerMap[name]; }
+            set { serializerMap[name] = value; }
         }
 
         public ContentSerializerManager()
@@ -29,9 +26,9 @@ namespace Libra.Content.Serialization
             serializerMap = new Dictionary<string, IContentSerializer>();
         }
 
-        public bool Contains(string extension)
+        public bool Contains(string name)
         {
-            return serializerMap.ContainsKey(extension);
+            return serializerMap.ContainsKey(name);
         }
 
         public void Add(Type type)
@@ -47,10 +44,8 @@ namespace Libra.Content.Serialization
 
             var serializer = Activator.CreateInstance(type) as IContentSerializer;
 
-            foreach (var extension in serializerAttribute.Extensions)
-            {
-                serializerMap[extension] = serializer;
-            }
+            serializerMap[type.AssemblyQualifiedName] = serializer;
+            serializerMap[type.Name] = serializer;
         }
 
         public void FindAndAddFrom(Assembly assembly)
@@ -87,9 +82,9 @@ namespace Libra.Content.Serialization
             }
         }
 
-        public bool Remove(string extension)
+        public bool Remove(string name)
         {
-            return serializerMap.Remove(extension);
+            return serializerMap.Remove(name);
         }
 
         public void Clear()

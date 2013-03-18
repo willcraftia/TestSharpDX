@@ -28,5 +28,13 @@ namespace Libra.Content.Serialization
                 }
             }
         }
+
+        public CharacterRegion() { }
+
+        public CharacterRegion(char start, char end)
+        {
+            Start = start;
+            End = end;
+        }
     }
 }

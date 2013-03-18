@@ -47,6 +47,7 @@
     <Compile Include="FontDescription.cs" />
     <Compile Include="FontDescriptionStyle.cs" />
     <Compile Include="IContentSerializer.cs" />
+    <Compile Include="JsonContentSerializer.cs" />
     <Compile Include="JsonFontSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

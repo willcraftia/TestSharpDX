@@ -8,6 +8,8 @@ using Libra.Graphics;
 using Libra.Input;
 
 using Libra.Content.Pipeline.Compiler;
+using Libra.Content.Pipeline.Processors;
+using Libra.Content.Serialization;
 
 #endregion
 
@@ -49,6 +51,7 @@ namespace Libra.Samples.BasicSprites
             var compiler = compilerFactory.CreateCompiler();
 
             var processorProperties = new System.Collections.Generic.Dictionary<string, object>();
+            processorProperties["HasAsciiCharacters"] = false;
             processorProperties["HasHiragana"] = true;
             processorProperties["HasKatakana"] = true;
             processorProperties["Text"] = "漢字可能(*´∀｀*)ー";
@@ -61,7 +64,7 @@ namespace Libra.Samples.BasicSprites
             processorProperties["GradientBeginColor"] = Color.Navy;
             processorProperties["GradientEndColor"] = Color.LightBlue;
 
-            var outputPath = compiler.Compile("Fonts/SpriteFont.json", "FontDescriptionProcessor", processorProperties);
+            var outputPath = compiler.Compile("Fonts/SpriteFont.json", "JsonFontSerializer", "FontDescriptionProcessor", processorProperties);
 
             base.Initialize();
         }

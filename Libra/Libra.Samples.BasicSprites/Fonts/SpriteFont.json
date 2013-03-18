@@ -1,1 +1,14 @@
-{"CharacterRegions":[],"DefaultCharacter":null,"FontName":"MS UI Gothic","Size":34,"Spacing":0,"Style":1,"UseKerning":false}
+{
+	"CharacterRegions":[
+		{
+			"Start":" ",
+			"End":"~"
+		}
+	],
+	"DefaultCharacter":null,
+	"FontName":"MS UI Gothic",
+	"Size":34,
+	"Spacing":0,
+	"Style":1,
+	"UseKerning":false
+}
