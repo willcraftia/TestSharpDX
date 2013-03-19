@@ -43,18 +43,14 @@ namespace Libra.Graphics.SharpDX
             D3D11Buffer = new D3D11Buffer(D3D11Device, description);
         }
 
-        protected override int InitializeCore<T>(T[] data)
+        protected override void InitializeCore<T>(T[] data)
         {
-            var stride = Marshal.SizeOf(typeof(T));
-
-            ByteWidth = stride * data.Length;
+            ByteWidth = VertexStride * VertexCount;
 
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);
 
             D3D11Buffer = D3D11Buffer.Create<T>(D3D11Device, data, description);
-
-            return stride;
         }
 
         public override void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount)

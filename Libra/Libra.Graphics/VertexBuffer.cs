@@ -29,21 +29,38 @@ namespace Libra.Graphics
             InitializeCore();
         }
 
+        // T 型が頂点構造体を表すバージョン。
+
         public void Initialize<T>(T[] data) where T : struct
         {
             if (data == null) throw new ArgumentNullException("data");
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
 
+            VertexStride = Marshal.SizeOf(typeof(T));
             VertexCount = data.Length;
 
-            // 少し歪になるが、ジェネリクス対応の sizeof は現状 SharpDX に頼らざるを得ないため、
-            // 抽象メソッド実装側で VertexStride を返却してもらう。
-            VertexStride = InitializeCore(data);
+            InitializeCore(data);
+        }
+
+        // T 型が頂点構造体ではなく、頂点サイズの明示を必要とするバージョン。
+
+        public void Initialize<T>(T[] data, int vertexStride) where T : struct
+        {
+            if (data == null) throw new ArgumentNullException("data");
+            if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
+            if (vertexStride < 1) throw new ArgumentOutOfRangeException("vertexStride");
+
+            var totalSize = Marshal.SizeOf(typeof(T)) * data.Length;
+
+            VertexStride = vertexStride;
+            VertexCount = totalSize / vertexStride;
+
+            InitializeCore(data);
         }
 
         protected abstract void InitializeCore();
 
-        protected abstract int InitializeCore<T>(T[] data) where T : struct;
+        protected abstract void InitializeCore<T>(T[] data) where T : struct;
 
         public abstract void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct;
 
