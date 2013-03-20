@@ -12,7 +12,7 @@ namespace Libra.Content.Xnb
     {
         protected internal override IndexBuffer Read(XnbReader input, IndexBuffer existingInstance)
         {
-            var result = input.Device.CreateIndexBuffer();
+            var result = input.Manager.Device.CreateIndexBuffer();
 
             // Is 16 bit
             var isSixteenBits = input.ReadBoolean();

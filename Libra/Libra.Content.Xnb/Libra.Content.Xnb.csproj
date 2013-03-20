@@ -45,8 +45,11 @@
     <Compile Include="XnbExternalReference.cs" />
     <Compile Include="XnbExternalReferenceReader.cs" />
     <Compile Include="XnbIndexBufferReader.cs" />
+    <Compile Include="XnbManager.cs" />
     <Compile Include="XnbReader.cs" />
     <Compile Include="XnbStringReader.cs" />
+    <Compile Include="XnbSurfaceFormatHelper.cs" />
+    <Compile Include="XnbTexture2DReader.cs" />
     <Compile Include="XnbTypeReaderAttribute.cs" />
     <Compile Include="XnbTypeReader.cs" />
     <Compile Include="XnbModelReader.cs" />

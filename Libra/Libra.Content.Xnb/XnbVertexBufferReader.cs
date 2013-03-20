@@ -33,7 +33,7 @@ namespace Libra.Content.Xnb
             // Vertex data
             var vertexData = input.ReadBytes(vertexLength);
 
-            var result = input.Device.CreateVertexBuffer();
+            var result = input.Manager.Device.CreateVertexBuffer();
             
             result.Usage = ResourceUsage.Default;
             result.Initialize(vertexData, vertexDeclaration.VertexStride);

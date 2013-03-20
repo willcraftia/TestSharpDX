@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.IO;
 using Libra.Graphics;
 
 #endregion
@@ -21,15 +22,21 @@ namespace Libra.Content.Xnb
 
         protected internal override BasicEffect Read(XnbReader input, BasicEffect existingInstance)
         {
-            var result = new BasicEffect(input.Device);
+            var result = new BasicEffect(input.Manager.Device);
 
             // Texture
             var textureReference = (XnbExternalReference) externalReferenceReader.Read(input, new XnbExternalReference());
-            Console.WriteLine(textureReference);
 
-            // TODO
-            // テクスチャのアセットとしてのロードと設定。
-            // 恐らく、ContentManager を作るべきなのだろうと思う。
+            if (textureReference.AssetName != null)
+            {
+                // テクスチャの実体の取得。
+                var texture = input.Manager.Load<Texture2D>(textureReference.AssetName);
+                var textureView = input.Manager.Device.CreateShaderResourceView();
+                textureView.Initialize(texture);
+
+                result.Texture = textureView;
+                result.TextureEnabled = true;
+            }
 
             // Diffuse color
             result.DiffuseColor = input.ReadVector3();

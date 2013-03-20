@@ -11,7 +11,7 @@ namespace Libra.Content.Xnb
 {
     public sealed class XnbReader : BinaryReader
     {
-        XnbTypeReaderManager typeReaderManager;
+        Action<IDisposable> recordDisposableObject;
 
         string[] xnbTypeReaderTypeNamesById;
 
@@ -21,7 +21,7 @@ namespace Libra.Content.Xnb
 
         Dictionary<int, List<Delegate>> fixupListMap;
 
-        public IDevice Device { get; private set; }
+        public XnbManager Manager { get; private set; }
 
         // テクスチャ等の読み込みにて使用する DeviceContext。
         // どのような文脈にて読み込みを行うかを明示するために必要。
@@ -29,20 +29,23 @@ namespace Libra.Content.Xnb
 
         public DeviceContext DeviceContext { get; private set; }
 
-        public XnbReader(Stream stream, XnbTypeReaderManager typeReaderManager, IDevice device, DeviceContext context = null)
+        internal XnbReader(Stream stream, string assetName, XnbManager manager,
+            Action<IDisposable> recordDisposableObject, DeviceContext context)
             : base(stream)
         {
-            if (typeReaderManager == null) throw new ArgumentNullException("typeReaderManager");
-            if (device == null) throw new ArgumentNullException("device");
+            if (manager == null) throw new ArgumentNullException("manager");
+            if (assetName == null) throw new ArgumentNullException("assetName");
 
-            this.typeReaderManager = typeReaderManager;
-            Device = device;
-            DeviceContext = context ?? device.ImmediateContext;
+            Manager = manager;
+            this.recordDisposableObject = recordDisposableObject;
+
+            //Device = manager.Device;
+            DeviceContext = context ?? Manager.Device.ImmediateContext;
 
             fixupListMap = new Dictionary<int, List<Delegate>>();
         }
 
-        public T ReadXnb<T>()
+        internal T ReadXnb<T>()
         {
             ReadHeader();
             ReadTypeManifest();
@@ -138,7 +141,7 @@ namespace Libra.Content.Xnb
                 xnbTypeReaderTypeNamesById[i] = name;
 
                 // 型リーダのインスタンス化。
-                typeReaders[i] = typeReaderManager.GetTypeReaderByXnaTypeName(name);
+                typeReaders[i] = Manager.TypeReaderManager.GetTypeReaderByXnaTypeName(name);
             }
         }
 
@@ -169,6 +172,11 @@ namespace Libra.Content.Xnb
 
         public T ReadObject<T>()
         {
+            return ReadObject<T>(default(T));
+        }
+
+        public T ReadObject<T>(T existingInstance)
+        {
             // typeId
             var typeId = Read7BitEncodedInt();
 
@@ -177,27 +185,20 @@ namespace Libra.Content.Xnb
                 LogWriteLine("Type: null");
                 return default(T);
             }
-
             LogWriteLine("Type: {0}", xnbTypeReaderTypeNamesById[typeId - 1]);
 
             // 対応する型リーダの取得。
             var typeReader = typeReaders[typeId - 1];
 
             // 読み込み。
-            return (T) ReadObject(typeReader, default(T));
-        }
+            var obj = (T) ReadObject(typeReader, existingInstance);
 
-        public T ReadObject<T>(T existingInstance)
-        {
-            // typeId
-            var typeId = Read7BitEncodedInt();
-            LogWriteLine("Type: {0}", xnbTypeReaderTypeNamesById[typeId - 1]);
+            // 破棄の記録。
+            var disposable = obj as IDisposable;
+            if (disposable != null)
+                RecordDisposableObject(disposable);
 
-            // 対応する型リーダの取得。
-            var typeReader = typeReaders[typeId - 1];
-
-            // 読み込み。
-            return (T) ReadObject(typeReader, existingInstance);
+            return obj;
         }
 
         public T ReadObject<T>(XnbTypeReader typeReader)
@@ -308,6 +309,18 @@ namespace Libra.Content.Xnb
             result.Center = ReadVector3();
             result.Radius = ReadSingle();
             return result;
+        }
+
+        void RecordDisposableObject(IDisposable disposable)
+        {
+            if (recordDisposableObject != null)
+            {
+                recordDisposableObject(disposable);
+            }
+            else
+            {
+                Manager.RecordDisposableObject(disposable);
+            }
         }
 
         void LogWriteLine(object value)

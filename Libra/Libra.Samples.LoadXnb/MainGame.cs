@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Libra.Games;
 using Libra.Games.SharpDX;
+using Libra.Graphics;
 using Libra.Content.Xnb;
 
 #endregion
@@ -36,19 +37,12 @@ namespace Libra.Samples.LoadXnb
 
         protected override void LoadContent()
         {
-            var manager = new XnbTypeReaderManager();
-            manager.LoadFrom(AppDomain.CurrentDomain);
+            var manager = new XnbManager(Device);
+            manager.TypeReaderManager.LoadFrom(AppDomain.CurrentDomain);
+            manager.RootDirectory = "Content";
 
-            //var mapping = new XnbTypeReaderMapping();
-            //mapping.LoadFrom(AppDomain.CurrentDomain);
-
-            using (var stream = File.OpenRead("Content/dude.xnb"))
-            {
-                var reader = new XnbReader(stream, manager, Device);
-                var model = reader.ReadXnb<object>();
-                
-                Console.WriteLine(model);
-            }
+            var model = manager.Load<Model>("dude");
+            Console.WriteLine(model);
 
             base.LoadContent();
         }
