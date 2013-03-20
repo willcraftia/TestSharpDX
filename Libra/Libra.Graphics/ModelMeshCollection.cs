@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace Libra.Graphics
 {
-    public sealed class ModelMeshCollection : ReadOnlyCollection<ModelMesh>
+    public sealed class ModelMeshCollection : Collection<ModelMesh>
     {
         public ModelMesh this[string name]
         {

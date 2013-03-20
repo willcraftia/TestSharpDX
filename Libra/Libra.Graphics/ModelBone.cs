@@ -11,26 +11,12 @@ namespace Libra.Graphics
     {
         public Matrix Transform;
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
-        public int Index { get; internal set; }
+        public int Index { get; set; }
 
-        public ModelBone Parent { get; private set; }
+        public ModelBone Parent { get; set; }
 
-        public ModelBoneCollection Children { get; private set; }
-
-        public ModelBone(string name, IList<ModelBone> children)
-        {
-            if (name == null) throw new ArgumentNullException("name");
-            if (children == null) throw new ArgumentNullException("children");
-
-            Name = name;
-            Children = new ModelBoneCollection(children);
-
-            for (int i = 0; i < children.Count; i++)
-            {
-                children[i].Parent = this;
-            }
-        }
+        public ModelBoneCollection Children { get; set; }
     }
 }

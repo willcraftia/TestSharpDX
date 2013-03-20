@@ -160,23 +160,25 @@ namespace Libra.Graphics.Assimp
                 children = new List<ModelBone>(0);
             }
 
-            var bone = new ModelBone(node.Name, children);
-            ToMatrix(node.Transform, out bone.Transform);
+            //var bone = new ModelBone(node.Name, children);
+            //ToMatrix(node.Transform, out bone.Transform);
 
-            bones.Add(bone);
+            //bones.Add(bone);
 
-            return bone;
+            //return bone;
+
+            throw new NotImplementedException();
         }
 
         ModelMesh ParseMesh(Mesh mesh, IList<ModelBone> bones)
         {
-            var vertexBuffer = CreateVertexBuffer(mesh, device);
-            var indexBuffer = CreateIndexBuffer(mesh, device);
+            //var vertexBuffer = CreateVertexBuffer(mesh, device);
+            //var indexBuffer = CreateIndexBuffer(mesh, device);
 
-            var meshPart = new ModelMeshPart(vertexBuffer, indexBuffer);
+            //var meshPart = new ModelMeshPart(vertexBuffer, indexBuffer);
 
-            var meshParts = new List<ModelMeshPart>(1);
-            meshParts.Add(meshPart);
+            //var meshParts = new List<ModelMeshPart>(1);
+            //meshParts.Add(meshPart);
 
             throw new NotImplementedException();
         }

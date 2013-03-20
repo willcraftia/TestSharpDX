@@ -8,17 +8,18 @@ namespace Libra.Graphics
 {
     public sealed class ModelMeshPart
     {
-        public VertexBuffer VertexBuffer { get; private set; }
+        public VertexBuffer VertexBuffer { get; set; }
 
-        public IndexBuffer IndexBuffer { get; private set; }
+        public IndexBuffer IndexBuffer { get; set; }
 
-        public ModelMeshPart(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
-        {
-            if (vertexBuffer == null) throw new ArgumentNullException("vertexBuffer");
-            if (indexBuffer == null) throw new ArgumentNullException("indexBuffer");
+        public int VertexOffset { get; set; }
 
-            VertexBuffer = vertexBuffer;
-            IndexBuffer = indexBuffer;
-        }
+        public int NumVertices { get; set; }
+
+        public int StartIndex { get; set; }
+
+        public int PrimitiveCount { get; set; }
+
+        public IEffect Effect { get; set; }
     }
 }

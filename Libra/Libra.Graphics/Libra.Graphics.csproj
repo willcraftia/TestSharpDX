@@ -179,6 +179,7 @@
     <Compile Include="Model.cs" />
     <Compile Include="ModelBone.cs" />
     <Compile Include="ModelBoneCollection.cs" />
+    <Compile Include="ModelEffectCollection.cs" />
     <Compile Include="ModelMesh.cs" />
     <Compile Include="ModelMeshCollection.cs" />
     <Compile Include="ModelMeshPart.cs" />

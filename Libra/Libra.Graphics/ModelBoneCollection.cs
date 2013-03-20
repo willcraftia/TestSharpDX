@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 
 namespace Libra.Graphics
 {
-    public sealed class ModelBoneCollection : ReadOnlyCollection<ModelBone>
+    public sealed class ModelBoneCollection : Collection<ModelBone>
     {
         public ModelBone this[string name]
         {

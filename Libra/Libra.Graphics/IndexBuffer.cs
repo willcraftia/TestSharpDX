@@ -30,12 +30,27 @@ namespace Libra.Graphics
             InitializeCore();
         }
 
+        // T 型がインデックスを表すバージョン。
+
         public void Initialize<T>(T[] data) where T : struct
         {
             if (data == null) throw new ArgumentNullException("data");
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
 
             IndexCount = data.Length;
+
+            InitializeCore(data);
+        }
+
+        // T 型が byte 等であり、要素の複合によりインデックスを表すバージョン。
+
+        public void Initialize<T>(T[] data, int indexCount) where T : struct
+        {
+            if (data == null) throw new ArgumentNullException("data");
+            if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
+            if (indexCount < 1) throw new ArgumentOutOfRangeException("indexCount");
+
+            IndexCount = indexCount;
 
             InitializeCore(data);
         }

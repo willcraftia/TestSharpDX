@@ -1,7 +1,6 @@
 ﻿#region Using
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -9,29 +8,11 @@ namespace Libra.Graphics
 {
     public sealed class Model
     {
-        IDevice device;
+        public ModelBone Root { get; set; }
 
-        public ModelBone Root { get; private set; }
+        public ModelBoneCollection Bones { get; set; }
 
-        public ModelBoneCollection Bones { get; private set; }
-
-        public ModelMeshCollection Meshes { get; private set; }
-
-        public Model(IDevice device, ModelBone root, IList<ModelBone> bones, IList<ModelMesh> meshes)
-        {
-            if (device == null) throw new ArgumentNullException("device");
-            if (bones == null) throw new ArgumentNullException("bones");
-            if (meshes == null) throw new ArgumentNullException("meshes");
-
-            this.device = device;
-            Bones = new ModelBoneCollection(bones);
-            Meshes = new ModelMeshCollection(meshes);
-
-            for (int i = 0; i < bones.Count; i++)
-            {
-                bones[i].Index = i;
-            }
-        }
+        public ModelMeshCollection Meshes { get; set; }
 
         public void CopyAbsoluteBoneTransformsTo(Matrix[] destinationBoneTransforms)
         {
