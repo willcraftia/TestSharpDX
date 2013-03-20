@@ -177,6 +177,10 @@ namespace Libra.Graphics.SharpDX
 
         void CreateD3D11Texture2DDescription(out D3D11Texture2DDescription result)
         {
+            // TODO
+            // GenerateMipMaps が分からない。
+            // インスタンス化の際に初期データを与えた場合にのみ有効？
+
             result = new D3D11Texture2DDescription
             {
                 Width = Width,
@@ -192,7 +196,7 @@ namespace Libra.Graphics.SharpDX
                 Usage = (D3D11ResourceUsage) Usage,
                 BindFlags = D3D11BindFlags.ShaderResource,
                 CpuAccessFlags = ResourceHelper.GetD3D11CpuAccessFlags((D3D11ResourceUsage) Usage),
-                OptionFlags = (MipLevels != 1) ? D3D11ResourceOptionFlags.GenerateMipMaps : D3D11ResourceOptionFlags.None
+                OptionFlags = D3D11ResourceOptionFlags.None
             };
         }
 
