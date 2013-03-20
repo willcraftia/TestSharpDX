@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Libra.Graphics
 {
-    public sealed partial class BasicEffect : IEffect
+    public sealed partial class BasicEffect : IEffect, IEffectMatrices
     {
         #region VertexShaderDefinition
 
