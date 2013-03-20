@@ -12,6 +12,8 @@ namespace Libra.Graphics
 
         public IndexBuffer IndexBuffer { get; set; }
 
+        public InputLayout InputLayout { get; set; }
+
         public int VertexOffset { get; set; }
 
         public int NumVertices { get; set; }
