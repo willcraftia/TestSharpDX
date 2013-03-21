@@ -45,7 +45,7 @@ namespace Libra.Graphics
                     }
                 }
 
-                mesh.Draw();
+                mesh.Draw(context);
             }
         }
 
