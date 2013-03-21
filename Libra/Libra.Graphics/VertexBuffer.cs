@@ -50,22 +50,6 @@ namespace Libra.Graphics
             InitializeCore(data);
         }
 
-        //// T 型が頂点構造体ではなく、頂点サイズの明示を必要とするバージョン。
-
-        //public void Initialize<T>(T[] data, int vertexStride) where T : struct
-        //{
-        //    if (data == null) throw new ArgumentNullException("data");
-        //    if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
-        //    if (vertexStride < 1) throw new ArgumentOutOfRangeException("vertexStride");
-
-        //    var totalSize = Marshal.SizeOf(typeof(T)) * data.Length;
-
-        //    VertexStride = vertexStride;
-        //    VertexCount = totalSize / vertexStride;
-
-        //    InitializeCore(data);
-        //}
-
         protected abstract void InitializeCore();
 
         protected abstract void InitializeCore<T>(T[] data) where T : struct;
