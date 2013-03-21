@@ -22,6 +22,6 @@ namespace Libra.Graphics
 
     public interface IInputType
     {
-        ReadOnlyCollection<InputElement> InputElements { get; }
+        InputElement[] InputElements { get; }
     }
 }

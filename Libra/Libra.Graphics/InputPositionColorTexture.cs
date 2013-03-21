@@ -13,8 +13,7 @@ namespace Libra.Graphics
     {
         public static readonly int SizeInBytes;
 
-        public static ReadOnlyCollection<InputElement> InputElements = new ReadOnlyCollection<InputElement>(
-            new [] { InputElement.SVPosition, InputElement.Color, InputElement.TexCoord });
+        public static InputElement[] InputElements = { InputElement.SVPosition, InputElement.Color, InputElement.TexCoord };
 
         public Vector3 Position;
 
@@ -37,9 +36,9 @@ namespace Libra.Graphics
             TexCoord = texCoord;
         }
 
-        ReadOnlyCollection<InputElement> IInputType.InputElements
+        InputElement[] IInputType.InputElements
         {
-            get { return InputElements; }
+            get { return (InputElement[]) InputElements.Clone(); }
         }
 
         #region Equatable
