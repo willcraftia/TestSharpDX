@@ -14,13 +14,10 @@ namespace Libra.Graphics
 
         sealed class VertexShaderDefinition
         {
-            public int InputIndex;
-
             public byte[] Bytecode;
 
-            public VertexShaderDefinition(int inputIndex, byte[] bytecode)
+            public VertexShaderDefinition(byte[] bytecode)
             {
-                InputIndex = inputIndex;
                 Bytecode = bytecode;
             }
         }
@@ -87,23 +84,6 @@ namespace Libra.Graphics
                     }
 
                     return pixelShaders[index];
-                }
-            }
-
-            // index は頂点シェーダのインデックス。
-            public InputLayout GetInputLayout(int index)
-            {
-                lock (this)
-                {
-                    if (inputLayouts[index] == null)
-                    {
-                        var def = VertexShaderDefinitions[index];
-
-                        inputLayouts[index] = device.CreateInputLayout();
-                        inputLayouts[index].Initialize(def.Bytecode, VertexShaderInputs[def.InputIndex]);
-                    }
-
-                    return inputLayouts[index];
                 }
             }
         }
@@ -386,26 +366,6 @@ namespace Libra.Graphics
 
         static readonly Vector3 DefaultAmbientLightColor = new Vector3(0.05333332f, 0.09882354f, 0.1819608f);
 
-        static readonly InputElement[][] VertexShaderInputs =
-        {
-            // VSInput
-            new [] { InputElement.SVPosition },
-            // VSInputVc
-            new [] { InputElement.SVPosition, InputElement.Color },
-            // VSInputTx
-            new [] { InputElement.SVPosition, InputElement.TexCoord },
-            // VSInputTxVc
-            new [] { InputElement.SVPosition, InputElement.TexCoord, InputElement.Color },
-            // VSInputNm
-            new [] { InputElement.SVPosition, InputElement.Normal },
-            // VSInputNmVc
-            new [] { InputElement.SVPosition, InputElement.Normal, InputElement.Color },
-            // VSInputNmTx
-            new [] { InputElement.SVPosition, InputElement.Normal, InputElement.TexCoord },
-            // VSInputNmTxVc
-            new [] { InputElement.SVPosition, InputElement.Normal, InputElement.TexCoord, InputElement.Color },
-        };
-
         static readonly VertexShaderDefinition[] VertexShaderDefinitions;
 
         static readonly PixelShaderDefinition[] PixelShaderDefinitions;
@@ -499,30 +459,30 @@ namespace Libra.Graphics
 
             VertexShaderDefinitions = new[]
             {
-                new VertexShaderDefinition(0, VSBasic),
-                new VertexShaderDefinition(0, VSBasicNoFog),
-                new VertexShaderDefinition(1, VSBasicVc),
-                new VertexShaderDefinition(1, VSBasicVcNoFog),
-                new VertexShaderDefinition(2, VSBasicTx),
-                new VertexShaderDefinition(2, VSBasicTxNoFog),
-                new VertexShaderDefinition(3, VSBasicTxVc),
-                new VertexShaderDefinition(3, VSBasicTxVcNoFog),
+                new VertexShaderDefinition(VSBasic),
+                new VertexShaderDefinition(VSBasicNoFog),
+                new VertexShaderDefinition(VSBasicVc),
+                new VertexShaderDefinition(VSBasicVcNoFog),
+                new VertexShaderDefinition(VSBasicTx),
+                new VertexShaderDefinition(VSBasicTxNoFog),
+                new VertexShaderDefinition(VSBasicTxVc),
+                new VertexShaderDefinition(VSBasicTxVcNoFog),
 
-                //new VertexShaderDefinition(4, vsBasicVertexLighting),
-                new VertexShaderDefinition(4, VSBasicVertexLighting),
-                new VertexShaderDefinition(5, VSBasicVertexLightingVc),
-                new VertexShaderDefinition(5, VSBasicVertexLightingTx),
-                new VertexShaderDefinition(7, VSBasicVertexLightingTxVc),
+                //new VertexShaderDefinition(vsBasicVertexLighting),
+                new VertexShaderDefinition(VSBasicVertexLighting),
+                new VertexShaderDefinition(VSBasicVertexLightingVc),
+                new VertexShaderDefinition(VSBasicVertexLightingTx),
+                new VertexShaderDefinition(VSBasicVertexLightingTxVc),
 
-                new VertexShaderDefinition(4, VSBasicOneLight),
-                new VertexShaderDefinition(5, VSBasicOneLightVc),
-                new VertexShaderDefinition(6, VSBasicOneLightTx),
-                new VertexShaderDefinition(7, VSBasicOneLightTxVc),
+                new VertexShaderDefinition(VSBasicOneLight),
+                new VertexShaderDefinition(VSBasicOneLightVc),
+                new VertexShaderDefinition(VSBasicOneLightTx),
+                new VertexShaderDefinition(VSBasicOneLightTxVc),
 
-                new VertexShaderDefinition(4, VSBasicPixelLighting),
-                new VertexShaderDefinition(5, VSBasicPixelLightingVc),
-                new VertexShaderDefinition(6, VSBasicPixelLightingTx),
-                new VertexShaderDefinition(7, VSBasicPixelLightingTxVc),
+                new VertexShaderDefinition(VSBasicPixelLighting),
+                new VertexShaderDefinition(VSBasicPixelLightingVc),
+                new VertexShaderDefinition(VSBasicPixelLightingTx),
+                new VertexShaderDefinition(VSBasicPixelLightingTxVc),
             };
 
             PixelShaderDefinitions = new[]
@@ -806,18 +766,6 @@ namespace Libra.Graphics
             }
         }
 
-        //public InputLayout CreateInputLayout(IList<InputElement> inputElements)
-        //{
-        //    var permutation = GetCurrentShaderPermutation();
-        //    var vartexShaderIndex = VertexShaderIndices[permutation];
-        //    var vertexShaderBytecode = VertexShaderDefinitions[vartexShaderIndex].Bytecode;
-
-        //    var inputLayout = device.CreateInputLayout();
-        //    inputLayout.InitializeCore(vertexShaderBytecode, inputElements);
-
-        //    return inputLayout;
-        //}
-
         void SetWorldViewProjConstant()
         {
             if ((dirtyFlags & DirtyFlags.WorldViewProj) != 0)
@@ -982,11 +930,9 @@ namespace Libra.Graphics
             var vertexShaderIndex = VertexShaderIndices[permutation];
             var pixelShaderIndex = PixelShaderIndices[permutation];
 
-            var inputLayout = resources.GetInputLayout(vertexShaderIndex);
             var vertexShader = resources.GetVertexShader(vertexShaderIndex);
             var pixelShader = resources.GetPixelShader(pixelShaderIndex);
 
-            context.InputAssemblerStage.InputLayout = inputLayout;
             context.VertexShaderStage.VertexShader = vertexShader;
             context.PixelShaderStage.PixelShader = pixelShader;
 
