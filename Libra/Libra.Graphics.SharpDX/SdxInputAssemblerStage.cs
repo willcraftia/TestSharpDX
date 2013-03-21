@@ -46,11 +46,6 @@ namespace Libra.Graphics.SharpDX
             D3D11InputAssemblerStage.SetIndexBuffer(d3d11Buffer, (DXGIFormat) IndexBuffer.Format, 0);
         }
 
-        protected override void SetVertexBufferCore(int slot, VertexBuffer buffer, int offset)
-        {
-            SetVertexBuffer(slot, new VertexBufferBinding(buffer, offset));
-        }
-
         protected override void SetVertexBufferCore(int slot, VertexBufferBinding binding)
         {
             var d3d11VertexBufferBinding = new D3D11VertexBufferBinding

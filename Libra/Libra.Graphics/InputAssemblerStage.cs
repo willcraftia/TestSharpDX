@@ -92,7 +92,7 @@ namespace Libra.Graphics
             if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
             if (offset < 0) throw new ArgumentOutOfRangeException("offset");
 
-            SetVertexBufferCore(slot, buffer, offset);
+            SetVertexBufferCore(slot, new VertexBufferBinding(buffer, offset));
         }
 
         public void SetVertexBuffer(int slot, VertexBufferBinding binding)
@@ -119,8 +119,6 @@ namespace Libra.Graphics
         protected abstract void OnPrimitiveTopologyChanged();
 
         protected abstract void OnIndexBufferChanged();
-
-        protected abstract void SetVertexBufferCore(int slot, VertexBuffer buffer, int offset);
 
         protected abstract void SetVertexBufferCore(int slot, VertexBufferBinding binding);
 
