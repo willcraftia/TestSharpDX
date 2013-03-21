@@ -9,48 +9,39 @@ using System.Runtime.InteropServices;
 namespace Libra.Graphics
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct InputPositionTexture : IInputType, IEquatable<InputPositionTexture>
+    public struct VertexPositionTexture : IVertexType, IEquatable<VertexPositionTexture>
     {
-        public static readonly int SizeInBytes;
-
-        static InputElement[] InputElements = { InputElement.SVPosition, InputElement.TexCoord };
+        public static readonly VertexDeclaration VertexDeclaration =
+            new VertexDeclaration(InputElement.SVPosition, InputElement.TexCoord);
 
         public Vector3 Position;
 
         public Vector2 TexCoord;
 
-        static InputPositionTexture()
-        {
-            unsafe
-            {
-                SizeInBytes = sizeof(InputPositionTexture);
-            }
-        }
-
-        public InputPositionTexture(Vector3 position, Vector2 texCoord)
+        public VertexPositionTexture(Vector3 position, Vector2 texCoord)
         {
             Position = position;
             TexCoord = texCoord;
         }
 
-        InputElement[] IInputType.InputElements
+        VertexDeclaration IVertexType.VertexDeclaration
         {
-            get { return (InputElement[]) InputElements.Clone(); }
+            get { return VertexDeclaration; }
         }
 
         #region Equatable
 
-        public static bool operator ==(InputPositionTexture value1, InputPositionTexture value2)
+        public static bool operator ==(VertexPositionTexture value1, VertexPositionTexture value2)
         {
             return value1.Equals(value2);
         }
 
-        public static bool operator !=(InputPositionTexture value1, InputPositionTexture value2)
+        public static bool operator !=(VertexPositionTexture value1, VertexPositionTexture value2)
         {
             return !value1.Equals(value2);
         }
 
-        public bool Equals(InputPositionTexture other)
+        public bool Equals(VertexPositionTexture other)
         {
             return Position == other.Position && TexCoord == other.TexCoord;
         }
@@ -59,7 +50,7 @@ namespace Libra.Graphics
         {
             if (obj == null || GetType() != obj.GetType()) return false;
 
-            return Equals((InputPositionTexture) obj);
+            return Equals((VertexPositionTexture) obj);
         }
 
         public override int GetHashCode()

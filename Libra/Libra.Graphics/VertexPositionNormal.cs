@@ -9,48 +9,39 @@ using System.Runtime.InteropServices;
 namespace Libra.Graphics
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct InputPositionNormal : IInputType, IEquatable<InputPositionNormal>
+    public struct VertexPositionNormal : IVertexType, IEquatable<VertexPositionNormal>
     {
-        public static readonly int SizeInBytes;
-
-        static InputElement[] InputElements = { InputElement.SVPosition, InputElement.Normal };
+        public static readonly VertexDeclaration VertexDeclaration =
+            new VertexDeclaration(InputElement.SVPosition, InputElement.Normal);
 
         public Vector3 Position;
 
         public Vector3 Normal;
 
-        static InputPositionNormal()
-        {
-            unsafe
-            {
-                SizeInBytes = sizeof(InputPositionNormal);
-            }
-        }
-
-        public InputPositionNormal(Vector3 position, Vector3 normal)
+        public VertexPositionNormal(Vector3 position, Vector3 normal)
         {
             Position = position;
             Normal = normal;
         }
 
-        InputElement[] IInputType.InputElements
+        VertexDeclaration IVertexType.VertexDeclaration
         {
-            get { return (InputElement[]) InputElements.Clone(); }
+            get { return VertexDeclaration; }
         }
 
         #region Equatable
 
-        public static bool operator ==(InputPositionNormal value1, InputPositionNormal value2)
+        public static bool operator ==(VertexPositionNormal value1, VertexPositionNormal value2)
         {
             return value1.Equals(value2);
         }
 
-        public static bool operator !=(InputPositionNormal value1, InputPositionNormal value2)
+        public static bool operator !=(VertexPositionNormal value1, VertexPositionNormal value2)
         {
             return !value1.Equals(value2);
         }
 
-        public bool Equals(InputPositionNormal other)
+        public bool Equals(VertexPositionNormal other)
         {
             return Position == other.Position && Normal == other.Normal;
         }
@@ -59,7 +50,7 @@ namespace Libra.Graphics
         {
             if (obj == null || GetType() != obj.GetType()) return false;
 
-            return Equals((InputPositionNormal) obj);
+            return Equals((VertexPositionNormal) obj);
         }
 
         public override int GetHashCode()

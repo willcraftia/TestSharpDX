@@ -20,6 +20,24 @@ namespace Libra.Graphics
 
         public const string SemanticTexCoord = "TEXCOORD";
 
+        public const string SemanticBinormal = "BINORMAL";
+
+        public const string SemanticTangent = "TANGENT";
+
+        public const string SemanticBlendIndices = "BLENDINDICES";
+
+        public const string SemanticBlendWeight = "BLENDWEIGHT";
+
+        public const string SemanticDepth = "SV_Depth";
+
+        public const string SemanticFog = "FOG";
+
+        public const string SemanticPSize = "PSIZE";
+
+        public const string SemanticSampleIndex = "SV_SampleIndex";
+
+        public const string SemanticTessFactor = "SV_TessFactor";
+
         public static readonly InputElement SVPosition = new InputElement(SemanticSVPosition, InputElementFormat.Vector3);
 
         public static readonly InputElement Normal = new InputElement(SemanticNormal, InputElementFormat.Vector3);
@@ -41,6 +59,11 @@ namespace Libra.Graphics
         public bool PerInstance;
 
         public int InstanceDataStepRate;
+
+        public int SizeInBytes
+        {
+            get { return FormatHelper.SizeInBytes(Format); }
+        }
 
         public InputElement(string semanticName, InputElementFormat format,
             int inputSlot = 0, int alignedByteOffset = AppendAlignedElement,

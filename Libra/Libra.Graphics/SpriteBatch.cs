@@ -37,7 +37,7 @@ namespace Libra.Graphics
                 PixelShader.Initialize(SpritePixelShader);
 
                 InputLayout = device.CreateInputLayout();
-                InputLayout.Initialize(SpriteVertexShader, InputPositionColorTexture.InputElements);
+                InputLayout.Initialize(SpriteVertexShader, VertexPositionColorTexture.VertexDeclaration);
 
                 IndexBuffer = device.CreateIndexBuffer();
                 IndexBuffer.Usage = ResourceUsage.Immutable;
@@ -88,7 +88,7 @@ namespace Libra.Graphics
 
                 VertexBuffer = device.CreateVertexBuffer();
                 VertexBuffer.Usage = ResourceUsage.Dynamic;
-                VertexBuffer.Initialize(InputPositionColorTexture.SizeInBytes, MaxBatchSize * VerticesPerSprite);
+                VertexBuffer.Initialize(VertexPositionColorTexture.VertexDeclaration, MaxBatchSize * VerticesPerSprite);
 
                 ConstantBuffer = device.CreateConstantBuffer();
                 ConstantBuffer.Initialize<Matrix>();
@@ -622,8 +622,8 @@ namespace Libra.Graphics
                 var mappedBuffer = context.Map(contextResoruces.VertexBuffer, 0, mapMode);
                 unsafe
                 {
-                    var vs = (InputPositionColorTexture*) mappedBuffer.Pointer;
-                    var vertices = (InputPositionColorTexture*) mappedBuffer.Pointer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
+                    var vs = (VertexPositionColorTexture*) mappedBuffer.Pointer;
+                    var vertices = (VertexPositionColorTexture*) mappedBuffer.Pointer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
 
                     for (int i = 0; i < batchSize; i++)
                     {
@@ -646,7 +646,7 @@ namespace Libra.Graphics
         }
 
         unsafe void RenderSprite(
-            int spriteIndex, ref InputPositionColorTexture* vertices, ref Vector2 textureSize, ref Vector2 inverseTextureSize)
+            int spriteIndex, ref VertexPositionColorTexture* vertices, ref Vector2 textureSize, ref Vector2 inverseTextureSize)
         {
             var sprite = sprites[spriteIndex];
 

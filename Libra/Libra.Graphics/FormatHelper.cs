@@ -41,6 +41,7 @@ namespace Libra.Graphics
             sizeInBits[(int) InputElementFormat.Short4] = 64;
             sizeInBits[(int) InputElementFormat.NormalizedShort2] = 32;
             sizeInBits[(int) InputElementFormat.NormalizedShort4] = 64;
+            sizeInBits[(int) InputElementFormat.Vector3] = 96;
         }
 
         public static int SizeInBits(SurfaceFormat format)

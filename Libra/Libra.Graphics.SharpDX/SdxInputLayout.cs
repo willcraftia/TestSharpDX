@@ -26,15 +26,13 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = d3d11Device;
         }
 
-        public override void Initialize(byte[] shaderBytecode, IList<InputElement> inputElements)
+        protected override void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements)
         {
             if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
             if (inputElements == null) throw new ArgumentNullException("inputElements");
 
-            InputStride = 0;
-
-            var d3d11InputElements = new D3D11InputElement[inputElements.Count];
-            for (int i = 0; i < inputElements.Count; i++)
+            var d3d11InputElements = new D3D11InputElement[inputElements.Length];
+            for (int i = 0; i < inputElements.Length; i++)
             {
                 var d3d11InputClassification = D3D11InputClassification.PerVertexData;
                 if (inputElements[i].PerInstance)
@@ -50,8 +48,6 @@ namespace Libra.Graphics.SharpDX
                     Classification = d3d11InputClassification,
                     InstanceDataStepRate = inputElements[i].InstanceDataStepRate
                 };
-
-                InputStride += FormatHelper.SizeOfInBytes(inputElements[i].Format);
             }
 
             // シグネチャ生成無しでも入力レイアウトを生成可能。

@@ -55,11 +55,9 @@
     <Compile Include="XnbModelReader.cs" />
     <Compile Include="XnbTypeReaderManager.cs" />
     <Compile Include="XnbVertexBufferReader.cs" />
-    <Compile Include="XnbVertexDeclaration.cs" />
     <Compile Include="XnbVertexDeclarationReader.cs" />
-    <Compile Include="XnbVertexElement.cs" />
-    <Compile Include="XnbVertexElementFormat.cs" />
-    <Compile Include="XnbVertexElementUsage.cs" />
+    <Compile Include="XnbVertexElementFormatHelper.cs" />
+    <Compile Include="XnbVertexElementUsageHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libra.Content\Libra.Content.csproj">

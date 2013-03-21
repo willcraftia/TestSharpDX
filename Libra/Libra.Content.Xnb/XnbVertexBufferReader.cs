@@ -14,7 +14,7 @@ namespace Libra.Content.Xnb
 
         protected internal override void Initialize(XnbTypeReaderManager manager)
         {
-            vertexDeclarationReader = manager.GetTypeReader(typeof(XnbVertexDeclaration));
+            vertexDeclarationReader = manager.GetTypeReader(typeof(VertexDeclaration));
 
             base.Initialize(manager);
         }
@@ -23,20 +23,19 @@ namespace Libra.Content.Xnb
         {
             // Vertex declaration
             // ReadObject 経由ではなく直接読み込みである点に注意。
-            var vertexDeclaration = vertexDeclarationReader.Read(input, null) as XnbVertexDeclaration;
+            var vertexDeclaration = vertexDeclarationReader.Read(input, null) as VertexDeclaration;
 
             // Vertex count
             var vertexCount = (int) input.ReadUInt32();
 
-            var vertexLength = vertexCount * vertexDeclaration.VertexStride;
+            var vertexLength = vertexCount * vertexDeclaration.Stride;
 
             // Vertex data
             var vertexData = input.ReadBytes(vertexLength);
 
             var result = input.Manager.Device.CreateVertexBuffer();
-            
             result.Usage = ResourceUsage.Default;
-            result.Initialize(vertexData, vertexDeclaration.VertexStride);
+            result.Initialize(vertexDeclaration, vertexData);
 
             return result;
         }

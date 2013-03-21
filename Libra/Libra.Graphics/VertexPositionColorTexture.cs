@@ -9,11 +9,10 @@ using System.Runtime.InteropServices;
 namespace Libra.Graphics
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct InputPositionColorTexture : IInputType, IEquatable<InputPositionColorTexture>
+    public struct VertexPositionColorTexture : IVertexType, IEquatable<VertexPositionColorTexture>
     {
-        public static readonly int SizeInBytes;
-
-        public static InputElement[] InputElements = { InputElement.SVPosition, InputElement.Color, InputElement.TexCoord };
+        public static readonly VertexDeclaration VertexDeclaration =
+            new VertexDeclaration(InputElement.SVPosition, InputElement.Color, InputElement.TexCoord);
 
         public Vector3 Position;
 
@@ -21,39 +20,31 @@ namespace Libra.Graphics
 
         public Vector2 TexCoord;
 
-        static InputPositionColorTexture()
-        {
-            unsafe
-            {
-                SizeInBytes = sizeof(InputPositionColorTexture);
-            }
-        }
-
-        public InputPositionColorTexture(Vector3 position, Color color, Vector2 texCoord)
+        public VertexPositionColorTexture(Vector3 position, Color color, Vector2 texCoord)
         {
             Position = position;
             Color = color;
             TexCoord = texCoord;
         }
 
-        InputElement[] IInputType.InputElements
+        VertexDeclaration IVertexType.VertexDeclaration
         {
-            get { return (InputElement[]) InputElements.Clone(); }
+            get { return VertexDeclaration; }
         }
 
         #region Equatable
 
-        public static bool operator ==(InputPositionColorTexture value1, InputPositionColorTexture value2)
+        public static bool operator ==(VertexPositionColorTexture value1, VertexPositionColorTexture value2)
         {
             return value1.Equals(value2);
         }
 
-        public static bool operator !=(InputPositionColorTexture value1, InputPositionColorTexture value2)
+        public static bool operator !=(VertexPositionColorTexture value1, VertexPositionColorTexture value2)
         {
             return !value1.Equals(value2);
         }
 
-        public bool Equals(InputPositionColorTexture other)
+        public bool Equals(VertexPositionColorTexture other)
         {
             return Position == other.Position && Color == other.Color && TexCoord == other.TexCoord;
         }
@@ -62,7 +53,7 @@ namespace Libra.Graphics
         {
             if (obj == null || GetType() != obj.GetType()) return false;
 
-            return Equals((InputPositionColorTexture) obj);
+            return Equals((VertexPositionColorTexture) obj);
         }
 
         public override int GetHashCode()

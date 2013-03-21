@@ -9,54 +9,62 @@ namespace Libra.Graphics
 {
     public abstract class VertexBuffer : Resource
     {
-        public int VertexStride { get; private set; }
+        public VertexDeclaration VertexDeclaration { get; private set; }
 
         public int VertexCount { get; private set; }
 
         protected VertexBuffer() { }
 
-        public void Initialize(int vertexStride, int vertexCount)
+        public void Initialize(VertexDeclaration vertexDeclaration, int vertexCount)
         {
-            if (vertexStride < 1) throw new ArgumentOutOfRangeException("vertexStride");
+            if (vertexDeclaration == null) throw new ArgumentNullException("vertexDeclaration");
             if (vertexCount < 1) throw new ArgumentOutOfRangeException("vertexCount");
 
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Usage must be not immutable.");
 
-            VertexStride = vertexStride;
+            VertexDeclaration = vertexDeclaration;
             VertexCount = vertexCount;
 
             InitializeCore();
         }
 
-        // T 型が頂点構造体を表すバージョン。
-
-        public void Initialize<T>(T[] data) where T : struct
+        public void Initialize<T>(VertexDeclaration vertexDeclaration, T[] data) where T : struct
         {
-            if (data == null) throw new ArgumentNullException("data");
+            if (vertexDeclaration == null) throw new ArgumentNullException("vertexDeclaration");
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
 
-            VertexStride = Marshal.SizeOf(typeof(T));
+            VertexDeclaration = vertexDeclaration;
             VertexCount = data.Length;
 
             InitializeCore(data);
         }
 
-        // T 型が頂点構造体ではなく、頂点サイズの明示を必要とするバージョン。
-
-        public void Initialize<T>(T[] data, int vertexStride) where T : struct
+        public void Initialize<T>(T[] data) where T : struct, IVertexType
         {
-            if (data == null) throw new ArgumentNullException("data");
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
-            if (vertexStride < 1) throw new ArgumentOutOfRangeException("vertexStride");
 
-            var totalSize = Marshal.SizeOf(typeof(T)) * data.Length;
-
-            VertexStride = vertexStride;
-            VertexCount = totalSize / vertexStride;
+            VertexDeclaration = data[0].VertexDeclaration;
+            VertexCount = data.Length;
 
             InitializeCore(data);
         }
+
+        //// T 型が頂点構造体ではなく、頂点サイズの明示を必要とするバージョン。
+
+        //public void Initialize<T>(T[] data, int vertexStride) where T : struct
+        //{
+        //    if (data == null) throw new ArgumentNullException("data");
+        //    if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
+        //    if (vertexStride < 1) throw new ArgumentOutOfRangeException("vertexStride");
+
+        //    var totalSize = Marshal.SizeOf(typeof(T)) * data.Length;
+
+        //    VertexStride = vertexStride;
+        //    VertexCount = totalSize / vertexStride;
+
+        //    InitializeCore(data);
+        //}
 
         protected abstract void InitializeCore();
 

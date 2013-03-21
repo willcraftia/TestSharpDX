@@ -51,53 +51,53 @@ namespace Libra.Samples.MiniCube
             pixelShader.Initialize(psBytecode);
             
             inputLayout = Device.CreateInputLayout();
-            inputLayout.Initialize<InputPositionColor>(vsBytecode);
+            inputLayout.Initialize<VertexPositionColor>(vsBytecode);
 
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Immutable;
             vertexBuffer.Initialize(new[]
                 {
-                    new InputPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(255, 0, 0, 255) },
-                    new InputPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(255, 0, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 0, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(255, 0, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(255, 0, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 0, 0, 255) },
 
-                    new InputPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(0, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(0, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(0, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(0, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 0, 255) },
 
-                    new InputPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(0, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(0, 0, 255, 255) },
 
-                    new InputPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 255, 0, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(255, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 255, 0, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(255, 255, 0, 255) },
 
-                    new InputPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(255, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 255, 255) },
-                    new InputPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(255, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 255, 255) },
 
-                    new InputPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(0, 255, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 255, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 255, 255, 255) },
-                    new InputPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(0, 255, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 255, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 255, 255, 255) },
+                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 255, 255) },
                 });
 
             constantBuffer = Device.CreateConstantBuffer();

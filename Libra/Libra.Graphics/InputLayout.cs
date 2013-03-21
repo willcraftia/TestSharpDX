@@ -9,17 +9,36 @@ namespace Libra.Graphics
 {
     public abstract class InputLayout : IDisposable
     {
-        public int InputStride { get; protected set; }
+        public int InputStride { get; private set; }
 
         protected InputLayout() { }
 
-        public abstract void Initialize(byte[] shaderBytecode, IList<InputElement> inputElements);
-
-        public void Initialize<T>(byte[] shaderBytecode) where T : IInputType, new()
+        public void Initialize(byte[] shaderBytecode, params InputElement[] elements)
         {
-            var dummyObject = new T();
-            Initialize(shaderBytecode, dummyObject.InputElements);
+            if (elements == null) throw new ArgumentNullException("elements");
+            if (elements.Length == 0) throw new ArgumentException("elements is empty", "elements");
+
+            foreach (var element in elements)
+            {
+                InputStride += element.SizeInBytes;
+            }
+
+            InitializeCore(shaderBytecode, elements);
         }
+
+        public void Initialize(byte[] shaderBytecode, VertexDeclaration vertexDeclaration)
+        {
+            InputStride = vertexDeclaration.Stride;
+
+            InitializeCore(shaderBytecode, vertexDeclaration.Elements);
+        }
+
+        public void Initialize<T>(byte[] shaderBytecode) where T : IVertexType, new()
+        {
+            Initialize(shaderBytecode, new T().VertexDeclaration);
+        }
+
+        protected abstract void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements);
 
         #region IDisposable
 

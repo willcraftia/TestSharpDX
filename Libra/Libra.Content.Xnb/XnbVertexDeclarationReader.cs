@@ -8,42 +8,46 @@ using Libra.Graphics;
 namespace Libra.Content.Xnb
 {
     [XnbTypeReader("Microsoft.Xna.Framework.Content.VertexDeclarationReader, Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553")]
-    public sealed class XnbVertexDeclarationReader : XnbTypeReader<XnbVertexDeclaration>
+    public sealed class XnbVertexDeclarationReader : XnbTypeReader<VertexDeclaration>
     {
-        protected internal override XnbVertexDeclaration Read(XnbReader input, XnbVertexDeclaration existingInstance)
+        protected internal override VertexDeclaration Read(XnbReader input, VertexDeclaration existingInstance)
         {
-            var result = new XnbVertexDeclaration();
-
             // Vertex stride
-            result.VertexStride = (int) input.ReadUInt32();
+            // VertexDeclaration 内部で自動決定もできるが、
+            // 簡単ではない頂点要素の並びを用いる可能性もあるため、
+            // 明示的な値を利用する。
+            var vertexStride = (int) input.ReadUInt32();
 
             // Element count
             var elementCount = input.ReadUInt32();
 
-            var elements = new XnbVertexElement[elementCount];
+            var elements = new InputElement[elementCount];
 
             for (int i = 0; i < elementCount; i++)
             {
-                var element = new XnbVertexElement();
+                var element = new InputElement();
 
                 // Offset
-                element.Offset = (int) input.ReadUInt32();
+                // InputElement 内部で自動決定もできるが、
+                // 簡単ではない頂点要素の並びを用いる可能性もあるため、
+                // 明示的な値を利用する。
+                element.AlignedByteOffset = (int) input.ReadUInt32();
 
                 // Element format
-                element.VertexElementFormat = (XnbVertexElementFormat) input.ReadInt32();
+                element.Format = XnbVertexElementFormatHelper.ToInputElement(input.ReadInt32());
 
                 // Element usage
-                element.VertexElementUsage = (XnbVertexElementUsage) input.ReadInt32();
+                element.SemanticName = XnbVertexElementUsageHelper.ToSemanticsName(input.ReadInt32());
 
                 // Usage index
-                element.UsageIndex = (int) input.ReadUInt32();
+                element.SemanticIndex = (int) input.ReadUInt32();
 
                 elements[i] = element;
             }
 
-            result.Elements = elements;
-
-            return result;
+            // slot = 0 固定。
+            // また、インスタンス データを扱う事はない。
+            return new VertexDeclaration(vertexStride, elements);
         }
     }
 }

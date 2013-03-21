@@ -10,7 +10,7 @@ namespace Libra.Samples.Primitives3D
 {
     public abstract class GeometricPrimitive : IDisposable
     {
-        List<InputPositionNormal> vertices = new List<InputPositionNormal>();
+        List<VertexPositionNormal> vertices = new List<VertexPositionNormal>();
 
         List<ushort> indices = new List<ushort>();
 
@@ -31,7 +31,7 @@ namespace Libra.Samples.Primitives3D
 
         protected void AddVertex(Vector3 position, Vector3 normal)
         {
-            vertices.Add(new InputPositionNormal(position, normal));
+            vertices.Add(new VertexPositionNormal(position, normal));
         }
 
         protected void AddIndex(int index)

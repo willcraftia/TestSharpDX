@@ -9,48 +9,39 @@ using System.Runtime.InteropServices;
 namespace Libra.Graphics
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct InputPositionColor : IInputType, IEquatable<InputPositionColor>
+    public struct VertexPositionColor : IVertexType, IEquatable<VertexPositionColor>
     {
-        public static readonly int SizeInBytes;
-
-        static InputElement[] InputElements = { InputElement.SVPosition, InputElement.Color };
+        public static readonly VertexDeclaration VertexDeclaration =
+            new VertexDeclaration(InputElement.SVPosition, InputElement.Color);
 
         public Vector3 Position;
 
         public Color Color;
 
-        static InputPositionColor()
-        {
-            unsafe
-            {
-                SizeInBytes = sizeof(InputPositionColor);
-            }
-        }
-
-        public InputPositionColor(Vector3 position, Color color)
+        public VertexPositionColor(Vector3 position, Color color)
         {
             Position = position;
             Color = color;
         }
 
-        InputElement[] IInputType.InputElements
+        VertexDeclaration IVertexType.VertexDeclaration
         {
-            get { return (InputElement[]) InputElements.Clone(); }
+            get { return VertexDeclaration; }
         }
 
         #region Equatable
 
-        public static bool operator ==(InputPositionColor value1, InputPositionColor value2)
+        public static bool operator ==(VertexPositionColor value1, VertexPositionColor value2)
         {
             return value1.Equals(value2);
         }
 
-        public static bool operator !=(InputPositionColor value1, InputPositionColor value2)
+        public static bool operator !=(VertexPositionColor value1, VertexPositionColor value2)
         {
             return !value1.Equals(value2);
         }
 
-        public bool Equals(InputPositionColor other)
+        public bool Equals(VertexPositionColor other)
         {
             return Position == other.Position && Color == other.Color;
         }
@@ -59,7 +50,7 @@ namespace Libra.Graphics
         {
             if (obj == null || GetType() != obj.GetType()) return false;
 
-            return Equals((InputPositionColor) obj);
+            return Equals((VertexPositionColor) obj);
         }
 
         public override int GetHashCode()

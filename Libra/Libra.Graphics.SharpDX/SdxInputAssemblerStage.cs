@@ -57,7 +57,7 @@ namespace Libra.Graphics.SharpDX
             {
                 Buffer = (binding.VertexBuffer as SdxVertexBuffer).D3D11Buffer,
                 Offset = binding.Offset,
-                Stride = binding.VertexBuffer.VertexStride
+                Stride = binding.VertexBuffer.VertexDeclaration.Stride
             };
 
             D3D11InputAssemblerStage.SetVertexBuffers(slot, d3d11VertexBufferBinding);
@@ -77,7 +77,7 @@ namespace Libra.Graphics.SharpDX
                 {
                     Buffer = (bindings[i].VertexBuffer as SdxVertexBuffer).D3D11Buffer,
                     Offset = bindings[i].Offset,
-                    Stride = bindings[i].VertexBuffer.VertexStride
+                    Stride = bindings[i].VertexBuffer.VertexDeclaration.Stride
                 };
             }
 

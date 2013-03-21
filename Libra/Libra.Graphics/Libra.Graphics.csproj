@@ -162,7 +162,7 @@
     <Compile Include="IEffectMatrices.cs" />
     <Compile Include="IGraphicsFactory.cs" />
     <Compile Include="IGraphicsService.cs" />
-    <Compile Include="IInputType.cs" />
+    <Compile Include="IVertexType.cs" />
     <Compile Include="ImageFileFormat.cs" />
     <Compile Include="IndexBuffer.cs" />
     <Compile Include="IndexFormat.cs" />
@@ -170,10 +170,10 @@
     <Compile Include="InputElement.cs" />
     <Compile Include="InputElementFormat.cs" />
     <Compile Include="InputLayout.cs" />
-    <Compile Include="InputPositionColor.cs" />
-    <Compile Include="InputPositionColorTexture.cs" />
-    <Compile Include="InputPositionNormal.cs" />
-    <Compile Include="InputPositionTexture.cs" />
+    <Compile Include="VertexPositionColor.cs" />
+    <Compile Include="VertexPositionColorTexture.cs" />
+    <Compile Include="VertexPositionNormal.cs" />
+    <Compile Include="VertexPositionTexture.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="IOutputCollection.cs" />
     <Compile Include="ISwapChain.cs" />
@@ -222,6 +222,7 @@
     <Compile Include="TextureFilter.cs" />
     <Compile Include="VertexBuffer.cs" />
     <Compile Include="VertexBufferBinding.cs" />
+    <Compile Include="VertexDeclaration.cs" />
     <Compile Include="VertexShader.cs" />
     <Compile Include="VertexShaderStage.cs" />
     <Compile Include="Viewport.cs" />

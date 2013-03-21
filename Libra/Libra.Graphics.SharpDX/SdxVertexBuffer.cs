@@ -35,7 +35,7 @@ namespace Libra.Graphics.SharpDX
 
         protected override void InitializeCore()
         {
-            ByteWidth = VertexStride * VertexCount;
+            ByteWidth = VertexDeclaration.Stride * VertexCount;
 
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);
@@ -45,7 +45,7 @@ namespace Libra.Graphics.SharpDX
 
         protected override void InitializeCore<T>(T[] data)
         {
-            ByteWidth = VertexStride * VertexCount;
+            ByteWidth = VertexDeclaration.Stride * VertexCount;
 
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);

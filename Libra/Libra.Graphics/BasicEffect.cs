@@ -806,17 +806,17 @@ namespace Libra.Graphics
             }
         }
 
-        public InputLayout CreateInputLayout(IList<InputElement> inputElements)
-        {
-            var permutation = GetCurrentShaderPermutation();
-            var vartexShaderIndex = VertexShaderIndices[permutation];
-            var vertexShaderBytecode = VertexShaderDefinitions[vartexShaderIndex].Bytecode;
+        //public InputLayout CreateInputLayout(IList<InputElement> inputElements)
+        //{
+        //    var permutation = GetCurrentShaderPermutation();
+        //    var vartexShaderIndex = VertexShaderIndices[permutation];
+        //    var vertexShaderBytecode = VertexShaderDefinitions[vartexShaderIndex].Bytecode;
 
-            var inputLayout = device.CreateInputLayout();
-            inputLayout.Initialize(vertexShaderBytecode, inputElements);
+        //    var inputLayout = device.CreateInputLayout();
+        //    inputLayout.InitializeCore(vertexShaderBytecode, inputElements);
 
-            return inputLayout;
-        }
+        //    return inputLayout;
+        //}
 
         void SetWorldViewProjConstant()
         {

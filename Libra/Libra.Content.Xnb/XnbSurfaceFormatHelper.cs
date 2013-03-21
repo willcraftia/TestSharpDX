@@ -9,6 +9,8 @@ namespace Libra.Content.Xnb
 {
     public static class XnbSurfaceFormatHelper
     {
+        #region XnbSurfaceFormat
+
         enum XnbSurfaceFormat
         {
             Color           = 0,
@@ -32,6 +34,8 @@ namespace Libra.Content.Xnb
             HalfVector4     = 18,
             HdrBlendable    = 19,
         }
+
+        #endregion
 
         public static SurfaceFormat ToSurfaceFormat(int xnbValue)
         {
