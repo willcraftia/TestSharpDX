@@ -6,6 +6,7 @@ using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Content.Xnb;
+using Libra.Input;
 
 #endregion
 
@@ -16,6 +17,10 @@ namespace Libra.Samples.LoadXnb
         IGamePlatform platform;
 
         GraphicsManager graphicsManager;
+
+        Model model;
+
+        IKeyboard keyboard;
 
         public MainGame()
         {
@@ -41,10 +46,54 @@ namespace Libra.Samples.LoadXnb
             manager.TypeReaderManager.LoadFrom(AppDomain.CurrentDomain);
             manager.RootDirectory = "Content";
 
-            var model = manager.Load<Model>("dude");
-            Console.WriteLine(model);
+            model = manager.Load<Model>("dude");
+
+            var viewport = Device.ImmediateContext.RasterizerStage.Viewport;
+
+            foreach (var mesh in model.Meshes)
+            {
+                foreach (BasicEffect effect in mesh.Effects)
+                {
+                    effect.EnableDefaultLighting();
+
+                    effect.View = Matrix.CreateLookAt(
+                        new Vector3(9.0f, 9.0f, 9.0f),
+                        Vector3.Zero,
+                        Vector3.Up
+                    );
+
+                    effect.Projection = Matrix.CreatePerspectiveFieldOfView(
+                        MathHelper.ToRadians(45.0f),
+                        (float) viewport.AspectRatio,
+                        1.0f,
+                        100.0f
+                    );
+                }
+            }
+
+            keyboard = platform.CreateKeyboard();
 
             base.LoadContent();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            Device.ImmediateContext.Clear(Color.CornflowerBlue);
+
+            foreach (var mesh in model.Meshes)
+            {
+                mesh.Draw(Device.ImmediateContext);
+            }
+
+            base.Draw(gameTime);
         }
     }
 

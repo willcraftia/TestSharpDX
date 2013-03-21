@@ -711,6 +711,10 @@ namespace Libra.Graphics
             constantBuffer.Initialize<Constants>();
 
             // デフォルト値。
+            world = Matrix.Identity;
+            view = Matrix.Identity;
+            projection = Matrix.Identity;
+
             diffuseColor = Vector3.One;
             alpha = 1.0f;
 
