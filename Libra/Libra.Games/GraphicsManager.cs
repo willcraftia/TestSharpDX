@@ -154,6 +154,8 @@ namespace Libra.Games
             // ウィンドウあるいは全画面をリサイズ。
             // デバイス再構築の場合は、それ自体が通常の状態ではないので、強制リサイズとする。
             SwapChain.ResizeTarget();
+
+            UpdateViewport();
         }
 
         void InitializeDevice()
@@ -266,14 +268,9 @@ namespace Libra.Games
             if (Device == null)
                 return false;
 
-            var context = Device.ImmediateContext;
+            Device.ImmediateContext.OutputMergerStage.SetRenderTargetView(SwapChain.RenderTargetView);
 
-            var backBufferWidth = SwapChain.BackBufferWidth;
-            var backBufferHeight = SwapChain.BackBufferHeight;
-            var viewport = new Viewport(0, 0, backBufferWidth, backBufferHeight);
-
-            context.OutputMergerStage.SetRenderTargetView(SwapChain.RenderTargetView);
-            context.RasterizerStage.Viewport = viewport;
+            UpdateViewport();
 
             return true;
         }
@@ -285,7 +282,7 @@ namespace Libra.Games
 
         public void ToggleFullScreen()
         {
-
+            // TODO
         }
 
         protected virtual void OnDeviceCreated(Object sender, EventArgs e)
@@ -298,6 +295,14 @@ namespace Libra.Games
         {
             if (DeviceDisposing != null)
                 DeviceDisposing(this, e);
+        }
+
+        void UpdateViewport()
+        {
+            var backBufferWidth = SwapChain.BackBufferWidth;
+            var backBufferHeight = SwapChain.BackBufferHeight;
+            var viewport = new Viewport(0, 0, backBufferWidth, backBufferHeight);
+            Device.ImmediateContext.RasterizerStage.Viewport = viewport;
         }
 
         #region IDisposable
