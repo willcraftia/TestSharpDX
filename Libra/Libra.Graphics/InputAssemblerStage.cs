@@ -15,6 +15,8 @@ namespace Libra.Graphics
         /// </remarks>
         public const int InputResourceSlotCuont = 32;
 
+        DeviceContext context;
+
         InputLayout inputLayout;
 
         PrimitiveTopology primitiveTopology;
@@ -22,6 +24,10 @@ namespace Libra.Graphics
         VertexBufferBinding[] vertexBufferBindings;
 
         IndexBuffer indexBuffer;
+
+        VertexShader lastVertexShader;
+
+        public bool AutoResolveInputLayout { get; set; }
 
         public InputLayout InputLayout
         {
@@ -65,9 +71,15 @@ namespace Libra.Graphics
             }
         }
 
-        protected InputAssemblerStage()
+        protected InputAssemblerStage(DeviceContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
+
+            this.context = context;
+
             vertexBufferBindings = new VertexBufferBinding[InputResourceSlotCuont];
+
+            AutoResolveInputLayout = true;
         }
 
         public VertexBufferBinding GetVertexBuffer(int slot)
@@ -92,12 +104,17 @@ namespace Libra.Graphics
             if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
             if (offset < 0) throw new ArgumentOutOfRangeException("offset");
 
-            SetVertexBufferCore(slot, new VertexBufferBinding(buffer, offset));
+            var binding = new VertexBufferBinding(buffer, offset);
+            vertexBufferBindings[slot] = binding;
+
+            SetVertexBufferCore(slot, binding);
         }
 
         public void SetVertexBuffer(int slot, VertexBufferBinding binding)
         {
             if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            vertexBufferBindings[slot] = binding;
 
             SetVertexBufferCore(slot, binding);
         }
@@ -112,6 +129,29 @@ namespace Libra.Graphics
             Array.Copy(bindings, 0, vertexBufferBindings, startSlot, count);
 
             SetVertexBuffersCore(startSlot, count, bindings);
+        }
+
+        internal void ApplyState()
+        {
+            if (AutoResolveInputLayout)
+            {
+                // 入力レイアウト自動解決 ON ならば、
+                // 頂点シェーダと頂点宣言の組で入力レイアウトを決定して設定。
+                // 仮に明示的に入力レイアウトを設定していたとしても、
+                // それは上書き設定する。
+
+                var vertexShader = context.VertexShaderStage.VertexShader;
+
+                // TODO
+                // スロット #0 は確定なのか否か。
+
+                var vertexBuffer = vertexBufferBindings[0].VertexBuffer;
+                if (vertexBuffer == null)
+                    throw new InvalidOperationException("VertexBuffer is null in slot 0");
+
+                var inputLayout = vertexShader.GetInputLayout(vertexBuffer.VertexDeclaration);
+                InputLayout = inputLayout;
+            }
         }
 
         protected abstract void OnInputLayoutChanged();

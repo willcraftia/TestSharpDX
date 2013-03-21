@@ -34,6 +34,8 @@ namespace Libra.Samples.MiniCube
             graphicsManager = new GraphicsManager(this);
         }
 
+        byte[] vsBytecode;
+
         protected override void LoadContent()
         {
             // ここではテストのために行優先でコンパイル。
@@ -41,7 +43,8 @@ namespace Libra.Samples.MiniCube
             compiler.RootPath = "Shaders";
             compiler.PackMatrixRowMajor = true;
 
-            var vsBytecode = compiler.CompileFromFile("MiniCube.fx", "VS", VertexShaderProfile.vs_4_0);
+            //var vsBytecode = compiler.CompileFromFile("MiniCube.fx", "VS", VertexShaderProfile.vs_4_0);
+            vsBytecode = compiler.CompileFromFile("MiniCube.fx", "VS", VertexShaderProfile.vs_4_0);
             var psBytecode = compiler.CompileFromFile("MiniCube.fx", "PS", PixelShaderProfile.ps_4_0);
 
             vertexShader = Device.CreateVertexShader();
@@ -49,7 +52,7 @@ namespace Libra.Samples.MiniCube
 
             pixelShader = Device.CreatePixelShader();
             pixelShader.Initialize(psBytecode);
-            
+
             inputLayout = Device.CreateInputLayout();
             inputLayout.Initialize<VertexPositionColor>(vsBytecode);
 
@@ -112,6 +115,8 @@ namespace Libra.Samples.MiniCube
 
             context.Clear(Color.CornflowerBlue);
 
+            // テストのために入力レイアウト自動解決を OFF に設定。
+            context.InputAssemblerStage.AutoResolveInputLayout = false;
             context.InputAssemblerStage.InputLayout = inputLayout;
             context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
             context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);

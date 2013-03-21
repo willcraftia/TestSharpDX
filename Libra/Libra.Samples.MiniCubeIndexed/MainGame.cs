@@ -112,6 +112,8 @@ namespace Libra.Samples.MiniCubeIndexed
 
             context.Clear(Color.CornflowerBlue);
 
+            // テストのために入力レイアウト自動解決を OFF に設定。
+            context.InputAssemblerStage.AutoResolveInputLayout = false;
             context.InputAssemblerStage.InputLayout = inputLayout;
             context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
             context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);

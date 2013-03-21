@@ -82,7 +82,7 @@ namespace Libra.Graphics.SharpDX
             deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
             // パイプライン ステージの初期化。
-            inputAssemblerStage = new SdxInputAssemblerStage(d3d11DeviceContext.InputAssembler);
+            inputAssemblerStage = new SdxInputAssemblerStage(this, d3d11DeviceContext.InputAssembler);
             vertexShaderStage = new SdxVertexShaderStage(device, d3d11DeviceContext.VertexShader);
             rasterizerStage = new SdxRasterizerStage(device, d3d11DeviceContext.Rasterizer);
             pixelShaderStage = new SdxPixelShaderStage(device, d3d11DeviceContext.PixelShader);
@@ -121,12 +121,12 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        public override void Draw(int vertexCount, int startVertexLocation = 0)
+        protected override void DrawCore(int vertexCount, int startVertexLocation)
         {
             D3D11DeviceContext.Draw(vertexCount, startVertexLocation);
         }
 
-        public override void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0)
+        protected override void DrawIndexedCore(int indexCount, int startIndexLocation, int baseVertexLocation)
         {
             D3D11DeviceContext.DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
         }

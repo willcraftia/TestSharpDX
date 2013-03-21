@@ -161,7 +161,7 @@ namespace Libra.Graphics.SharpDX
 
         public VertexShader CreateVertexShader()
         {
-            return new SdxVertexShader(D3D11Device);
+            return new SdxVertexShader(this);
         }
 
         public PixelShader CreatePixelShader()

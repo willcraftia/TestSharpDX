@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -8,9 +9,53 @@ namespace Libra.Graphics
 {
     public abstract class VertexShader : IDisposable
     {
-        protected VertexShader() { }
+        // VertexShader の破棄と同時に InputLayout も破棄したいため、
+        // VertexShader で InputLayout のキャッシュを管理。
 
-        public abstract void Initialize(byte[] shaderBytecode);
+        Dictionary<VertexDeclaration, InputLayout> inputLayoutMap;
+
+        public IDevice Device { get; private set; }
+
+        protected internal byte[] ShaderBytecode { get; private set; }
+
+        protected VertexShader(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+
+            inputLayoutMap = new Dictionary<VertexDeclaration, InputLayout>();
+        }
+
+        public void Initialize(byte[] shaderBytecode)
+        {
+            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
+
+            ShaderBytecode = shaderBytecode;
+
+            InitializeCore();
+        }
+
+        public InputLayout GetInputLayout(VertexDeclaration vertexDeclaration)
+        {
+            if (vertexDeclaration == null) throw new ArgumentNullException("vertexDeclaration");
+
+            lock (inputLayoutMap)
+            {
+                InputLayout inputLayout;
+                if (!inputLayoutMap.TryGetValue(vertexDeclaration, out inputLayout))
+                {
+                    inputLayout = Device.CreateInputLayout();
+                    inputLayout.Initialize(ShaderBytecode, vertexDeclaration.Elements);
+
+                    inputLayoutMap[vertexDeclaration] = inputLayout;
+                }
+
+                return inputLayout;
+            }
+        }
+
+        protected abstract void InitializeCore();
 
         #region IDisposable
 

@@ -98,9 +98,23 @@ namespace Libra.Graphics
             }
         }
 
-        public abstract void Draw(int vertexCount, int startVertexLocation = 0);
+        public void Draw(int vertexCount, int startVertexLocation = 0)
+        {
+            InputAssemblerStage.ApplyState();
 
-        public abstract void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0);
+            DrawCore(vertexCount, startVertexLocation);
+        }
+
+        public void DrawIndexed(int indexCount, int startIndexLocation = 0, int baseVertexLocation = 0)
+        {
+            InputAssemblerStage.ApplyState();
+
+            DrawIndexedCore(indexCount, startIndexLocation, baseVertexLocation);
+        }
+
+        protected abstract void DrawCore(int vertexCount, int startVertexLocation);
+
+        protected abstract void DrawIndexedCore(int indexCount, int startIndexLocation, int baseVertexLocation);
 
         internal protected abstract MappedSubresource Map(Resource resource, int subresource, MapMode mapMode);
 

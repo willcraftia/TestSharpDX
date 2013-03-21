@@ -15,18 +15,17 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11VertexShader D3D11VertexShader { get; private set; }
 
-        public SdxVertexShader(D3D11Device d3d11Device)
+        public SdxVertexShader(SdxDevice device)
+            : base(device)
         {
-            if (d3d11Device == null) throw new ArgumentNullException("d3d11Device");
+            if (device == null) throw new ArgumentNullException("device");
 
-            D3D11Device = d3d11Device;
+            D3D11Device = device.D3D11Device;
         }
 
-        public override void Initialize(byte[] shaderBytecode)
+        protected override void InitializeCore()
         {
-            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
-
-            D3D11VertexShader = new D3D11VertexShader(D3D11Device, shaderBytecode);
+            D3D11VertexShader = new D3D11VertexShader(D3D11Device, ShaderBytecode);
         }
 
         #region IDisposable

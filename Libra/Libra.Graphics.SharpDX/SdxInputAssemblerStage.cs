@@ -15,7 +15,8 @@ namespace Libra.Graphics.SharpDX
     {
         public D3D11InputAssemblerStage D3D11InputAssemblerStage { get; private set; }
 
-        public SdxInputAssemblerStage(D3D11InputAssemblerStage d3d11InputAssemblerStage)
+        public SdxInputAssemblerStage(SdxDeviceContext context, D3D11InputAssemblerStage d3d11InputAssemblerStage)
+            : base(context)
         {
             if (d3d11InputAssemblerStage == null) throw new ArgumentNullException("d3d11InputAssemblerStage");
 
