@@ -35,7 +35,7 @@ namespace Libra.Graphics
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
 
             VertexDeclaration = vertexDeclaration;
-            VertexCount = data.Length;
+            VertexCount = Marshal.SizeOf(typeof(T)) * data.Length / vertexDeclaration.Stride;
 
             InitializeCore(data);
         }
