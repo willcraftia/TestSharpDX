@@ -304,7 +304,7 @@ namespace Libra.Graphics
 
         DepthStencilState depthStencilState;
 
-        RenderTargetView[] renderTargetViews;
+        RenderTargetView[] renderTargets;
 
         VertexShader vertexShader;
 
@@ -466,7 +466,7 @@ namespace Libra.Graphics
             vertexBufferBindings = new VertexBufferBinding[InputResourceSlotCuont];
             AutoResolveInputLayout = true;
 
-            renderTargetViews = new RenderTargetView[SimultaneousRenderTargetCount];
+            renderTargets = new RenderTargetView[SimultaneousRenderTargetCount];
 
             VertexShaderConstantBuffers = new ConstantBufferCollection(this, ShaderStage.Vertex);
             PixelShaderConstantBuffers = new ConstantBufferCollection(this, ShaderStage.Pixel);
@@ -541,35 +541,40 @@ namespace Libra.Graphics
 
         protected abstract void OnScissorRectangleChanged();
 
-        public RenderTargetView GetRenderTargetView()
+        public RenderTargetView GetRenderTarget()
         {
-            return renderTargetViews[0];
+            return renderTargets[0];
         }
 
-        public void GetRenderTargetViews(RenderTargetView[] result)
+        public void GetRenderTargets(RenderTargetView[] result)
         {
-            Array.Copy(renderTargetViews, result, Math.Min(SimultaneousRenderTargetCount, result.Length));
+            Array.Copy(renderTargets, result, Math.Min(SimultaneousRenderTargetCount, result.Length));
         }
 
-        public void SetRenderTargetView(RenderTargetView view)
+        public void SetRenderTarget(RenderTargetView renderTarget)
         {
-            renderTargetViews[0] = view;
+            renderTargets[0] = renderTarget;
 
-            SetRenderTargetViewCore(view);
+            SetRenderTargetCore(renderTarget);
         }
 
-        public void SetRenderTargetViews(params RenderTargetView[] views)
+        public void SetRenderTargets(params RenderTargetView[] renderTargets)
         {
-            if (SimultaneousRenderTargetCount < views.Length) throw new ArgumentOutOfRangeException("views");
+            if (SimultaneousRenderTargetCount < renderTargets.Length)
+                throw new ArgumentOutOfRangeException("renderTargets");
+            if (renderTargets.Length == 0)
+                throw new ArgumentException("renderTargets is empty", "renderTargets");
+            if (renderTargets[0] == null)
+                throw new ArgumentException(string.Format("renderTargets[{0}] is null.", 0), "renderTargets");
 
-            Array.Copy(views, renderTargetViews, views.Length);
+            Array.Copy(renderTargets, renderTargets, renderTargets.Length);
 
-            SetRenderTargetViewsCore(views);
+            SetRenderTargetsCore(renderTargets);
         }
 
-        protected abstract void SetRenderTargetViewCore(RenderTargetView view);
+        protected abstract void SetRenderTargetCore(RenderTargetView renderTarget);
 
-        protected abstract void SetRenderTargetViewsCore(RenderTargetView[] views);
+        protected abstract void SetRenderTargetsCore(RenderTargetView[] renderTargets);
 
         protected abstract void OnBlendStateChanged();
 
@@ -586,13 +591,21 @@ namespace Libra.Graphics
         protected abstract void SetShaderResourceCore(ShaderStage shaderStage, int slot, ShaderResourceView view);
 
         public void ClearRenderTargetView(
-            RenderTargetView view, ClearOptions options, Color color, float depth, byte stencil)
+            RenderTargetView renderTarget, ClearOptions options, Color color, float depth, byte stencil)
         {
-            ClearRenderTargetView(view, options, color.ToVector4(), depth, stencil);
+            ClearRenderTargetView(renderTarget, options, color.ToVector4(), depth, stencil);
         }
 
-        public abstract void ClearRenderTargetView(
-            RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil);
+        public void ClearRenderTargetView(
+            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil)
+        {
+            if (renderTarget == null) throw new ArgumentNullException("renderTarget");
+
+            ClearRenderTargetCore(renderTarget, options, color, depth, stencil);
+        }
+
+        protected abstract void ClearRenderTargetCore(
+            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil);
 
         public void Clear(Color color)
         {
@@ -612,9 +625,9 @@ namespace Libra.Graphics
         public void Clear(ClearOptions options, Vector4 color, float depth = 1f, byte stencil = 0)
         {
             // アクティブに設定されている全てのレンダ ターゲットをクリア。
-            for (int i = 0; i < renderTargetViews.Length; i++)
+            for (int i = 0; i < renderTargets.Length; i++)
             {
-                var renderTarget = renderTargetViews[i];
+                var renderTarget = renderTargets[i];
                 if (renderTarget != null)
                 {
                     ClearRenderTargetView(renderTarget, options, color, depth, stencil);

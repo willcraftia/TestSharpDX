@@ -268,7 +268,7 @@ namespace Libra.Games
             if (Device == null)
                 return false;
 
-            Device.ImmediateContext.SetRenderTargetView(SwapChain.RenderTargetView);
+            Device.ImmediateContext.SetRenderTarget(SwapChain.RenderTargetView);
 
             UpdateViewport();
 

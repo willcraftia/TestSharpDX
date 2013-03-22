@@ -10,10 +10,12 @@ using D3D11DepthStencilClearFlags = SharpDX.Direct3D11.DepthStencilClearFlags;
 using D3D11DepthStencilView = SharpDX.Direct3D11.DepthStencilView;
 using D3D11DeviceContext = SharpDX.Direct3D11.DeviceContext;
 using D3D11DeviceContextType = SharpDX.Direct3D11.DeviceContextType;
+using D3D11InputLayout = SharpDX.Direct3D11.InputLayout;
 using D3D11MapFlags = SharpDX.Direct3D11.MapFlags;
 using D3D11MapMode = SharpDX.Direct3D11.MapMode;
 using D3D11PixelShader = SharpDX.Direct3D11.PixelShader;
 using D3D11PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology;
+using D3D11RasterizerState = SharpDX.Direct3D11.RasterizerState;
 using D3D11RenderTargetView = SharpDX.Direct3D11.RenderTargetView;
 using D3D11Resource = SharpDX.Direct3D11.Resource;
 using D3D11ResourceRegion = SharpDX.Direct3D11.ResourceRegion;
@@ -48,7 +50,6 @@ namespace Libra.Graphics.SharpDX
         public SdxDeviceContext(SdxDevice device, D3D11DeviceContext d3d11DeviceContext)
             : base(device)
         {
-            if (device == null) throw new ArgumentNullException("device");
             if (d3d11DeviceContext == null) throw new ArgumentNullException("d3d11DeviceContext");
 
             this.device = device;
@@ -61,14 +62,10 @@ namespace Libra.Graphics.SharpDX
 
         protected override void OnInputLayoutChanged()
         {
-            if (InputLayout == null)
-            {
-                D3D11DeviceContext.InputAssembler.InputLayout = null;
-            }
-            else
-            {
-                D3D11DeviceContext.InputAssembler.InputLayout = (InputLayout as SdxInputLayout).D3D11InputLayout;
-            }
+            D3D11InputLayout d3d11InputLayout = null;
+            if (InputLayout != null) d3d11InputLayout = (InputLayout as SdxInputLayout).D3D11InputLayout;
+
+            D3D11DeviceContext.InputAssembler.InputLayout = d3d11InputLayout;
         }
 
         protected override void OnPrimitiveTopologyChanged()
@@ -78,7 +75,8 @@ namespace Libra.Graphics.SharpDX
 
         protected override void OnIndexBufferChanged()
         {
-            var d3d11Buffer = (IndexBuffer as SdxIndexBuffer).D3D11Buffer;
+            D3D11Buffer d3d11Buffer = null;
+            if (IndexBuffer != null) d3d11Buffer = (IndexBuffer as SdxIndexBuffer).D3D11Buffer;
 
             D3D11DeviceContext.InputAssembler.SetIndexBuffer(d3d11Buffer, (DXGIFormat) IndexBuffer.Format, 0);
         }
@@ -118,14 +116,10 @@ namespace Libra.Graphics.SharpDX
 
         protected override void OnRasterizerStateChanged()
         {
-            if (RasterizerState == null)
-            {
-                D3D11DeviceContext.Rasterizer.State = null;
-            }
-            else
-            {
-                D3D11DeviceContext.Rasterizer.State = (Device as SdxDevice).RasterizerStateManager[RasterizerState];
-            }
+            D3D11RasterizerState d3d11RasterizerState = null;
+            if (RasterizerState != null) d3d11RasterizerState = (Device as SdxDevice).RasterizerStateManager[RasterizerState];
+
+            D3D11DeviceContext.Rasterizer.State = d3d11RasterizerState;
         }
 
         protected override void OnViewportChanged()
@@ -167,9 +161,9 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        protected override void SetRenderTargetViewCore(RenderTargetView view)
+        protected override void SetRenderTargetCore(RenderTargetView renderTarget)
         {
-            if (view == null)
+            if (renderTarget == null)
             {
                 // null 指定の場合はレンダ ターゲットおよび深度ステンシルを外す。
                 D3D11DeviceContext.OutputMerger.SetTargets((D3D11DepthStencilView) null, (D3D11RenderTargetView[]) null);
@@ -178,7 +172,7 @@ namespace Libra.Graphics.SharpDX
             {
 
                 // 深度ステンシルは先頭のレンダ ターゲットの物を利用。
-                var depthStencilView = view.DepthStencilView;
+                var depthStencilView = renderTarget.DepthStencilView;
 
                 D3D11DepthStencilView d3d11DepthStencilView = null;
                 if (depthStencilView != null)
@@ -186,22 +180,16 @@ namespace Libra.Graphics.SharpDX
                     d3d11DepthStencilView = (depthStencilView as SdxDepthStencilView).D3D11DepthStencilView;
                 }
 
-                activeD3D11RenderTargetViews[0] = (view as SdxRenderTargetView).D3D11RenderTargetView;
+                activeD3D11RenderTargetViews[0] = (renderTarget as SdxRenderTargetView).D3D11RenderTargetView;
 
                 D3D11DeviceContext.OutputMerger.SetTargets(d3d11DepthStencilView, activeD3D11RenderTargetViews[0]);
             }
         }
 
-        protected override void SetRenderTargetViewsCore(RenderTargetView[] views)
+        protected override void SetRenderTargetsCore(RenderTargetView[] renderTargets)
         {
-            if (views.Length == 0)
-                throw new ArgumentException("Invalid size of array: 0", "views");
-
-            if (views[0] == null)
-                throw new ArgumentException(string.Format("views[{0}] is null.", 0), "views");
-
             // 深度ステンシルは先頭のレンダ ターゲットの物を利用。
-            var depthStencilView = views[0].DepthStencilView;
+            var depthStencilView = renderTargets[0].DepthStencilView;
 
             D3D11DepthStencilView d3d11DepthStencilView = null;
             if (depthStencilView != null)
@@ -216,12 +204,12 @@ namespace Libra.Graphics.SharpDX
             // インタフェースの差異の関係上、D3D 実体をコピーして保持。
             for (int i = 0; i < activeD3D11RenderTargetViews.Length; i++)
             {
-                if (i < views.Length)
+                if (i < renderTargets.Length)
                 {
-                    if (views[i] == null)
-                        throw new ArgumentException(string.Format("views[{0}] is null.", i), "views");
+                    if (renderTargets[i] == null)
+                        throw new ArgumentException(string.Format("renderTargets[{0}] is null.", i), "renderTargets");
 
-                    activeD3D11RenderTargetViews[i] = (views[i] as SdxRenderTargetView).D3D11RenderTargetView;
+                    activeD3D11RenderTargetViews[i] = (renderTargets[i] as SdxRenderTargetView).D3D11RenderTargetView;
                 }
                 else
                 {
@@ -234,32 +222,16 @@ namespace Libra.Graphics.SharpDX
 
         protected override void OnVertexShaderChanged()
         {
-            D3D11VertexShader d3d11VertexShader;
-
-            if (VertexShader == null)
-            {
-                d3d11VertexShader = null;
-            }
-            else
-            {
-                d3d11VertexShader = (VertexShader as SdxVertexShader).D3D11VertexShader;
-            }
+            D3D11VertexShader d3d11VertexShader = null;
+            if (VertexShader != null) d3d11VertexShader = (VertexShader as SdxVertexShader).D3D11VertexShader;
 
             D3D11DeviceContext.VertexShader.Set(d3d11VertexShader);
         }
 
         protected override void OnPixelShaderChanged()
         {
-            D3D11PixelShader d3d11PixelShader;
-
-            if (PixelShader == null)
-            {
-                d3d11PixelShader = null;
-            }
-            else
-            {
-                d3d11PixelShader = (PixelShader as SdxPixelShader).D3D11PixelShader;
-            }
+            D3D11PixelShader d3d11PixelShader = null;
+            if (PixelShader != null) d3d11PixelShader = (PixelShader as SdxPixelShader).D3D11PixelShader;
 
             D3D11DeviceContext.PixelShader.Set(d3d11PixelShader);
         }
@@ -307,19 +279,18 @@ namespace Libra.Graphics.SharpDX
             throw new ArgumentException("Unknown shader stage: " + shaderStage, "shaderStage");
         }
 
-        public override void ClearRenderTargetView(RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil)
+        protected override void ClearRenderTargetCore(
+            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil)
         {
-            if (view == null) throw new ArgumentNullException("view");
-
             if ((options & ClearOptions.Target) != 0)
             {
-                var d3d11RenderTargetView = (view as SdxRenderTargetView).D3D11RenderTargetView;
+                var d3d11RenderTargetView = (renderTarget as SdxRenderTargetView).D3D11RenderTargetView;
 
                 D3D11DeviceContext.ClearRenderTargetView(
                     d3d11RenderTargetView, new SDXColor4(color.X, color.Y, color.Z, color.W));
             }
 
-            var depthStencilView = view.DepthStencilView;
+            var depthStencilView = renderTarget.DepthStencilView;
             if (depthStencilView == null)
                 return;
 
