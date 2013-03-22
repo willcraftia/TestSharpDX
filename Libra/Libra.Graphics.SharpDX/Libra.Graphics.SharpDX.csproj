@@ -65,14 +65,11 @@
     <Compile Include="SdxDeviceContext.cs" />
     <Compile Include="SdxGraphicsFactory.cs" />
     <Compile Include="SdxIndexBuffer.cs" />
-    <Compile Include="SdxInputAssemblerStage.cs" />
     <Compile Include="SdxInputLayout.cs" />
     <Compile Include="SdxOutput.cs" />
     <Compile Include="SdxOutputCollection.cs" />
-    <Compile Include="SdxOutputMergerStage.cs" />
     <Compile Include="SdxPixelShader.cs" />
     <Compile Include="SdxPixelShaderStage.cs" />
-    <Compile Include="SdxRasterizerStage.cs" />
     <Compile Include="SdxRenderTarget.cs" />
     <Compile Include="SdxRenderTargetView.cs" />
     <Compile Include="SdxShaderResourceView.cs" />
