@@ -42,6 +42,9 @@ namespace Libra.Graphics
             sizeInBits[(int) InputElementFormat.NormalizedShort2] = 32;
             sizeInBits[(int) InputElementFormat.NormalizedShort4] = 64;
             sizeInBits[(int) InputElementFormat.Vector3] = 96;
+
+            sizeInBits[(int) IndexFormat.SixteenBits] = 16;
+            sizeInBits[(int) IndexFormat.ThirtyTwoBits] = 32;
         }
 
         public static int SizeInBits(SurfaceFormat format)
@@ -59,6 +62,11 @@ namespace Libra.Graphics
             return sizeInBits[(int) format];
         }
 
+        public static int SizeInBits(IndexFormat format)
+        {
+            return sizeInBits[(int) format];
+        }
+
         public static int SizeInBytes(SurfaceFormat format)
         {
             return SizeInBits(format) / 8;
@@ -70,6 +78,11 @@ namespace Libra.Graphics
         }
 
         public static int SizeInBytes(InputElementFormat format)
+        {
+            return SizeInBits(format) / 8;
+        }
+
+        public static int SizeInBytes(IndexFormat format)
         {
             return SizeInBits(format) / 8;
         }

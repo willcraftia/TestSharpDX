@@ -24,17 +24,7 @@ namespace Libra.Content.Xnb
             // Index data
             var indexData = input.ReadBytes(dataSize);
 
-            var indexCount = dataSize;
-            if (isSixteenBits)
-            {
-                indexCount /= 2;
-            }
-            else
-            {
-                indexCount /= 4;
-            }
-
-            result.Initialize(indexData, indexCount);
+            result.Initialize(indexData);
 
             return result;
         }
