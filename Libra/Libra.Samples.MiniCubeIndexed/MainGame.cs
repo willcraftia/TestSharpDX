@@ -14,6 +14,57 @@ namespace Libra.Samples.MiniCubeIndexed
 {
     public sealed class MainGame : Game
     {
+        #region Vertices
+
+        static readonly VertexPositionColor[] Vertices =
+        {
+            new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
+            new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 0, 255) },
+            new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(255, 0, 0, 255) },
+            new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 0, 0, 255) },
+
+            new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 0, 255) },
+            new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 0, 255) },
+            new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 255, 0, 255) },
+            new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(0, 255, 0, 255) },
+
+            new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(0, 0, 255, 255) },
+            new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 0, 255, 255) },
+            new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 0, 255, 255) },
+            new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 0, 255, 255) },
+
+            new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 255, 0, 255) },
+            new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(255, 255, 0, 255) },
+            new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 255, 0, 255) },
+            new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 255, 0, 255) },
+
+            new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 0, 255, 255) },
+            new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(255, 0, 255, 255) },
+            new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 255, 255) },
+            new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 255, 255) },
+
+            new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(0, 255, 255, 255) },
+            new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 255, 255, 255) },
+            new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 255, 255) },
+            new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 255, 255) },
+        };
+
+        #endregion
+
+        #region Indices
+
+        static readonly ushort[] Indices =
+        {
+            0,  1,  2,  0,  2,  3,
+            4,  5,  6,  4,  6,  7,
+            8,  9, 10,  8, 10, 11,
+            12, 13, 14, 12, 14, 15,
+            16, 17, 18, 16, 18, 19,
+            20, 21, 22, 20, 22, 23,
+        };
+
+        #endregion
+
         IGamePlatform platform;
 
         GraphicsManager graphicsManager;
@@ -55,50 +106,11 @@ namespace Libra.Samples.MiniCubeIndexed
 
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Immutable;
-            vertexBuffer.Initialize(new[]
-                {
-                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(255, 0, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 0, 0, 255) },
-
-                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 255, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(0, 255, 0, 255) },
-
-                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(0, 0, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(0, 0, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 0, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 0, 255, 255) },
-
-                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(255, 255, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(255, 255, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 255, 0, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 255, 0, 255) },
-
-                    new VertexPositionColor { Position = new Vector3(-1, -1, -1), Color = new Color(255, 0, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1,  1, -1), Color = new Color(255, 0, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1,  1,  1), Color = new Color(255, 0, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3(-1, -1,  1), Color = new Color(255, 0, 255, 255) },
-
-                    new VertexPositionColor { Position = new Vector3( 1, -1,  1), Color = new Color(0, 255, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1,  1,  1), Color = new Color(0, 255, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1,  1, -1), Color = new Color(0, 255, 255, 255) },
-                    new VertexPositionColor { Position = new Vector3( 1, -1, -1), Color = new Color(0, 255, 255, 255) },
-                });
+            vertexBuffer.Initialize(Vertices);
 
             indexBuffer = Device.CreateIndexBuffer();
             indexBuffer.Usage = ResourceUsage.Immutable;
-            indexBuffer.Initialize(new ushort[]
-                {
-                     0,  1,  2,  0,  2,  3,
-                     4,  5,  6,  4,  6,  7,
-                     8,  9, 10,  8, 10, 11,
-                    12, 13, 14, 12, 14, 15,
-                    16, 17, 18, 16, 18, 19,
-                    20, 21, 22, 20, 22, 23,
-                });
+            indexBuffer.Initialize(Indices);
 
             constantBuffer = Device.CreateConstantBuffer();
             constantBuffer.Initialize<Matrix>();
