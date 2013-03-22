@@ -16,9 +16,13 @@ namespace Libra.Graphics
             sizeInBits[(int) SurfaceFormat.Bgr565] = 16;
             sizeInBits[(int) SurfaceFormat.Bgra5551] = 16;
             sizeInBits[(int) SurfaceFormat.Bgra4444] = 16;
-            sizeInBits[(int) SurfaceFormat.BC1] = 4;
-            sizeInBits[(int) SurfaceFormat.BC2] = 8;
-            sizeInBits[(int) SurfaceFormat.BC3] = 8;
+
+            // ブロック圧縮については、1 ブロック (4x4 テクセル) に対するビット数を設定。
+            // 各テクセルのビット数ではない点に注意。
+            sizeInBits[(int) SurfaceFormat.BC1] = 64;
+            sizeInBits[(int) SurfaceFormat.BC2] = 128;
+            sizeInBits[(int) SurfaceFormat.BC3] = 128;
+
             sizeInBits[(int) SurfaceFormat.NormalizedByte2] = 16;
             sizeInBits[(int) SurfaceFormat.NormalizedByte4] = 32;
             sizeInBits[(int) SurfaceFormat.Rgba1010102] = 32;
@@ -85,6 +89,11 @@ namespace Libra.Graphics
         public static int SizeInBytes(IndexFormat format)
         {
             return SizeInBits(format) / 8;
+        }
+
+        public static bool IsBlockCompression(SurfaceFormat format)
+        {
+            return (format == SurfaceFormat.BC1 || format == SurfaceFormat.BC2 || format == SurfaceFormat.BC3);
         }
     }
 }

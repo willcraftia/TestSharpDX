@@ -79,6 +79,16 @@ namespace Libra.Graphics
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Data can not be set from CPU.");
 
+            int levelWidth = Width >> level;
+
+            // ブロック圧縮ならばブロック サイズで調整。
+            // この場合、FormatHelper.SizeInBytes で測る値は、
+            // 1 ブロック (4x4 テクセル) に対するバイト数である点に注意。
+            if (FormatHelper.IsBlockCompression(Format))
+            {
+                levelWidth /= 4;
+            }
+
             var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
             try
             {
@@ -92,10 +102,10 @@ namespace Libra.Graphics
                     // TODO
                     //
                     // Immutable と Dynamic 以外は UpdateSubresource で更新可能。
-                    // Staging は Map/Unmap で行えるので、Default の場合にのみ UpdateSubresource で更新。
+                    // Staging は内部利用にとどめるため Default でのみ UpdateSubresource で更新。
                     // それで良いのか？
 
-                    int rowPitch = FormatHelper.SizeInBytes(Format) * Width;
+                    int rowPitch = FormatHelper.SizeInBytes(Format) * levelWidth;
                     context.UpdateSubresource(this, level, null, sourcePointer, rowPitch, 0);
                 }
                 else
@@ -105,7 +115,7 @@ namespace Libra.Graphics
                     // ポインタの移動に用いるため、フォーマットから測れる要素サイズで算出しなければならない。
                     // SizeOf(typeof(T)) では、例えばバイト配列などを渡した場合に、
                     // そのサイズは元配列の要素の移動となり、リソース要素の移動にはならない。
-                    var rowSpan = FormatHelper.SizeInBytes(Format) * Width;
+                    var rowSpan = FormatHelper.SizeInBytes(Format) * levelWidth;
 
                     // TODO
                     //
