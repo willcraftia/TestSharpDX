@@ -104,11 +104,11 @@ namespace Libra.Samples.Primitives3D
 
             if (isWireframe)
             {
-                context.RasterizerStage.RasterizerState = RasterizerState.Wireframe;
+                context.RasterizerState = RasterizerState.Wireframe;
             }
             else
             {
-                context.RasterizerStage.RasterizerState = RasterizerState.CullBack;
+                context.RasterizerState = RasterizerState.CullBack;
             }
 
             float time = (float) gameTime.TotalGameTime.TotalSeconds;
@@ -118,7 +118,7 @@ namespace Libra.Samples.Primitives3D
 
             var cameraPosition = new Vector3(0, 0, 2.5f);
 
-            var aspect = context.RasterizerStage.Viewport.AspectRatio;
+            var aspect = context.Viewport.AspectRatio;
 
             var world = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
             var view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
@@ -129,7 +129,7 @@ namespace Libra.Samples.Primitives3D
 
             currentPrimitive.Draw(context, world, view, projection, color);
 
-            context.RasterizerStage.RasterizerState = RasterizerState.CullBack;
+            context.RasterizerState = RasterizerState.CullBack;
 
             var text = "A or tap top of screen = Change primitive\n" +
                        "B or tap bottom left of screen = Change color\n" +
@@ -157,7 +157,7 @@ namespace Libra.Samples.Primitives3D
                 Exit();
             }
 
-            Viewport viewport = Device.ImmediateContext.RasterizerStage.Viewport;
+            Viewport viewport = Device.ImmediateContext.Viewport;
             int halfWidth = (int) viewport.Width / 2;
             int halfHeight = (int) viewport.Height / 2;
             Rectangle topOfScreen = new Rectangle(0, 0, (int) viewport.Width, (int) halfHeight);

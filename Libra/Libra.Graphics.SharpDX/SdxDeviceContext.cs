@@ -44,7 +44,7 @@ namespace Libra.Graphics.SharpDX
             get { return deferred; }
         }
 
-        public override InputAssemblerStage InputAssemblerStage
+        protected override InputAssemblerStage InputAssemblerStage
         {
             get { return inputAssemblerStage; }
         }
@@ -54,7 +54,7 @@ namespace Libra.Graphics.SharpDX
             get { return vertexShaderStage; }
         }
 
-        public override RasterizerStage RasterizerStage
+        protected override RasterizerStage RasterizerStage
         {
             get { return rasterizerStage; }
         }
@@ -64,7 +64,7 @@ namespace Libra.Graphics.SharpDX
             get { return pixelShaderStage; }
         }
 
-        public override OutputMergerStage OutputMergerStage
+        protected override OutputMergerStage OutputMergerStage
         {
             get { return outputMergerStage; }
         }

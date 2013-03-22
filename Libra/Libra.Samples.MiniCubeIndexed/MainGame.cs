@@ -125,17 +125,17 @@ namespace Libra.Samples.MiniCubeIndexed
             context.Clear(Color.CornflowerBlue);
 
             // テストのために入力レイアウト自動解決を OFF に設定。
-            context.InputAssemblerStage.AutoResolveInputLayout = false;
-            context.InputAssemblerStage.InputLayout = inputLayout;
-            context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);
-            context.InputAssemblerStage.IndexBuffer = indexBuffer;
+            context.AutoResolveInputLayout = false;
+            context.InputLayout = inputLayout;
+            context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            context.SetVertexBuffer(0, vertexBuffer);
+            context.IndexBuffer = indexBuffer;
 
             context.VertexShaderStage.VertexShader = vertexShader;
             context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);
             context.PixelShaderStage.PixelShader = pixelShader;
 
-            float aspect = context.RasterizerStage.Viewport.AspectRatio;
+            float aspect = context.Viewport.AspectRatio;
             float time = (float) gameTime.TotalGameTime.TotalSeconds;
 
             var world = Matrix.CreateRotationX(time) * Matrix.CreateRotationY(time * 2) * Matrix.CreateRotationZ(time * .7f);

@@ -129,17 +129,17 @@ namespace Libra.Samples.MiniCubeTexture
             context.Clear(Color.CornflowerBlue);
 
             // 入力レイアウト自動解決 OFF。
-            context.InputAssemblerStage.AutoResolveInputLayout = false;
-            context.InputAssemblerStage.InputLayout = inputLayout;
-            context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);
+            context.AutoResolveInputLayout = false;
+            context.InputLayout = inputLayout;
+            context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            context.SetVertexBuffer(0, vertexBuffer);
 
             context.VertexShaderStage.VertexShader = vertexShader;
             context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);
             context.PixelShaderStage.PixelShader = pixelShader;
             context.PixelShaderStage.SetShaderResourceView(0, textureView);
 
-            float aspect = context.RasterizerStage.Viewport.AspectRatio;
+            float aspect = context.Viewport.AspectRatio;
             float time = (float) gameTime.TotalGameTime.TotalSeconds;
 
             var world = Matrix.CreateRotationX(time) * Matrix.CreateRotationY(time * 2) * Matrix.CreateRotationZ(time * .7f);

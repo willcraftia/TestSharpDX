@@ -199,15 +199,15 @@ namespace Libra.Samples.Particles3D
 
             if (firstActiveParticle != firstFreeParticle)
             {
-                context.OutputMergerStage.BlendState = settings.BlendState;
-                context.OutputMergerStage.DepthStencilState = DepthStencilState.DepthRead;
+                context.BlendState = settings.BlendState;
+                context.DepthStencilState = DepthStencilState.DepthRead;
 
                 //effectViewportScaleParameter.SetValue(new Vector2(0.5f / context.RasterizerStage.Viewport.AspectRatio, -0.5f));
 
                 //effectTimeParameter.SetValue(currentTime);
 
                 //device.SetVertexBuffer(vertexBuffer);
-                context.InputAssemblerStage.IndexBuffer = indexBuffer;
+                context.IndexBuffer = indexBuffer;
 
                 //foreach (EffectPass pass in particleEffect.CurrentTechnique.Passes)
                 //{
@@ -234,7 +234,7 @@ namespace Libra.Samples.Particles3D
                 //    }
                 //}
 
-                context.OutputMergerStage.DepthStencilState = DepthStencilState.Default;
+                context.DepthStencilState = DepthStencilState.Default;
             }
 
             drawCounter++;

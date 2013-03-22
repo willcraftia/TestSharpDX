@@ -48,7 +48,7 @@ namespace Libra.Samples.LoadXnb
 
             model = manager.Load<Model>("dude");
 
-            var viewport = Device.ImmediateContext.RasterizerStage.Viewport;
+            var viewport = Device.ImmediateContext.Viewport;
 
             foreach (var mesh in model.Meshes)
             {

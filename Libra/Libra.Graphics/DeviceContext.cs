@@ -48,15 +48,120 @@ namespace Libra.Graphics
 
         public abstract bool Deferred { get; }
 
-        public abstract InputAssemblerStage InputAssemblerStage { get; }
+        protected abstract InputAssemblerStage InputAssemblerStage { get; }
 
         public abstract VertexShaderStage VertexShaderStage { get; }
 
-        public abstract RasterizerStage RasterizerStage { get; }
+        protected abstract RasterizerStage RasterizerStage { get; }
 
         public abstract PixelShaderStage PixelShaderStage { get; }
 
-        public abstract OutputMergerStage OutputMergerStage { get; }
+        protected abstract OutputMergerStage OutputMergerStage { get; }
+
+        public bool AutoResolveInputLayout
+        {
+            get { return InputAssemblerStage.AutoResolveInputLayout; }
+            set { InputAssemblerStage.AutoResolveInputLayout = value; }
+        }
+
+        public InputLayout InputLayout
+        {
+            get { return InputAssemblerStage.InputLayout; }
+            set { InputAssemblerStage.InputLayout = value; }
+        }
+
+        public PrimitiveTopology PrimitiveTopology
+        {
+            get { return InputAssemblerStage.PrimitiveTopology; }
+            set { InputAssemblerStage.PrimitiveTopology = value; }
+        }
+
+        public IndexBuffer IndexBuffer
+        {
+            get { return InputAssemblerStage.IndexBuffer; }
+            set { InputAssemblerStage.IndexBuffer = value; }
+        }
+
+        public RasterizerState RasterizerState
+        {
+            get { return RasterizerStage.RasterizerState; }
+            set { RasterizerStage.RasterizerState = value; }
+        }
+
+        public Viewport Viewport
+        {
+            get { return RasterizerStage.Viewport; }
+            set { RasterizerStage.Viewport = value; }
+        }
+
+        public Rectangle ScissorRectangle
+        {
+            get { return RasterizerStage.ScissorRectangle; }
+            set { RasterizerStage.ScissorRectangle = value; }
+        }
+
+        public Color BlendFactor
+        {
+            get { return OutputMergerStage.BlendFactor; }
+            set { OutputMergerStage.BlendFactor = value; }
+        }
+
+        public BlendState BlendState
+        {
+            get { return OutputMergerStage.BlendState; }
+            set { OutputMergerStage.BlendState = value; }
+        }
+
+        public DepthStencilState DepthStencilState
+        {
+            get { return OutputMergerStage.DepthStencilState; }
+            set { OutputMergerStage.DepthStencilState = value; }
+        }
+
+        public VertexBufferBinding GetVertexBuffer(int slot)
+        {
+            return InputAssemblerStage.GetVertexBuffer(slot);
+        }
+
+        public void GetVertexBuffers(int startSlot, int count, VertexBufferBinding[] bindings)
+        {
+            InputAssemblerStage.GetVertexBuffers(startSlot, count, bindings);
+        }
+
+        public void SetVertexBuffer(int slot, VertexBuffer buffer, int offset = 0)
+        {
+            InputAssemblerStage.SetVertexBuffer(slot, buffer, offset);
+        }
+
+        public void SetVertexBuffer(int slot, VertexBufferBinding binding)
+        {
+            InputAssemblerStage.SetVertexBuffer(slot, binding);
+        }
+
+        public void SetVertexBuffers(int startSlot, int count, VertexBufferBinding[] bindings)
+        {
+            InputAssemblerStage.SetVertexBuffers(startSlot, count, bindings);
+        }
+
+        public RenderTargetView GetRenderTargetView()
+        {
+            return OutputMergerStage.GetRenderTargetView();
+        }
+
+        public void GetRenderTargetViews(RenderTargetView[] result)
+        {
+            OutputMergerStage.GetRenderTargetViews(result);
+        }
+
+        public void SetRenderTargetView(RenderTargetView view)
+        {
+            OutputMergerStage.SetRenderTargetView(view);
+        }
+
+        public void SetRenderTargetViews(params RenderTargetView[] views)
+        {
+            OutputMergerStage.SetRenderTargetViews(views);
+        }
 
         public void ClearRenderTargetView(
             RenderTargetView view, ClearOptions options, Color color, float depth, byte stencil)

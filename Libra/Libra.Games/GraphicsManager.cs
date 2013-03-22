@@ -268,7 +268,7 @@ namespace Libra.Games
             if (Device == null)
                 return false;
 
-            Device.ImmediateContext.OutputMergerStage.SetRenderTargetView(SwapChain.RenderTargetView);
+            Device.ImmediateContext.SetRenderTargetView(SwapChain.RenderTargetView);
 
             UpdateViewport();
 
@@ -302,7 +302,7 @@ namespace Libra.Games
             var backBufferWidth = SwapChain.BackBufferWidth;
             var backBufferHeight = SwapChain.BackBufferHeight;
             var viewport = new Viewport(0, 0, backBufferWidth, backBufferHeight);
-            Device.ImmediateContext.RasterizerStage.Viewport = viewport;
+            Device.ImmediateContext.Viewport = viewport;
         }
 
         #region IDisposable

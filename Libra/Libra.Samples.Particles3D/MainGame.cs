@@ -193,8 +193,8 @@ namespace Libra.Samples.Particles3D
 
             context.Clear(Color.CornflowerBlue);
 
-            float aspectRatio = (float) context.RasterizerStage.Viewport.Width /
-                                (float) context.RasterizerStage.Viewport.Height;
+            float aspectRatio = (float) context.Viewport.Width /
+                                (float) context.Viewport.Height;
 
             Matrix view = Matrix.CreateTranslation(0, -25, 0) *
                           Matrix.CreateRotationY(MathHelper.ToRadians(cameraRotation)) *
@@ -223,8 +223,8 @@ namespace Libra.Samples.Particles3D
         {
             var context = Device.ImmediateContext;
 
-            context.OutputMergerStage.BlendState = BlendState.Opaque;
-            context.OutputMergerStage.DepthStencilState = DepthStencilState.Default;
+            context.BlendState = BlendState.Opaque;
+            context.DepthStencilState = DepthStencilState.Default;
             context.PixelShaderStage.SetSamplerState(0, SamplerState.LinearWrap);
 
             //grid.Draw(Matrix.Identity, view, projection);

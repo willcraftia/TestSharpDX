@@ -64,9 +64,9 @@ namespace Libra.Samples.Primitives3D
 
         public void Draw(DeviceContext context, IEffect effect)
         {
-            context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.InputAssemblerStage.SetVertexBuffer(0, vertexBuffer);
-            context.InputAssemblerStage.IndexBuffer = indexBuffer;
+            context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            context.SetVertexBuffer(0, vertexBuffer);
+            context.IndexBuffer = indexBuffer;
 
             effect.Apply(context);
 
@@ -81,15 +81,15 @@ namespace Libra.Samples.Primitives3D
             basicEffect.DiffuseColor = color.ToVector3();
             basicEffect.Alpha = color.A / 255.0f;
 
-            context.OutputMergerStage.DepthStencilState = DepthStencilState.Default;
+            context.DepthStencilState = DepthStencilState.Default;
 
             if (color.A < 255)
             {
-                context.OutputMergerStage.BlendState = BlendState.AlphaBlend;
+                context.BlendState = BlendState.AlphaBlend;
             }
             else
             {
-                context.OutputMergerStage.BlendState = BlendState.Opaque;
+                context.BlendState = BlendState.Opaque;
             }
 
             Draw(context, basicEffect);

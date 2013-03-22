@@ -491,18 +491,18 @@ namespace Libra.Graphics
 
         void PrepareForRendering()
         {
-            context.OutputMergerStage.BlendState = blendState;
-            context.OutputMergerStage.DepthStencilState = depthStencilState;
-            context.RasterizerStage.RasterizerState = rasterizerState;
+            context.BlendState = blendState;
+            context.DepthStencilState = depthStencilState;
+            context.RasterizerState = rasterizerState;
             context.PixelShaderStage.SetSamplerState(0, samplerState);
 
-            context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.InputAssemblerStage.InputLayout = deviceResources.InputLayout;
+            context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            context.InputLayout = deviceResources.InputLayout;
             context.VertexShaderStage.VertexShader = deviceResources.VertexShader;
             context.PixelShaderStage.PixelShader = deviceResources.PixelShader;
 
-            context.InputAssemblerStage.SetVertexBuffer(0, contextResoruces.VertexBuffer);
-            context.InputAssemblerStage.IndexBuffer = deviceResources.IndexBuffer;
+            context.SetVertexBuffer(0, contextResoruces.VertexBuffer);
+            context.IndexBuffer = deviceResources.IndexBuffer;
 
             Matrix viewportTransform;
             GetViewportTransform(out viewportTransform);
@@ -732,7 +732,7 @@ namespace Libra.Graphics
 
         void GetViewportTransform(out Matrix result)
         {
-            var viewport = context.RasterizerStage.Viewport;
+            var viewport = context.Viewport;
 
             float xScale = (0 < viewport.Width) ? 2.0f / viewport.Width : 0.0f;
             float yScale = (0 < viewport.Height) ? 2.0f / viewport.Height : 0.0f;
