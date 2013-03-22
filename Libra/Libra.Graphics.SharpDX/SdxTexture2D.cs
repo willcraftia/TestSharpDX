@@ -59,6 +59,12 @@ namespace Libra.Graphics.SharpDX
             D3D11Texture2DDescription description;
             CreateD3D11Texture2DDescription(out description);
 
+            // メモ
+            //
+            // パラメータの組み合わせにより D3D11 側でインスタンス化できるか否かが変化する。
+            // 例えば、Usage = Default と MipLevels = 11 で生成できたとしても、
+            // Usage = Dynamic と MipLevels = 11 では生成に失敗するなど。
+
             D3D11Texture2D = new D3D11Texture2D(D3D11Device, description);
         }
 
