@@ -8,7 +8,16 @@ namespace Libra.Graphics
 {
     public abstract class PixelShader : IDisposable
     {
-        protected PixelShader() { }
+        public IDevice Device { get; private set; }
+
+        public string Name { get; set; }
+
+        protected PixelShader(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+        }
 
         public abstract void Initialize(byte[] shaderBytecode);
 

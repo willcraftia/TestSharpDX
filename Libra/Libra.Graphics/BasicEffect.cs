@@ -16,9 +16,12 @@ namespace Libra.Graphics
         {
             public byte[] Bytecode;
 
-            public VertexShaderDefinition(byte[] bytecode)
+            public string Name;
+
+            public VertexShaderDefinition(byte[] bytecode, string name)
             {
                 Bytecode = bytecode;
+                Name = name;
             }
         }
 
@@ -30,9 +33,12 @@ namespace Libra.Graphics
         {
             public byte[] Bytecode;
 
-            public PixelShaderDefinition(byte[] bytecode)
+            public string Name;
+
+            public PixelShaderDefinition(byte[] bytecode, string name)
             {
                 Bytecode = bytecode;
+                Name = name;
             }
         }
 
@@ -65,8 +71,11 @@ namespace Libra.Graphics
                 {
                     if (vertexShaders[index] == null)
                     {
+                        var definition = VertexShaderDefinitions[index];
+
                         vertexShaders[index] = device.CreateVertexShader();
-                        vertexShaders[index].Initialize(VertexShaderDefinitions[index].Bytecode);
+                        vertexShaders[index].Name = definition.Name;
+                        vertexShaders[index].Initialize(definition.Bytecode);
                     }
 
                     return vertexShaders[index];
@@ -459,47 +468,45 @@ namespace Libra.Graphics
 
             VertexShaderDefinitions = new[]
             {
-                new VertexShaderDefinition(VSBasic),
-                new VertexShaderDefinition(VSBasicNoFog),
-                new VertexShaderDefinition(VSBasicVc),
-                new VertexShaderDefinition(VSBasicVcNoFog),
-                new VertexShaderDefinition(VSBasicTx),
-                new VertexShaderDefinition(VSBasicTxNoFog),
-                new VertexShaderDefinition(VSBasicTxVc),
-                new VertexShaderDefinition(VSBasicTxVcNoFog),
+                new VertexShaderDefinition(VSBasic, "BasicEffect_VSBasic"),
+                new VertexShaderDefinition(VSBasicNoFog, "BasicEffect_VSBasicNoFog"),
+                new VertexShaderDefinition(VSBasicVc, "BasicEffect_VSBasicVc"),
+                new VertexShaderDefinition(VSBasicVcNoFog, "BasicEffect_VSBasicVcNoFog"),
+                new VertexShaderDefinition(VSBasicTx, "BasicEffect_VSBasicTx"),
+                new VertexShaderDefinition(VSBasicTxNoFog, "BasicEffect_VSBasicTxNoFog"),
+                new VertexShaderDefinition(VSBasicTxVc, "BasicEffect_VSBasicTxVc"),
+                new VertexShaderDefinition(VSBasicTxVcNoFog, "BasicEffect_VSBasicTxVcNoFog"),
 
-                //new VertexShaderDefinition(vsBasicVertexLighting),
-                new VertexShaderDefinition(VSBasicVertexLighting),
-                new VertexShaderDefinition(VSBasicVertexLightingVc),
-                new VertexShaderDefinition(VSBasicVertexLightingTx),
-                new VertexShaderDefinition(VSBasicVertexLightingTxVc),
+                new VertexShaderDefinition(VSBasicVertexLighting, "BasicEffect_VSBasicVertexLighting"),
+                new VertexShaderDefinition(VSBasicVertexLightingVc, "BasicEffect_VSBasicVertexLightingVc"),
+                new VertexShaderDefinition(VSBasicVertexLightingTx, "BasicEffect_VSBasicVertexLightingTx"),
+                new VertexShaderDefinition(VSBasicVertexLightingTxVc, "BasicEffect_VSBasicVertexLightingTxVc"),
 
-                new VertexShaderDefinition(VSBasicOneLight),
-                new VertexShaderDefinition(VSBasicOneLightVc),
-                new VertexShaderDefinition(VSBasicOneLightTx),
-                new VertexShaderDefinition(VSBasicOneLightTxVc),
+                new VertexShaderDefinition(VSBasicOneLight, "BasicEffect_VSBasicOneLight"),
+                new VertexShaderDefinition(VSBasicOneLightVc, "BasicEffect_VSBasicOneLightVc"),
+                new VertexShaderDefinition(VSBasicOneLightTx, "BasicEffect_VSBasicOneLightTx"),
+                new VertexShaderDefinition(VSBasicOneLightTxVc, "BasicEffect_VSBasicOneLightTxVc"),
 
-                new VertexShaderDefinition(VSBasicPixelLighting),
-                new VertexShaderDefinition(VSBasicPixelLightingVc),
-                new VertexShaderDefinition(VSBasicPixelLightingTx),
-                new VertexShaderDefinition(VSBasicPixelLightingTxVc),
+                new VertexShaderDefinition(VSBasicPixelLighting, "BasicEffect_VSBasicPixelLighting"),
+                new VertexShaderDefinition(VSBasicPixelLightingVc, "BasicEffect_VSBasicPixelLightingVc"),
+                new VertexShaderDefinition(VSBasicPixelLightingTx, "BasicEffect_VSBasicPixelLightingTx"),
+                new VertexShaderDefinition(VSBasicPixelLightingTxVc, "BasicEffect_VSBasicPixelLightingTxVc"),
             };
 
             PixelShaderDefinitions = new[]
             {
-                new PixelShaderDefinition(PSBasic),
-                new PixelShaderDefinition(PSBasicNoFog),
-                new PixelShaderDefinition(PSBasicTx),
-                new PixelShaderDefinition(PSBasicTxNoFog),
+                new PixelShaderDefinition(PSBasic, "BasicEffect_PSBasic"),
+                new PixelShaderDefinition(PSBasicNoFog, "BasicEffect_PSBasicNoFog"),
+                new PixelShaderDefinition(PSBasicTx, "BasicEffect_PSBasicTx"),
+                new PixelShaderDefinition(PSBasicTxNoFog, "BasicEffect_PSBasicTxNoFog"),
 
-                new PixelShaderDefinition(PSBasicVertexLighting),
-                //new PixelShaderDefinition(psBasicVertexLightingNoFog),
-                new PixelShaderDefinition(PSBasicVertexLightingNoFog),
-                new PixelShaderDefinition(PSBasicVertexLightingTx),
-                new PixelShaderDefinition(PSBasicVertexLightingTxNoFog),
+                new PixelShaderDefinition(PSBasicVertexLighting, "BasicEffect_PSBasicVertexLighting"),
+                new PixelShaderDefinition(PSBasicVertexLightingNoFog, "BasicEffect_PSBasicVertexLightingNoFog"),
+                new PixelShaderDefinition(PSBasicVertexLightingTx, "BasicEffect_PSBasicVertexLightingTx"),
+                new PixelShaderDefinition(PSBasicVertexLightingTxNoFog, "BasicEffect_PSBasicVertexLightingTxNoFog"),
 
-                new PixelShaderDefinition(PSBasicPixelLighting),
-                new PixelShaderDefinition(PSBasicPixelLightingTx),
+                new PixelShaderDefinition(PSBasicPixelLighting, "BasicEffect_PSBasicPixelLighting"),
+                new PixelShaderDefinition(PSBasicPixelLightingTx, "BasicEffect_PSBasicPixelLightingTx"),
             };
         }
 

@@ -166,7 +166,7 @@ namespace Libra.Graphics.SharpDX
 
         public PixelShader CreatePixelShader()
         {
-            return new SdxPixelShader(D3D11Device);
+            return new SdxPixelShader(this);
         }
 
         public InputLayout CreateInputLayout()

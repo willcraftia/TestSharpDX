@@ -16,6 +16,8 @@ namespace Libra.Graphics
 
         public IDevice Device { get; private set; }
 
+        public string Name { get; set; }
+
         protected internal byte[] ShaderBytecode { get; private set; }
 
         protected VertexShader(IDevice device)
