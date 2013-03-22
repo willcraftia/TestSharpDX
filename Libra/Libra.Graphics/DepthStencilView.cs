@@ -8,9 +8,16 @@ namespace Libra.Graphics
 {
     public abstract class DepthStencilView : IDisposable
     {
+        public IDevice Device { get; private set; }
+
         public DepthStencil DepthStencil { get; private set; }
 
-        protected DepthStencilView() { }
+        protected DepthStencilView(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+        }
 
         public void Initialize(DepthStencil depthStencil)
         {

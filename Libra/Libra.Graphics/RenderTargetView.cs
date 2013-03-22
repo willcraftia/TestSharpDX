@@ -8,11 +8,18 @@ namespace Libra.Graphics
 {
     public abstract class RenderTargetView : IDisposable
     {
+        public IDevice Device { get; private set; }
+
         public RenderTarget RenderTarget { get; private set; }
 
         public DepthStencilView DepthStencilView { get; private set; }
 
-        protected RenderTargetView() { }
+        protected RenderTargetView(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+        }
 
         public void Initialize(RenderTarget renderTarget)
         {

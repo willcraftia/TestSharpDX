@@ -171,52 +171,52 @@ namespace Libra.Graphics.SharpDX
 
         public InputLayout CreateInputLayout()
         {
-            return new SdxInputLayout(D3D11Device);
+            return new SdxInputLayout(this);
         }
 
         public ConstantBuffer CreateConstantBuffer()
         {
-            return new SdxConstantBuffer(D3D11Device);
+            return new SdxConstantBuffer(this);
         }
 
         public VertexBuffer CreateVertexBuffer()
         {
-            return new SdxVertexBuffer(D3D11Device);
+            return new SdxVertexBuffer(this);
         }
 
         public IndexBuffer CreateIndexBuffer()
         {
-            return new SdxIndexBuffer(D3D11Device);
+            return new SdxIndexBuffer(this);
         }
 
         public Texture2D CreateTexture2D()
         {
-            return new SdxTexture2D(D3D11Device);
+            return new SdxTexture2D(this);
         }
 
         public DepthStencil CreateDepthStencil()
         {
-            return new SdxDepthStencil(D3D11Device);
+            return new SdxDepthStencil(this);
         }
 
         public RenderTarget CreateRenderTarget()
         {
-            return new SdxRenderTarget(D3D11Device);
+            return new SdxRenderTarget(this);
         }
 
         public ShaderResourceView CreateShaderResourceView()
         {
-            return new SdxShaderResourceView(D3D11Device);
+            return new SdxShaderResourceView(this);
         }
 
         public DepthStencilView CreateDepthStencilView()
         {
-            return new SdxDepthStencilView(D3D11Device);
+            return new SdxDepthStencilView(this);
         }
 
         public RenderTargetView CreateRenderTargetView()
         {
-            return new SdxRenderTargetView(D3D11Device);
+            return new SdxRenderTargetView(this);
         }
 
         public int CheckMultisampleQualityLevels(SurfaceFormat format, int sampleCount)

@@ -22,7 +22,8 @@ namespace Libra.Graphics
 
         public int MultisampleQuality { get; protected set; }
 
-        protected Texture2D()
+        protected Texture2D(IDevice device)
+            : base(device)
         {
             MipLevels = 1;
             Format = SurfaceFormat.Color;

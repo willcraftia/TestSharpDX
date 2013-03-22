@@ -18,11 +18,10 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11RenderTargetView D3D11RenderTargetView { get; private set; }
 
-        public SdxRenderTargetView(D3D11Device d3d11Device)
+        public SdxRenderTargetView(SdxDevice device)
+            : base(device)
         {
-            if (d3d11Device == null) throw new ArgumentNullException("d3d11Device");
-
-            D3D11Device = d3d11Device;
+            D3D11Device = device.D3D11Device;
         }
 
         protected override void InitializeRenderTargetView()
@@ -37,7 +36,7 @@ namespace Libra.Graphics.SharpDX
 
         protected override DepthStencilView InitializeDepthStencilView()
         {
-            var depthStencilView = new SdxDepthStencilView(D3D11Device);
+            var depthStencilView = new SdxDepthStencilView(Device as SdxDevice);
             depthStencilView.Initialize(RenderTarget.DepthStencil);
             return depthStencilView;
         }

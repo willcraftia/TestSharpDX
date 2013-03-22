@@ -9,7 +9,10 @@ namespace Libra.Graphics
 {
     public abstract class ConstantBuffer : Resource
     {
-        protected ConstantBuffer() { }
+        protected ConstantBuffer(IDevice device)
+            : base(device)
+        {
+        }
 
         public abstract void Initialize();
 

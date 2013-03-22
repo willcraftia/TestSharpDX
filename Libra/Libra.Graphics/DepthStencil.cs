@@ -18,7 +18,8 @@ namespace Libra.Graphics
 
         public int MultisampleQuality { get; set; }
 
-        protected DepthStencil()
+        protected DepthStencil(IDevice device)
+            : base(device)
         {
             Format = DepthFormat.Depth24Stencil8;
             MultisampleCount = 1;

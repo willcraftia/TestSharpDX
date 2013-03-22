@@ -8,11 +8,18 @@ namespace Libra.Graphics
 {
     public abstract class Resource : IDisposable
     {
+        public IDevice Device { get; private set; }
+
         public string Name { get; set; }
 
         public ResourceUsage Usage { get; set; }
 
-        protected Resource() { }
+        protected Resource(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+        }
 
         #region ToString
 

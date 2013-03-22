@@ -13,7 +13,10 @@ namespace Libra.Graphics
 
         public int VertexCount { get; private set; }
 
-        protected VertexBuffer() { }
+        protected VertexBuffer(IDevice device)
+            : base(device)
+        {
+        }
 
         public void Initialize(VertexDeclaration vertexDeclaration, int vertexCount)
         {

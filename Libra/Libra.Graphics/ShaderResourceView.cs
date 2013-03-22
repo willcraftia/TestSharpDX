@@ -8,9 +8,16 @@ namespace Libra.Graphics
 {
     public abstract class ShaderResourceView : IDisposable
     {
+        public IDevice Device { get; private set; }
+
         public Resource Resource { get; private set; }
 
-        protected ShaderResourceView() { }
+        protected ShaderResourceView(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+        }
 
         public void Initialize(Texture2D texture)
         {

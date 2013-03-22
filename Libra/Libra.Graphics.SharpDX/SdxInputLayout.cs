@@ -19,11 +19,10 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11InputLayout D3D11InputLayout { get; private set; }
 
-        public SdxInputLayout(D3D11Device d3d11Device)
+        public SdxInputLayout(SdxDevice device)
+            : base(device)
         {
-            if (d3d11Device == null) throw new ArgumentNullException("d3d11Device");
-
-            D3D11Device = d3d11Device;
+            D3D11Device = device.D3D11Device;
         }
 
         protected override void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements)

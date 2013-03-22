@@ -16,11 +16,10 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11ShaderResourceView D3D11ShaderResourceView { get; private set; }
 
-        public SdxShaderResourceView(D3D11Device d3d11Device)
+        public SdxShaderResourceView(SdxDevice device)
+            : base(device)
         {
-            if (d3d11Device == null) throw new ArgumentNullException("d3d11Device");
-
-            D3D11Device = d3d11Device;
+            D3D11Device = device.D3D11Device;
         }
 
         protected override void Initialize()

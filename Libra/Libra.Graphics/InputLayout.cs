@@ -9,9 +9,16 @@ namespace Libra.Graphics
 {
     public abstract class InputLayout : IDisposable
     {
+        public IDevice Device { get; private set; }
+
         public int InputStride { get; private set; }
 
-        protected InputLayout() { }
+        protected InputLayout(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+        }
 
         public void Initialize(byte[] shaderBytecode, params InputElement[] elements)
         {

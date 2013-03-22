@@ -15,7 +15,8 @@ namespace Libra.Graphics
 
         public DepthStencil DepthStencil { get; protected set; }
 
-        protected RenderTarget()
+        protected RenderTarget(IDevice device)
+            : base(device)
         {
             DepthFormat = DepthFormat.None;
             RenderTargetUsage = RenderTargetUsage.Discard;
