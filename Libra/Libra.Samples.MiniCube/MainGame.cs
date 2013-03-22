@@ -106,6 +106,28 @@ namespace Libra.Samples.MiniCube
             vertexBuffer.Usage = ResourceUsage.Immutable;
             vertexBuffer.Initialize(Vertices);
 
+            // 以下は頂点構造体を用いず、バイト配列を直接設定する場合のテスト。
+            //var stream = new System.IO.MemoryStream();
+            //var writer = new System.IO.BinaryWriter(stream);
+            //var reader = new System.IO.BinaryReader(stream);
+            //foreach (var vertex in Vertices)
+            //{
+            //    writer.Write(vertex.Position.X);
+            //    writer.Write(vertex.Position.Y);
+            //    writer.Write(vertex.Position.Z);
+            //    writer.Write(vertex.Color.R);
+            //    writer.Write(vertex.Color.G);
+            //    writer.Write(vertex.Color.B);
+            //    writer.Write(vertex.Color.A);
+            //}
+            //stream.Flush();
+            //stream.Position = 0;
+            //var byteData = reader.ReadBytes(VertexPositionColor.VertexDeclaration.Stride * Vertices.Length);
+            //writer.Close();
+            //reader.Close();
+            //stream.Close();
+            //vertexBuffer.Initialize(VertexPositionColor.VertexDeclaration, byteData);
+
             constantBuffer = Device.CreateConstantBuffer();
             constantBuffer.Initialize<Matrix>();
 
