@@ -64,7 +64,7 @@ namespace Libra.Graphics
 
         public override string ToString()
         {
-            return "[Position=" + Position + ", TexCoord=" + TexCoord + "]";
+            return "{Position:" + Position + " TexCoord:" + TexCoord + "}";
         }
 
         #endregion

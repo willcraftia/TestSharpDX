@@ -131,10 +131,10 @@ namespace Libra.Graphics
 
         public override string ToString()
         {
-            return "[SemanticName=" + SemanticName + ", SemanticIndex=" + SemanticIndex +
-                ", Format=" + Format +
-                ", InputSlot=" + InputSlot + ", AlignedByteOffset=" + AlignedByteOffset +
-                ", PerInstance=" + PerInstance + ", InstanceDataStepRate=" + InstanceDataStepRate +
+            return "{SemanticName:" + SemanticName + " SemanticIndex:" + SemanticIndex +
+                " Format:" + Format +
+                " InputSlot:" + InputSlot + " AlignedByteOffset:" + AlignedByteOffset +
+                " PerInstance:" + PerInstance + " InstanceDataStepRate:" + InstanceDataStepRate +
                 "]";
         }
 
