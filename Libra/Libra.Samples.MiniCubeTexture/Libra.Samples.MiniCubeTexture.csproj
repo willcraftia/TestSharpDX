@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4DE3C38D-4F32-44FD-8A91-8B61CDD2CB31}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Libra.Samples.MiniCubeTexture</RootNamespace>
+    <AssemblyName>Libra.Samples.MiniCubeTexture</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\..\MonoGame\MonoGame-develop-20130315\ThirdParty\Libs\SharpDX\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\..\..\MonoGame\MonoGame-develop-20130315\ThirdParty\Libs\SharpDX\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\..\..\MonoGame\MonoGame-develop-20130315\ThirdParty\Libs\SharpDX\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MainGame.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libra.Games.SharpDX\Libra.Games.SharpDX.csproj">
+      <Project>{18B2993B-626D-4337-91A2-ED0239B8D843}</Project>
+      <Name>Libra.Games.SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Games\Libra.Games.csproj">
+      <Project>{30A200CE-BC5F-4450-BDF2-EF8A30322464}</Project>
+      <Name>Libra.Games</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Graphics.Compiler\Libra.Graphics.Compiler.csproj">
+      <Project>{33E88FC2-87F2-41FE-8977-55DF51119156}</Project>
+      <Name>Libra.Graphics.Compiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Graphics.SharpDX\Libra.Graphics.SharpDX.csproj">
+      <Project>{FAEE2668-AB77-477D-9405-26D59951501D}</Project>
+      <Name>Libra.Graphics.SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Graphics\Libra.Graphics.csproj">
+      <Project>{F42E063A-DBE6-430D-BC88-3A88F33754FD}</Project>
+      <Name>Libra.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra\Libra.csproj">
+      <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>
+      <Name>Libra</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\MiniCubeTexture.fx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Textures\GeneticaMortarlessBlocks.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
