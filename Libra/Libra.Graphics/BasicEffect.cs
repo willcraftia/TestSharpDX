@@ -756,7 +756,7 @@ namespace Libra.Graphics
 
             if (TextureEnabled)
             {
-                context.SetPixelShaderResource(0, Texture);
+                context.PixelShaderResources[0] = Texture;
             }
 
             ApplyShaders(context, GetCurrentShaderPermutation());
@@ -953,8 +953,8 @@ namespace Libra.Graphics
                 dirtyFlags &= ~DirtyFlags.Contants;
             }
 
-            context.SetVertexShaderConstantBuffer(0, constantBuffer);
-            context.SetPixelShaderConstantBuffer(0, constantBuffer);
+            context.VertexShaderConstantBuffers[0] = constantBuffer;
+            context.PixelShaderConstantBuffers[0] = constantBuffer;
         }
 
         #region IDisposable
