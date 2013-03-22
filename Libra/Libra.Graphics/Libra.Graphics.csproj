@@ -169,7 +169,6 @@
     <Compile Include="InputElement.cs" />
     <Compile Include="InputElementFormat.cs" />
     <Compile Include="InputLayout.cs" />
-    <Compile Include="ShaderStage.cs" />
     <Compile Include="VertexPositionColor.cs" />
     <Compile Include="VertexPositionColorTexture.cs" />
     <Compile Include="VertexPositionNormal.cs" />

@@ -133,7 +133,7 @@ namespace Libra.Samples.MiniCubeIndexed
 
             context.VertexShader = vertexShader;
             context.PixelShader = pixelShader;
-            context.SetConstantBuffer(ShaderStage.Vertex, 0, constantBuffer);
+            context.SetVertexShaderConstantBuffer(0, constantBuffer);
 
             float aspect = context.Viewport.AspectRatio;
             float time = (float) gameTime.TotalGameTime.TotalSeconds;

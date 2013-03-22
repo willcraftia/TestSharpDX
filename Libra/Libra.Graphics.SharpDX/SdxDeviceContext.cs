@@ -327,7 +327,7 @@ namespace Libra.Graphics.SharpDX
             GetD3D11CommonShaderStage(shaderStage).SetConstantBuffers(startSlot, count, stageState.ConstantBuffers);
         }
 
-        protected override void SetSamplerStateCore(ShaderStage shaderStage, int slot, SamplerState state)
+        protected override void SetSamplerCore(ShaderStage shaderStage, int slot, SamplerState state)
         {
             var stageState = shaderStageStates[(int) shaderStage];
 
@@ -343,7 +343,7 @@ namespace Libra.Graphics.SharpDX
             GetD3D11CommonShaderStage(shaderStage).SetSampler(slot, stageState.SamplerStates[slot]);
         }
 
-        protected override void SetSamplerStatesCore(ShaderStage shaderStage, int startSlot, int count, SamplerState[] states)
+        protected override void SetSamplersCore(ShaderStage shaderStage, int startSlot, int count, SamplerState[] states)
         {
             var stageState = shaderStageStates[(int) shaderStage];
 
@@ -362,7 +362,7 @@ namespace Libra.Graphics.SharpDX
             GetD3D11CommonShaderStage(shaderStage).SetSamplers(startSlot, count, stageState.SamplerStates);
         }
 
-        protected override void SetShaderResourceViewCore(ShaderStage shaderStage, int slot, ShaderResourceView view)
+        protected override void SetShaderResourceCore(ShaderStage shaderStage, int slot, ShaderResourceView view)
         {
             var stageState = shaderStageStates[(int) shaderStage];
 
@@ -378,7 +378,7 @@ namespace Libra.Graphics.SharpDX
             GetD3D11CommonShaderStage(shaderStage).SetShaderResource(slot, stageState.ShaderResourceViews[slot]);
         }
 
-        protected override void SetShaderResourceViewsCore(ShaderStage shaderStage, int startSlot, int count, ShaderResourceView[] views)
+        protected override void SetShaderResourceCore(ShaderStage shaderStage, int startSlot, int count, ShaderResourceView[] views)
         {
             var stageState = shaderStageStates[(int) shaderStage];
 

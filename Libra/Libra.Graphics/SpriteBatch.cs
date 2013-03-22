@@ -494,7 +494,7 @@ namespace Libra.Graphics
             context.BlendState = blendState;
             context.DepthStencilState = depthStencilState;
             context.RasterizerState = rasterizerState;
-            context.SetSamplerState(ShaderStage.Pixel, 0, samplerState);
+            context.SetPixelShaderSampler(0, samplerState);
 
             context.PrimitiveTopology = PrimitiveTopology.TriangleList;
             context.InputLayout = deviceResources.InputLayout;
@@ -513,7 +513,7 @@ namespace Libra.Graphics
             var constantBuffer = contextResoruces.ConstantBuffer;
             constantBuffer.SetData(context, finalTransformMatrix);
 
-            context.SetConstantBuffer(ShaderStage.Vertex, 0, constantBuffer);
+            context.SetVertexShaderConstantBuffer(0, constantBuffer);
 
             if (context.Deferred)
             {
@@ -581,7 +581,7 @@ namespace Libra.Graphics
 
         void RenderBatch(ShaderResourceView texture, int startIndex, int spriteCount)
         {
-            context.SetShaderResourceView(ShaderStage.Pixel, 0, texture);
+            context.SetPixelShaderResource(0, texture);
 
             Vector2 textureSize;
             GetTextureSize(texture, out textureSize);
