@@ -1,19 +1,26 @@
 ﻿#region Using
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using D3D11Buffer = SharpDX.Direct3D11.Buffer;
+using D3D11CommonShaderStage = SharpDX.Direct3D11.CommonShaderStage;
 using D3D11DepthStencilClearFlags = SharpDX.Direct3D11.DepthStencilClearFlags;
 using D3D11DepthStencilView = SharpDX.Direct3D11.DepthStencilView;
 using D3D11DeviceContext = SharpDX.Direct3D11.DeviceContext;
 using D3D11DeviceContextType = SharpDX.Direct3D11.DeviceContextType;
 using D3D11MapFlags = SharpDX.Direct3D11.MapFlags;
 using D3D11MapMode = SharpDX.Direct3D11.MapMode;
+using D3D11PixelShader = SharpDX.Direct3D11.PixelShader;
 using D3D11PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology;
 using D3D11RenderTargetView = SharpDX.Direct3D11.RenderTargetView;
 using D3D11Resource = SharpDX.Direct3D11.Resource;
 using D3D11ResourceRegion = SharpDX.Direct3D11.ResourceRegion;
+using D3D11SamplerState = SharpDX.Direct3D11.SamplerState;
+using D3D11ShaderResourceView = SharpDX.Direct3D11.ShaderResourceView;
 using D3D11VertexBufferBinding = SharpDX.Direct3D11.VertexBufferBinding;
+using D3D11VertexShader = SharpDX.Direct3D11.VertexShader;
 using DXGIFormat = SharpDX.DXGI.Format;
 using SDXColor4 = SharpDX.Color4;
 using SDXDataBox = SharpDX.DataBox;
@@ -25,39 +32,43 @@ namespace Libra.Graphics.SharpDX
 {
     public sealed class SdxDeviceContext : DeviceContext
     {
+        #region ShaderStageState
+
+        sealed class ShaderStageState
+        {
+            public D3D11Buffer[] ConstantBuffers;
+
+            public D3D11SamplerState[] SamplerStates;
+
+            public D3D11ShaderResourceView[] ShaderResourceViews;
+
+            public ShaderStageState()
+            {
+                ConstantBuffers = new D3D11Buffer[ConstantBufferSlotCount];
+                SamplerStates = new D3D11SamplerState[SamplerSlotCount];
+                ShaderResourceViews = new D3D11ShaderResourceView[InputResourceSlotCount];
+            }
+        }
+
+        #endregion
+
         SdxDevice device;
 
         bool deferred;
 
-        SdxVertexShaderStage vertexShaderStage;
-
-        SdxPixelShaderStage pixelShaderStage;
-
         D3D11RenderTargetView[] activeD3D11RenderTargetViews;
 
-        public override IDevice Device
-        {
-            get { return device; }
-        }
+        ShaderStageState[] shaderStageStates;
 
         public override bool Deferred
         {
             get { return deferred; }
         }
 
-        public override VertexShaderStage VertexShaderStage
-        {
-            get { return vertexShaderStage; }
-        }
-
-        public override PixelShaderStage PixelShaderStage
-        {
-            get { return pixelShaderStage; }
-        }
-
         public D3D11DeviceContext D3D11DeviceContext { get; private set; }
 
         public SdxDeviceContext(SdxDevice device, D3D11DeviceContext d3d11DeviceContext)
+            : base(device)
         {
             if (device == null) throw new ArgumentNullException("device");
             if (d3d11DeviceContext == null) throw new ArgumentNullException("d3d11DeviceContext");
@@ -67,10 +78,13 @@ namespace Libra.Graphics.SharpDX
 
             deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
-            vertexShaderStage = new SdxVertexShaderStage(this);
-            pixelShaderStage = new SdxPixelShaderStage(this);
-
             activeD3D11RenderTargetViews = new D3D11RenderTargetView[SimultaneousRenderTargetCount];
+
+            shaderStageStates = new ShaderStageState[5];
+            for (int i = 0; i < shaderStageStates.Length; i++)
+            {
+                shaderStageStates[i] = new ShaderStageState();
+            }
         }
 
         protected override void OnInputLayoutChanged()
@@ -244,6 +258,162 @@ namespace Libra.Graphics.SharpDX
             }
 
             D3D11DeviceContext.OutputMerger.SetTargets(d3d11DepthStencilView, activeD3D11RenderTargetViews);
+        }
+
+        protected override void OnVertexShaderChanged()
+        {
+            D3D11VertexShader d3d11VertexShader;
+
+            if (VertexShader == null)
+            {
+                d3d11VertexShader = null;
+            }
+            else
+            {
+                d3d11VertexShader = (VertexShader as SdxVertexShader).D3D11VertexShader;
+            }
+
+            D3D11DeviceContext.VertexShader.Set(d3d11VertexShader);
+        }
+
+        protected override void OnPixelShaderChanged()
+        {
+            D3D11PixelShader d3d11PixelShader;
+
+            if (PixelShader == null)
+            {
+                d3d11PixelShader = null;
+            }
+            else
+            {
+                d3d11PixelShader = (PixelShader as SdxPixelShader).D3D11PixelShader;
+            }
+
+            D3D11DeviceContext.PixelShader.Set(d3d11PixelShader);
+        }
+
+        protected override void SetConstantBufferCore(ShaderStage shaderStage, int slot, ConstantBuffer buffer)
+        {
+            var stageState = shaderStageStates[(int) shaderStage];
+
+            if (buffer == null)
+            {
+                stageState.ConstantBuffers[slot] = null;
+            }
+            else
+            {
+                stageState.ConstantBuffers[slot] = (buffer as SdxConstantBuffer).D3D11Buffer;
+            }
+
+            GetD3D11CommonShaderStage(shaderStage).SetConstantBuffer(slot, stageState.ConstantBuffers[slot]);
+        }
+
+        protected override void SetConstantBuffersCore(ShaderStage shaderStage, int startSlot, int count, ConstantBuffer[] buffers)
+        {
+            var stageState = shaderStageStates[(int) shaderStage];
+
+            for (int i = 0; i < count; i++)
+            {
+                if (buffers[i] == null)
+                {
+                    stageState.ConstantBuffers[i] = null;
+                }
+                else
+                {
+                    stageState.ConstantBuffers[i] = (buffers[i] as SdxConstantBuffer).D3D11Buffer;
+                }
+            }
+
+            GetD3D11CommonShaderStage(shaderStage).SetConstantBuffers(startSlot, count, stageState.ConstantBuffers);
+        }
+
+        protected override void SetSamplerStateCore(ShaderStage shaderStage, int slot, SamplerState state)
+        {
+            var stageState = shaderStageStates[(int) shaderStage];
+
+            if (state == null)
+            {
+                stageState.SamplerStates[slot] = null;
+            }
+            else
+            {
+                stageState.SamplerStates[slot] = device.SamplerStateManager[state];
+            }
+
+            GetD3D11CommonShaderStage(shaderStage).SetSampler(slot, stageState.SamplerStates[slot]);
+        }
+
+        protected override void SetSamplerStatesCore(ShaderStage shaderStage, int startSlot, int count, SamplerState[] states)
+        {
+            var stageState = shaderStageStates[(int) shaderStage];
+
+            for (int i = 0; i < count; i++)
+            {
+                if (states[i] == null)
+                {
+                    stageState.SamplerStates[i] = null;
+                }
+                else
+                {
+                    stageState.SamplerStates[i] = device.SamplerStateManager[states[i]];
+                }
+            }
+
+            GetD3D11CommonShaderStage(shaderStage).SetSamplers(startSlot, count, stageState.SamplerStates);
+        }
+
+        protected override void SetShaderResourceViewCore(ShaderStage shaderStage, int slot, ShaderResourceView view)
+        {
+            var stageState = shaderStageStates[(int) shaderStage];
+
+            if (view == null)
+            {
+                stageState.ShaderResourceViews[slot] = null;
+            }
+            else
+            {
+                stageState.ShaderResourceViews[slot] = (view as SdxShaderResourceView).D3D11ShaderResourceView;
+            }
+
+            GetD3D11CommonShaderStage(shaderStage).SetShaderResource(slot, stageState.ShaderResourceViews[slot]);
+        }
+
+        protected override void SetShaderResourceViewsCore(ShaderStage shaderStage, int startSlot, int count, ShaderResourceView[] views)
+        {
+            var stageState = shaderStageStates[(int) shaderStage];
+
+            for (int i = 0; i < count; i++)
+            {
+                if (views[i] == null)
+                {
+                    stageState.ShaderResourceViews[i] = null;
+                }
+                else
+                {
+                    stageState.ShaderResourceViews[i] = (views[i] as SdxShaderResourceView).D3D11ShaderResourceView;
+                }
+            }
+
+            GetD3D11CommonShaderStage(shaderStage).SetShaderResources(startSlot, count, stageState.ShaderResourceViews);
+        }
+
+        D3D11CommonShaderStage GetD3D11CommonShaderStage(ShaderStage shaderStage)
+        {
+            switch (shaderStage)
+            {
+                case ShaderStage.Vertex:
+                    return D3D11DeviceContext.VertexShader;
+                case ShaderStage.Hull:
+                    return D3D11DeviceContext.HullShader;
+                case ShaderStage.Domain:
+                    return D3D11DeviceContext.DomainShader;
+                case ShaderStage.Geometry:
+                    return D3D11DeviceContext.GeometryShader;
+                case ShaderStage.Pixel:
+                    return D3D11DeviceContext.PixelShader;
+            }
+
+            throw new ArgumentException("Unknown shader stage: " + shaderStage, "shaderStage");
         }
 
         public override void ClearRenderTargetView(RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil)

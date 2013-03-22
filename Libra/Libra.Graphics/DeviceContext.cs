@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 #endregion
@@ -42,6 +43,26 @@ namespace Libra.Graphics
 
         #endregion
 
+        #region ShaderStageState
+
+        sealed class ShaderStageState
+        {
+            public ConstantBuffer[] ConstantBuffers;
+
+            public SamplerState[] SamplerStates;
+
+            public ShaderResourceView[] ShaderResourceViews;
+
+            public ShaderStageState()
+            {
+                ConstantBuffers = new ConstantBuffer[ConstantBufferSlotCount];
+                SamplerStates = new SamplerState[SamplerSlotCount];
+                ShaderResourceViews = new ShaderResourceView[InputResourceSlotCount];
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// </summary>
         /// <remarks>
@@ -55,6 +76,27 @@ namespace Libra.Graphics
         /// D3D11.h:  D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT。
         /// </remarks>
         public const int SimultaneousRenderTargetCount = 8;
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// D3D11.h: D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT。
+        /// </remarks>
+        public const int ConstantBufferSlotCount = 14;
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// D3D11.h: D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT。
+        /// </remarks>
+        public const int SamplerSlotCount = 16;
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// D3D11.h: D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT。
+        /// </remarks>
+        public const int InputResourceSlotCount = 128;
 
         InputLayout inputLayout;
 
@@ -78,15 +120,17 @@ namespace Libra.Graphics
 
         RenderTargetView[] renderTargetViews;
 
+        ShaderStageState[] shaderStageStates;
+
+        VertexShader vertexShader;
+
+        PixelShader pixelShader;
+
         public event EventHandler Disposing;
 
-        public abstract IDevice Device { get; }
+        public IDevice Device { get; private set; }
 
         public abstract bool Deferred { get; }
-
-        public abstract VertexShaderStage VertexShaderStage { get; }
-
-        public abstract PixelShaderStage PixelShaderStage { get; }
 
         public bool AutoResolveInputLayout { get; set; }
 
@@ -195,12 +239,48 @@ namespace Libra.Graphics
             }
         }
 
-        protected DeviceContext()
+        public VertexShader VertexShader
         {
+            get { return vertexShader; }
+            set
+            {
+                if (vertexShader == value) return;
+
+                vertexShader = value;
+
+                OnVertexShaderChanged();
+            }
+        }
+
+        public PixelShader PixelShader
+        {
+            get { return pixelShader; }
+            set
+            {
+                if (pixelShader == value) return;
+
+                pixelShader = value;
+
+                OnPixelShaderChanged();
+            }
+        }
+
+        protected DeviceContext(IDevice device)
+        {
+            if (device == null) throw new ArgumentNullException("device");
+
+            Device = device;
+
             vertexBufferBindings = new VertexBufferBinding[InputResourceSlotCuont];
             AutoResolveInputLayout = true;
 
             renderTargetViews = new RenderTargetView[SimultaneousRenderTargetCount];
+
+            shaderStageStates = new ShaderStageState[5];
+            for (int i = 0; i < shaderStageStates.Length; i++)
+            {
+                shaderStageStates[i] = new ShaderStageState();
+            }
         }
 
         public VertexBufferBinding GetVertexBuffer(int slot)
@@ -302,6 +382,130 @@ namespace Libra.Graphics
 
         protected abstract void OnDepthStencilStateChanged();
 
+        public ConstantBuffer GetConstantBuffer(ShaderStage shaderStage, int slot)
+        {
+            if ((uint) ConstantBufferSlotCount <= (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            return shaderStageStates[(int) shaderStage].ConstantBuffers[slot];
+        }
+
+        public void GetConstantBuffers(ShaderStage shaderStage, int startSlot, int count, ConstantBuffer[] buffers)
+        {
+            if (buffers == null) throw new ArgumentNullException("buffers");
+            if ((uint) ConstantBufferSlotCount <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
+            if ((uint) (ConstantBufferSlotCount - startSlot) < (uint) count ||
+                buffers.Length < count) throw new ArgumentOutOfRangeException("count");
+
+            Array.Copy(shaderStageStates[(int) shaderStage].ConstantBuffers, startSlot, buffers, 0, count);
+        }
+
+        public void SetConstantBuffer(ShaderStage shaderStage, int slot, ConstantBuffer buffer)
+        {
+            if ((uint) ConstantBufferSlotCount <= (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            shaderStageStates[(int) shaderStage].ConstantBuffers[slot] = buffer;
+            SetConstantBufferCore(shaderStage, slot, buffer);
+        }
+
+        public void SetConstantBuffers(ShaderStage shaderStage, int startSlot, int count, ConstantBuffer[] buffers)
+        {
+            if (buffers == null) throw new ArgumentNullException("buffers");
+            if ((uint) ConstantBufferSlotCount <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
+            if ((uint) (ConstantBufferSlotCount - startSlot) < (uint) count ||
+                buffers.Length < count) throw new ArgumentOutOfRangeException("count");
+
+            Array.Copy(buffers, 0, shaderStageStates[(int) shaderStage].ConstantBuffers, startSlot, count);
+            SetConstantBuffersCore(shaderStage, startSlot, count, buffers);
+        }
+
+        public SamplerState GetSamplerState(ShaderStage shaderStage, int slot)
+        {
+            if ((uint) SamplerSlotCount <= (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            return shaderStageStates[(int) shaderStage].SamplerStates[slot];
+        }
+
+        public void GetSamplerStates(ShaderStage shaderStage, int startSlot, int count, SamplerState[] states)
+        {
+            if (states == null) throw new ArgumentNullException("states");
+            if ((uint) SamplerSlotCount <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
+            if ((uint) (SamplerSlotCount - startSlot) < (uint) count ||
+                states.Length < count) throw new ArgumentOutOfRangeException("count");
+
+            Array.Copy(shaderStageStates[(int) shaderStage].SamplerStates, startSlot, states, 0, count);
+        }
+
+        public void SetSamplerState(ShaderStage shaderStage, int slot, SamplerState state)
+        {
+            if ((uint) SamplerSlotCount <= (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            shaderStageStates[(int) shaderStage].SamplerStates[slot] = state;
+            SetSamplerStateCore(shaderStage, slot, state);
+        }
+
+        public void SetSamplerStates(ShaderStage shaderStage, int startSlot, int count, SamplerState[] states)
+        {
+            if (states == null) throw new ArgumentNullException("states");
+            if ((uint) SamplerSlotCount <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
+            if ((uint) (SamplerSlotCount - startSlot) < (uint) count ||
+                states.Length < count) throw new ArgumentOutOfRangeException("count");
+
+            Array.Copy(states, 0, shaderStageStates[(int) shaderStage].SamplerStates, startSlot, count);
+            SetSamplerStatesCore(shaderStage, startSlot, count, states);
+        }
+
+        public ShaderResourceView GetShaderResourceView(ShaderStage shaderStage, int slot)
+        {
+            if ((uint) InputResourceSlotCount <= (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            return shaderStageStates[(int) shaderStage].ShaderResourceViews[slot];
+        }
+
+        public void GetShaderResourceViews(ShaderStage shaderStage, int startSlot, int count, ShaderResourceView[] views)
+        {
+            if (views == null) throw new ArgumentNullException("views");
+            if ((uint) InputResourceSlotCount <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
+            if ((uint) (InputResourceSlotCount - startSlot) < (uint) count ||
+                views.Length < count) throw new ArgumentOutOfRangeException("count");
+
+            Array.Copy(shaderStageStates[(int) shaderStage].ShaderResourceViews, startSlot, views, 0, count);
+        }
+
+        public void SetShaderResourceView(ShaderStage shaderStage, int slot, ShaderResourceView view)
+        {
+            if ((uint) InputResourceSlotCount <= (uint) slot) throw new ArgumentOutOfRangeException("slot");
+
+            shaderStageStates[(int) shaderStage].ShaderResourceViews[slot] = view;
+            SetShaderResourceViewCore(shaderStage, slot, view);
+        }
+
+        public void SetShaderResourceViews(ShaderStage shaderStage, int startSlot, int count, ShaderResourceView[] views)
+        {
+            if (views == null) throw new ArgumentNullException("views");
+            if ((uint) InputResourceSlotCount <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
+            if ((uint) (InputResourceSlotCount - startSlot) < (uint) count ||
+                views.Length < count) throw new ArgumentOutOfRangeException("count");
+
+            Array.Copy(views, 0, shaderStageStates[(int) shaderStage].ShaderResourceViews, startSlot, count);
+            SetShaderResourceViewsCore(shaderStage, startSlot, count, views);
+        }
+
+        protected abstract void OnVertexShaderChanged();
+
+        protected abstract void OnPixelShaderChanged();
+
+        protected abstract void SetConstantBufferCore(ShaderStage shaderStage, int slot, ConstantBuffer buffer);
+
+        protected abstract void SetConstantBuffersCore(ShaderStage shaderStage, int startSlot, int count, ConstantBuffer[] buffers);
+
+        protected abstract void SetSamplerStateCore(ShaderStage shaderStage, int slot, SamplerState state);
+
+        protected abstract void SetSamplerStatesCore(ShaderStage shaderStage, int startSlot, int count, SamplerState[] states);
+
+        protected abstract void SetShaderResourceViewCore(ShaderStage shaderStage, int slot, ShaderResourceView view);
+
+        protected abstract void SetShaderResourceViewsCore(ShaderStage shaderStage, int startSlot, int count, ShaderResourceView[] views);
+
         public void ClearRenderTargetView(
             RenderTargetView view, ClearOptions options, Color color, float depth, byte stencil)
         {
@@ -374,7 +578,7 @@ namespace Libra.Graphics
                 // 仮に明示的に入力レイアウトを設定していたとしても、
                 // それは上書き設定する。
 
-                var vertexShader = VertexShaderStage.VertexShader;
+                //var vertexShader = VertexShaderStage.VertexShader;
 
                 // TODO
                 // スロット #0 は確定なのか否か。

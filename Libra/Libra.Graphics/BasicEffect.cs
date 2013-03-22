@@ -756,7 +756,7 @@ namespace Libra.Graphics
 
             if (TextureEnabled)
             {
-                context.PixelShaderStage.SetShaderResourceView(0, Texture);
+                context.SetShaderResourceView(ShaderStage.Pixel, 0, Texture);
             }
 
             ApplyShaders(context, GetCurrentShaderPermutation());
@@ -944,8 +944,8 @@ namespace Libra.Graphics
             var vertexShader = resources.GetVertexShader(vertexShaderIndex);
             var pixelShader = resources.GetPixelShader(pixelShaderIndex);
 
-            context.VertexShaderStage.VertexShader = vertexShader;
-            context.PixelShaderStage.PixelShader = pixelShader;
+            context.VertexShader = vertexShader;
+            context.PixelShader = pixelShader;
 
             if ((dirtyFlags & DirtyFlags.Contants) != 0)
             {
@@ -953,8 +953,8 @@ namespace Libra.Graphics
                 dirtyFlags &= ~DirtyFlags.Contants;
             }
 
-            context.VertexShaderStage.SetConstantBuffer(0, constantBuffer);
-            context.PixelShaderStage.SetConstantBuffer(0, constantBuffer);
+            context.SetConstantBuffer(ShaderStage.Vertex, 0, constantBuffer);
+            context.SetConstantBuffer(ShaderStage.Pixel, 0, constantBuffer);
         }
 
         #region IDisposable

@@ -225,7 +225,7 @@ namespace Libra.Samples.Particles3D
 
             context.BlendState = BlendState.Opaque;
             context.DepthStencilState = DepthStencilState.Default;
-            context.PixelShaderStage.SetSamplerState(0, SamplerState.LinearWrap);
+            context.SetSamplerState(ShaderStage.Pixel, 0, SamplerState.LinearWrap);
 
             //grid.Draw(Matrix.Identity, view, projection);
         }

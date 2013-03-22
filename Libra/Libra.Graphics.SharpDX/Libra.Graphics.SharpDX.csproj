@@ -69,17 +69,14 @@
     <Compile Include="SdxOutput.cs" />
     <Compile Include="SdxOutputCollection.cs" />
     <Compile Include="SdxPixelShader.cs" />
-    <Compile Include="SdxPixelShaderStage.cs" />
     <Compile Include="SdxRenderTarget.cs" />
     <Compile Include="SdxRenderTargetView.cs" />
     <Compile Include="SdxShaderResourceView.cs" />
-    <Compile Include="CommonShaderStageExtension.cs" />
     <Compile Include="SdxStateManager.cs" />
     <Compile Include="SdxSwapChain.cs" />
     <Compile Include="SdxTexture2D.cs" />
     <Compile Include="SdxVertexBuffer.cs" />
     <Compile Include="SdxVertexShader.cs" />
-    <Compile Include="SdxVertexShaderStage.cs" />
     <Compile Include="ViewportExtension.cs" />
   </ItemGroup>
   <ItemGroup>
