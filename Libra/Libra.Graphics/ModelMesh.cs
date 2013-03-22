@@ -29,14 +29,14 @@ namespace Libra.Graphics
                 if (part.PrimitiveCount != 0)
                 {
                     context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                    context.InputAssemblerStage.SetVertexBuffer(0, part.VertexBuffer, part.VertexOffset);
+                    context.InputAssemblerStage.SetVertexBuffer(0, part.VertexBuffer, 0);
                     context.InputAssemblerStage.IndexBuffer = part.IndexBuffer;
 
                     part.Effect.Apply(context);
 
-                    // TODO
-                    // ここの baseVertexLocation と先の offset の違いはなにか？
-                    context.DrawIndexed(part.PrimitiveCount * 3, part.StartIndex);
+                    // 頂点バッファのオフセットは、ここで指定すべき。
+                    // InputAssemblerStage への設定で指定すると描画が壊れる。
+                    context.DrawIndexed(part.PrimitiveCount * 3, part.StartIndex, part.VertexOffset);
                 }
             }
         }
