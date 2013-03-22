@@ -62,8 +62,7 @@ namespace Libra.Graphics.SharpDX
 
         protected override void InitializeRenderTarget()
         {
-            if (Usage != ResourceUsage.Default && Usage != ResourceUsage.Staging)
-                throw new ArgumentException("ResourceUsage.Default or Staging required.", "usage");
+            if (Usage != ResourceUsage.Default) throw new ArgumentException("ResourceUsage.Default required.", "usage");
             if (Width < 1) throw new InvalidOperationException("Width < 1: " + Width);
             if (Height < 1) throw new InvalidOperationException("Height < 1: " + Height);
             if (MipLevels < 0) throw new InvalidOperationException("MipLevels < 0: " + MipLevels);
@@ -78,8 +77,7 @@ namespace Libra.Graphics.SharpDX
 
         protected override void InitializeRenderTarget(Stream stream)
         {
-            if (Usage != ResourceUsage.Default && Usage != ResourceUsage.Staging)
-                throw new ArgumentException("ResourceUsage.Default or Staging required.", "usage");
+            if (Usage != ResourceUsage.Default) throw new ArgumentException("ResourceUsage.Default required.", "usage");
 
             D3D11Texture2D = D3D11Resource.FromStream<D3D11Texture2D>(D3D11Device, stream, (int) stream.Length);
 

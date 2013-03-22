@@ -115,7 +115,7 @@ namespace Libra.Graphics
         public void SetData<T>(DeviceContext context, T[] data, int sourceIndex, int elementCount,
             int destinationIndex, SetDataOptions options = SetDataOptions.None) where T : struct
         {
-            if (Usage != ResourceUsage.Dynamic && Usage != ResourceUsage.Staging)
+            if (Usage != ResourceUsage.Dynamic)
                 throw new InvalidOperationException("Resource not writable.");
 
             if (options == SetDataOptions.Discard && Usage != ResourceUsage.Dynamic)
