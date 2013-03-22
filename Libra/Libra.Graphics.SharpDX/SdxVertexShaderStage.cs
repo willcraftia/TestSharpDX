@@ -14,13 +14,11 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11VertexShaderStage D3D11VertexShaderStage { get; private set; }
 
-        public SdxVertexShaderStage(SdxDevice device, D3D11VertexShaderStage d3d11VertexShaderStage)
+        public SdxVertexShaderStage(SdxDeviceContext context)
+            : base(context)
         {
-            if (device == null) throw new ArgumentNullException("d3d11Device");
-            if (d3d11VertexShaderStage == null) throw new ArgumentNullException("d3d11VertexShaderStage");
-
-            Device = device;
-            D3D11VertexShaderStage = d3d11VertexShaderStage;
+            Device = context.Device as SdxDevice;
+            D3D11VertexShaderStage = context.D3D11DeviceContext.VertexShader;
         }
 
         protected override void OnVertexShaderChanged()

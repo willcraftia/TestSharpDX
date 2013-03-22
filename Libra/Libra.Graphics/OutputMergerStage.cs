@@ -22,6 +22,8 @@ namespace Libra.Graphics
 
         RenderTargetView[] renderTargetViews;
 
+        public DeviceContext Context { get; private set; }
+
         public Color BlendFactor { get; set; }
 
         public BlendState BlendState
@@ -52,8 +54,12 @@ namespace Libra.Graphics
 
         internal ReadOnlyCollection<RenderTargetView> RenderTargetViews { get; private set; }
 
-        protected OutputMergerStage()
+        protected OutputMergerStage(DeviceContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
+
+            Context = context;
+
             renderTargetViews = new RenderTargetView[SimultaneousRenderTargetCount];
             RenderTargetViews = Array.AsReadOnly<RenderTargetView>(renderTargetViews);
         }

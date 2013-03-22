@@ -15,8 +15,6 @@ namespace Libra.Graphics
         /// </remarks>
         public const int InputResourceSlotCuont = 32;
 
-        DeviceContext context;
-
         InputLayout inputLayout;
 
         PrimitiveTopology primitiveTopology;
@@ -26,6 +24,8 @@ namespace Libra.Graphics
         IndexBuffer indexBuffer;
 
         VertexShader lastVertexShader;
+
+        public DeviceContext Context { get; private set; }
 
         public bool AutoResolveInputLayout { get; set; }
 
@@ -75,7 +75,7 @@ namespace Libra.Graphics
         {
             if (context == null) throw new ArgumentNullException("context");
 
-            this.context = context;
+            Context = context;
 
             vertexBufferBindings = new VertexBufferBinding[InputResourceSlotCuont];
 
@@ -140,7 +140,7 @@ namespace Libra.Graphics
                 // 仮に明示的に入力レイアウトを設定していたとしても、
                 // それは上書き設定する。
 
-                var vertexShader = context.VertexShaderStage.VertexShader;
+                var vertexShader = Context.VertexShaderStage.VertexShader;
 
                 // TODO
                 // スロット #0 は確定なのか否か。

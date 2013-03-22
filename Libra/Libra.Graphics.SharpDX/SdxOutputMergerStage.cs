@@ -14,8 +14,6 @@ namespace Libra.Graphics.SharpDX
 {
     public sealed class SdxOutputMergerStage : OutputMergerStage
     {
-        SdxDeviceContext context;
-
         D3D11RenderTargetView[] activeD3D11RenderTargetViews;
 
         public D3D11OutputMergerStage D3D11OutputMergerStage { get; private set; }
@@ -51,15 +49,11 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        public SdxOutputMergerStage(SdxDevice device, SdxDeviceContext context, D3D11OutputMergerStage d3d11OutputMergerStage)
+        public SdxOutputMergerStage(SdxDeviceContext context)
+            : base(context)
         {
-            if (device == null) throw new ArgumentNullException("device");
-            if (context == null) throw new ArgumentNullException("context");
-            if (d3d11OutputMergerStage == null) throw new ArgumentNullException("d3d11OutputMergerStage");
-
-            Device = device;
-            this.context = context;
-            D3D11OutputMergerStage = d3d11OutputMergerStage;
+            Device = context.Device as SdxDevice;
+            D3D11OutputMergerStage = context.D3D11DeviceContext.OutputMerger;
 
             activeD3D11RenderTargetViews = new D3D11RenderTargetView[SimultaneousRenderTargetCount];
         }

@@ -10,6 +10,8 @@ namespace Libra.Graphics
     {
         PixelShader pixelShader;
 
+        public DeviceContext Context { get; private set; }
+
         public PixelShader PixelShader
         {
             get { return pixelShader; }
@@ -23,7 +25,12 @@ namespace Libra.Graphics
             }
         }
 
-        protected PixelShaderStage() { }
+        protected PixelShaderStage(DeviceContext context)
+        {
+            if (context == null) throw new ArgumentNullException("context");
+
+            Context = context;
+        }
 
         protected abstract void OnPixelShaderChanged();
     }

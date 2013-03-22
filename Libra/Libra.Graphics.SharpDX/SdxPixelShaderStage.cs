@@ -16,13 +16,11 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11PixelShaderStage D3D11PixelShaderStage { get; private set; }
 
-        public SdxPixelShaderStage(SdxDevice device, D3D11PixelShaderStage d3d11PixelShaderStage)
+        public SdxPixelShaderStage(SdxDeviceContext context)
+            : base(context)
         {
-            if (device == null) throw new ArgumentNullException("d3d11Device");
-            if (d3d11PixelShaderStage == null) throw new ArgumentNullException("d3d11PixelShaderStage");
-
-            Device = device;
-            D3D11PixelShaderStage = d3d11PixelShaderStage;
+            Device = context.Device as SdxDevice;
+            D3D11PixelShaderStage = context.D3D11DeviceContext.PixelShader;
         }
 
         protected override void OnPixelShaderChanged()

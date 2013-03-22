@@ -14,6 +14,8 @@ namespace Libra.Graphics
 
         Rectangle scissorRectangle;
 
+        public DeviceContext Context { get; private set; }
+
         public RasterizerState RasterizerState
         {
             get { return rasterizerState; }
@@ -49,7 +51,12 @@ namespace Libra.Graphics
             }
         }
 
-        protected RasterizerStage() { }
+        protected RasterizerStage(DeviceContext context)
+        {
+            if (context == null) throw new ArgumentNullException("context");
+
+            Context = context;
+        }
 
         protected abstract void OnRasterizerStateChanged();
 

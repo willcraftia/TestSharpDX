@@ -82,11 +82,11 @@ namespace Libra.Graphics.SharpDX
             deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
             // パイプライン ステージの初期化。
-            inputAssemblerStage = new SdxInputAssemblerStage(this, d3d11DeviceContext.InputAssembler);
-            vertexShaderStage = new SdxVertexShaderStage(device, d3d11DeviceContext.VertexShader);
-            rasterizerStage = new SdxRasterizerStage(device, d3d11DeviceContext.Rasterizer);
-            pixelShaderStage = new SdxPixelShaderStage(device, d3d11DeviceContext.PixelShader);
-            outputMergerStage = new SdxOutputMergerStage(device, this, d3d11DeviceContext.OutputMerger);
+            inputAssemblerStage = new SdxInputAssemblerStage(this);
+            vertexShaderStage = new SdxVertexShaderStage(this);
+            rasterizerStage = new SdxRasterizerStage(this);
+            pixelShaderStage = new SdxPixelShaderStage(this);
+            outputMergerStage = new SdxOutputMergerStage(this);
         }
 
         public override void ClearRenderTargetView(RenderTargetView view, ClearOptions options, Vector4 color, float depth, byte stencil)

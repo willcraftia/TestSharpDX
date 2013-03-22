@@ -15,12 +15,10 @@ namespace Libra.Graphics.SharpDX
     {
         public D3D11InputAssemblerStage D3D11InputAssemblerStage { get; private set; }
 
-        public SdxInputAssemblerStage(SdxDeviceContext context, D3D11InputAssemblerStage d3d11InputAssemblerStage)
+        public SdxInputAssemblerStage(SdxDeviceContext context)
             : base(context)
         {
-            if (d3d11InputAssemblerStage == null) throw new ArgumentNullException("d3d11InputAssemblerStage");
-
-            D3D11InputAssemblerStage = d3d11InputAssemblerStage;
+            D3D11InputAssemblerStage = context.D3D11DeviceContext.InputAssembler;
         }
 
         protected override void OnInputLayoutChanged()

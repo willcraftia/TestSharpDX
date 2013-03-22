@@ -14,13 +14,11 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11RasterizerStage D3D11RasterizerStage { get; private set; }
 
-        public SdxRasterizerStage(SdxDevice device, D3D11RasterizerStage d3d11RasterizerStage)
+        public SdxRasterizerStage(SdxDeviceContext context)
+            : base(context)
         {
-            if (device == null) throw new ArgumentNullException("device");
-            if (d3d11RasterizerStage == null) throw new ArgumentNullException("d3d11RasterizerStage");
-
-            Device = device;
-            D3D11RasterizerStage = d3d11RasterizerStage;
+            Device = context.Device as SdxDevice;
+            D3D11RasterizerStage = context.D3D11DeviceContext.Rasterizer;
         }
 
         protected override void OnRasterizerStateChanged()
