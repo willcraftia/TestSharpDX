@@ -57,7 +57,7 @@ namespace Libra.Samples.LoadXnb
                     effect.EnableDefaultLighting();
 
                     effect.View = Matrix.CreateLookAt(
-                        new Vector3(9.0f, 9.0f, 9.0f),
+                        new Vector3(0.0f, 100.0f, 200.0f),
                         Vector3.Zero,
                         Vector3.Up
                     );
@@ -66,7 +66,7 @@ namespace Libra.Samples.LoadXnb
                         MathHelper.ToRadians(45.0f),
                         (float) viewport.AspectRatio,
                         1.0f,
-                        100.0f
+                        1000.0f
                     );
                 }
             }
