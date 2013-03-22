@@ -14,6 +14,8 @@ namespace Libra.Graphics
 
         public static readonly RasterizerState CullBack;
 
+        public static readonly RasterizerState Wireframe;
+
         FillMode fillMode;
 
         CullMode cullMode;
@@ -140,6 +142,13 @@ namespace Libra.Graphics
             {
                 CullMode = CullMode.Back,
                 Name = "CullBack"
+            };
+
+            Wireframe = new RasterizerState
+            {
+                FillMode = FillMode.Wireframe,
+                CullMode = CullMode.None,
+                Name = "Wireframe"
             };
         }
 

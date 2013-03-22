@@ -46,8 +46,6 @@ namespace Libra.Samples.Primitives3D
 
         int currentPrimitiveIndex = 0;
 
-        RasterizerState wireFrameState;
-
         List<Color> colors = new List<Color>
         {
             Color.Red,
@@ -84,12 +82,6 @@ namespace Libra.Samples.Primitives3D
             primitives.Add(new TorusPrimitive(Device));
             primitives.Add(new TeapotPrimitive(Device));
 
-            wireFrameState = new RasterizerState()
-            {
-                FillMode = FillMode.Wireframe,
-                CullMode = CullMode.None,
-            };
-
             keyboard = platform.CreateKeyboard();
             mouse = platform.CreateMouse();
             joystick = platform.CreateJoystick();
@@ -112,7 +104,7 @@ namespace Libra.Samples.Primitives3D
 
             if (isWireframe)
             {
-                context.RasterizerStage.RasterizerState = wireFrameState;
+                context.RasterizerStage.RasterizerState = RasterizerState.Wireframe;
             }
             else
             {
@@ -204,9 +196,6 @@ namespace Libra.Samples.Primitives3D
 
     static class Program
     {
-        /// <summary>
-        /// アプリケーションのメイン エントリ ポイントです。
-        /// </summary>
         [STAThread]
         static void Main()
         {
