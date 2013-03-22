@@ -29,7 +29,7 @@ namespace Libra.Graphics
                 if (part.PrimitiveCount != 0)
                 {
                     context.InputAssemblerStage.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                    context.InputAssemblerStage.SetVertexBuffer(0, part.VertexBuffer, 0);
+                    context.InputAssemblerStage.SetVertexBuffer(0, part.VertexBuffer);
                     context.InputAssemblerStage.IndexBuffer = part.IndexBuffer;
 
                     part.Effect.Apply(context);
