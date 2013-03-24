@@ -23,17 +23,19 @@ namespace Felis.Xnb
             base.Specialize(targetType, genericArguments, actualType, actualGenericArguments);
         }
 
-        public void SetCount(uint value)
+        protected internal void SetCount(uint value)
         {
             list = Activator.CreateInstance(ActualType, (int) value);
         }
 
-        public void Add(object value)
+        protected internal void Add(object value)
         {
             addMethod.Invoke(list, new[] { value });
         }
 
-        public override object End()
+        protected internal override void Begin(object deviceContext) { }
+
+        protected internal override object End()
         {
             return list;
         }

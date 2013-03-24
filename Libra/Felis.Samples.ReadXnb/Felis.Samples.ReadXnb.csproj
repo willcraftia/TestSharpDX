@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicEffectBuilder.cs" />
+    <Compile Include="BoundingSphereBuilder.cs" />
+    <Compile Include="Device.cs" />
+    <Compile Include="DeviceContext.cs" />
     <Compile Include="IndexBufferBuilder.cs" />
     <Compile Include="MatrixBuilder.cs" />
     <Compile Include="BasicEffect.cs" />

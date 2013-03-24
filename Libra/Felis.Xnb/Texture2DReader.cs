@@ -29,7 +29,7 @@ namespace Felis.Xnb
 
         protected internal override object Read(ContentReader input)
         {
-            builder.Begin();
+            builder.Begin(input.DeviceContext);
 
             // Surface format
             builder.SetSurfaceFormat(input.ReadInt32());

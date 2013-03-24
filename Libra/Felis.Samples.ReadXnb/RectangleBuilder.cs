@@ -7,16 +7,11 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class RectangleBuilder : RectangleBuilderBase
+    public sealed class RectangleBuilder : RectangleBuilderBase<Rectangle>
     {
         Rectangle instance;
 
-        public override Type ActualType
-        {
-            get { return typeof(Rectangle); }
-        }
-
-        public override void SetValues(int x, int y, int width, int height)
+        protected override void SetValues(int x, int y, int width, int height)
         {
             instance.X = x;
             instance.Y = y;
@@ -24,14 +19,12 @@ namespace Felis.Samples.ReadXnb
             instance.Height = height;
         }
 
-        public override void Begin()
+        protected override void Begin(object deviceContext)
         {
             instance = new Rectangle();
-
-            base.Begin();
         }
 
-        public override object End()
+        protected override object End()
         {
             return instance;
         }

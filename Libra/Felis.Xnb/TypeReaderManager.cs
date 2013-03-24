@@ -19,8 +19,14 @@ namespace Felis.Xnb
 
         List<GenericTypeReaderFactory> genericTypeReaderFactories;
 
-        public TypeReaderManager()
+        internal ContentManager ContentManager { get; private set; }
+
+        internal TypeReaderManager(ContentManager contentManager)
         {
+            if (contentManager == null) throw new ArgumentNullException("contentManager");
+
+            ContentManager = contentManager;
+
             typeBuilders = new List<TypeBuilder>();
             genericTypeBuilderFactories = new List<GenericTypeBuilderFactory>();
             typeReaders = new List<TypeReader>();
@@ -60,6 +66,7 @@ namespace Felis.Xnb
             RegisterTypeReader<Vector3Reader>();
             RegisterTypeReader<RectangleReader>();
             RegisterTypeReader<MatrixReader>();
+            RegisterTypeReader<BoundingSphereReader>();
 
             // Graphics types
             RegisterTypeReader<Texture2DReader>();
@@ -119,6 +126,7 @@ namespace Felis.Xnb
             {
                 if (builder.TargetType == wanted)
                 {
+                    if (!builder.Initialized) builder.Initialize(ContentManager);
                     return builder;
                 }
             }
@@ -136,6 +144,7 @@ namespace Felis.Xnb
 
                         typeBuilders.Add(builder);
 
+                        if (!builder.Initialized) builder.Initialize(ContentManager);
                         return builder;
                     }
                 }

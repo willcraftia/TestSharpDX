@@ -7,41 +7,45 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class VertexBufferBuilder : VertexBufferBuilderBase
+    public sealed class VertexBufferBuilder : VertexBufferBuilderBase<VertexBuffer>
     {
+        Device device;
+
         VertexBuffer instance;
 
-        public override Type ActualType
-        {
-            get { return typeof(VertexBuffer); }
-        }
-
-        public override void SetVertexDeclaration(object value)
+        protected override void SetVertexDeclaration(object value)
         {
             instance.VertexDeclaration = (VertexDeclaration) value;
         }
 
-        public override void SetVertexCount(uint value)
+        protected override void SetVertexCount(uint value)
         {
             instance.VertexCount = (int) value;
         }
 
-        public override uint GetVertexStride()
+        protected override uint GetVertexStride()
         {
             return (uint) instance.VertexDeclaration.VertexStride;
         }
 
-        public override void SetVertexData(byte[] value)
+        protected override void SetVertexData(byte[] value)
         {
             instance.VertexData = value;
         }
 
-        public override void Begin()
+        protected override void Initialize(ContentManager contentManager)
         {
-            instance = new VertexBuffer();
+            device = contentManager.Device as Device;
+
+            base.Initialize(contentManager);
         }
 
-        public override object End()
+        protected override void Begin(object deviceContext)
+        {
+            instance = new VertexBuffer(device);
+        }
+
+        protected override object End()
         {
             return instance;
         }

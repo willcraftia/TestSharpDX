@@ -13,12 +13,24 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Graphics.VertexBuffer"; }
         }
 
-        public abstract void SetVertexDeclaration(object value);
+        protected VertexBufferBuilderBase() { }
 
-        public abstract void SetVertexCount(uint value);
+        protected internal abstract void SetVertexDeclaration(object value);
 
-        public abstract uint GetVertexStride();
+        protected internal abstract void SetVertexCount(uint value);
 
-        public abstract void SetVertexData(byte[] value);
+        protected internal abstract uint GetVertexStride();
+
+        protected internal abstract void SetVertexData(byte[] value);
+    }
+
+    public abstract class VertexBufferBuilderBase<T> : VertexBufferBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected VertexBufferBuilderBase() { }
     }
 }

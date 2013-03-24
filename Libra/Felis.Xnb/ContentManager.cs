@@ -18,6 +18,8 @@ namespace Felis.Xnb
 
         public TypeReaderManager TypeReaderManager { get; private set; }
 
+        public object Device { get; private set; }
+
         public string RootDirectory
         {
             get { return rootDirectory; }
@@ -29,21 +31,23 @@ namespace Felis.Xnb
             }
         }
 
-        public ContentManager()
+        public ContentManager(object device = null)
         {
+            Device = device;
+            
             rootDirectory = string.Empty;
-            TypeReaderManager = new TypeReaderManager();
+            TypeReaderManager = new TypeReaderManager(this);
             assetByName = new Dictionary<string, object>();
             disposableObjects = new List<IDisposable>();
         }
 
-        public T Load<T>(string assetName)
+        public T Load<T>(string assetName, object deviceContext = null)
         {
             object asset;
             if (assetByName.TryGetValue(assetName, out asset))
                 return (T) asset;
 
-            asset = ReadAsset<T>(assetName, null);
+            asset = ReadAsset<T>(assetName, deviceContext, null);
 
             assetByName[assetName] = asset;
 
@@ -59,14 +63,14 @@ namespace Felis.Xnb
             assetByName.Clear();
         }
 
-        protected T ReadAsset<T>(string assetName, Action<IDisposable> recordDisposableObject)
+        protected T ReadAsset<T>(string assetName, object deviceContext, Action<IDisposable> recordDisposableObject)
         {
             var filename = assetName + ".xnb";
             var filePath = Path.Combine(rootDirectory, filename);
 
             using (var stream = File.OpenRead(filePath))
             {
-                using (var reader = new ContentReader(stream, assetName, this, recordDisposableObject))
+                using (var reader = new ContentReader(stream, assetName, this, deviceContext, recordDisposableObject))
                 {
                     return (T) reader.ReadXnb();
                 }

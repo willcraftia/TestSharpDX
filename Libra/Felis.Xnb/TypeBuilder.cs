@@ -12,10 +12,17 @@ namespace Felis.Xnb
 
         public abstract Type ActualType { get; }
 
+        internal bool Initialized { get; private set; }
+
         protected TypeBuilder() { }
 
-        public virtual void Begin() { }
+        protected internal virtual void Initialize(ContentManager contentManager)
+        {
+            Initialized = true;
+        }
 
-        public abstract object End();
+        protected internal abstract void Begin(object deviceContext);
+
+        protected internal abstract object End();
     }
 }

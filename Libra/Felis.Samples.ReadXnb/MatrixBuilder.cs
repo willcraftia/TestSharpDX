@@ -7,16 +7,11 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class MatrixBuilder : MatrixBuilderBase
+    public sealed class MatrixBuilder : MatrixBuilderBase<Matrix>
     {
         Matrix instance;
 
-        public override Type ActualType
-        {
-            get { return typeof(Matrix); }
-        }
-
-        public override void SetValues(
+        protected override void SetValues(
             float m11, float m12, float m13, float m14,
             float m21, float m22, float m23, float m24,
             float m31, float m32, float m33, float m34,
@@ -43,12 +38,12 @@ namespace Felis.Samples.ReadXnb
             instance.M44 = m44;
         }
 
-        public override void Begin()
+        protected override void Begin(object deviceContext)
         {
             instance = new Matrix();
         }
 
-        public override object End()
+        protected override object End()
         {
             return instance;
         }

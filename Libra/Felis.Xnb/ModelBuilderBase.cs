@@ -13,94 +13,106 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Graphics.Model"; }
         }
 
-        public abstract void SetBoneCount(uint value);
+        protected ModelBuilderBase() { }
 
-        public virtual void BeginBones() { }
+        protected internal abstract void SetBoneCount(uint value);
 
-        public abstract void BeginBone(int index);
+        protected internal virtual void BeginBones() { }
 
-        public abstract void SetBoneName(string value);
+        protected internal abstract void BeginBone(int index);
 
-        public abstract void SetBoneTransform(object value);
+        protected internal abstract void SetBoneName(string value);
 
-        public virtual void EndBone() { }
+        protected internal abstract void SetBoneTransform(object value);
 
-        public virtual void EndBones() { }
+        protected internal virtual void EndBone() { }
 
-        public virtual void BeginBoneHierarchies() { }
+        protected internal virtual void EndBones() { }
 
-        public abstract void BeginBoneHierarchy(int index);
+        protected internal virtual void BeginBoneHierarchies() { }
 
-        public abstract void SetBoneHierarchyParentBone(int value);
+        protected internal abstract void BeginBoneHierarchy(int index);
 
-        public abstract void SetBoneHierarchyChildBoneCount(uint value);
+        protected internal abstract void SetBoneHierarchyParentBone(int value);
 
-        public virtual void BeginBoneHierarchyChildBones() { }
+        protected internal abstract void SetBoneHierarchyChildBoneCount(uint value);
 
-        public abstract void BeginBoneHierarchyChildBone(int index);
+        protected internal virtual void BeginBoneHierarchyChildBones() { }
 
-        public abstract void SetBoneHierarchyChildBone(int value);
+        protected internal abstract void BeginBoneHierarchyChildBone(int index);
 
-        public virtual void EndBoneHierarchyChildBone() { }
+        protected internal abstract void SetBoneHierarchyChildBone(int value);
 
-        public virtual void EndBoneHierarchyChildBones() { }
+        protected internal virtual void EndBoneHierarchyChildBone() { }
 
-        public virtual void EndBoneHierarchy() { }
+        protected internal virtual void EndBoneHierarchyChildBones() { }
 
-        public virtual void EndBoneHierarchies() { }
+        protected internal virtual void EndBoneHierarchy() { }
 
-        public abstract void SetMeshCount(uint value);
+        protected internal virtual void EndBoneHierarchies() { }
 
-        public virtual void BeginMeshes() { }
+        protected internal abstract void SetMeshCount(uint value);
 
-        public abstract void BeginMesh(int index);
+        protected internal virtual void BeginMeshes() { }
 
-        public abstract void SetMeshName(string value);
+        protected internal abstract void BeginMesh(int index);
 
-        public abstract void SetMeshParentBone(int value);
+        protected internal abstract void SetMeshName(string value);
 
-        public abstract void SetMeshBoundingSphere(float x, float y, float z, float radius);
+        protected internal abstract void SetMeshParentBone(int value);
 
-        public abstract void SetMeshTag(object value);
+        protected internal abstract void SetMeshBoundingSphere(object value);
 
-        public abstract void setMeshPartCount(uint value);
+        protected internal abstract void SetMeshTag(object value);
 
-        public virtual void BeginMeshParts() { }
+        protected internal abstract void SetMeshPartCount(uint value);
 
-        public abstract void BeginMeshPart(int index);
+        protected internal virtual void BeginMeshParts() { }
 
-        public abstract void SetMeshPartVertexOffset(uint value);
+        protected internal abstract void BeginMeshPart(int index);
 
-        public abstract void SetMeshPartNumVertices(uint value);
+        protected internal abstract void SetMeshPartVertexOffset(uint value);
 
-        public abstract void SetMeshPartStartIndex(uint value);
+        protected internal abstract void SetMeshPartNumVertices(uint value);
 
-        public abstract void SetMeshPartPrimitiveCount(uint value);
+        protected internal abstract void SetMeshPartStartIndex(uint value);
 
-        public abstract void SetMeshPartTag(object value);
+        protected internal abstract void SetMeshPartPrimitiveCount(uint value);
 
-        public abstract Action<object> GetMeshPartVertexBufferCallback();
+        protected internal abstract void SetMeshPartTag(object value);
 
-        public virtual void SetMeshPartVertexBuffer(int value) { }
+        protected internal abstract Action<object> GetMeshPartVertexBufferCallback();
 
-        public abstract Action<object> GetMeshPartIndexBufferCallback();
+        protected internal virtual void SetMeshPartVertexBuffer(int value) { }
 
-        public virtual void SetMeshPartIndexBuffer(int value) { }
+        protected internal abstract Action<object> GetMeshPartIndexBufferCallback();
 
-        public abstract Action<object> GetMeshPartEffectCallback();
+        protected internal virtual void SetMeshPartIndexBuffer(int value) { }
 
-        public virtual void SetMeshPartEffect(int value) { }
+        protected internal abstract Action<object> GetMeshPartEffectCallback();
 
-        public virtual void EndMeshPart() { }
+        protected internal virtual void SetMeshPartEffect(int value) { }
 
-        public virtual void EndMeshParts() { }
+        protected internal virtual void EndMeshPart() { }
 
-        public abstract void SetRootBone(int value);
+        protected internal virtual void EndMeshParts() { }
 
-        public abstract void SetTag(object value);
+        protected internal abstract void SetRootBone(int value);
 
-        public virtual void EndMesh() { }
+        protected internal abstract void SetTag(object value);
 
-        public virtual void EndMeshes() { }
+        protected internal virtual void EndMesh() { }
+
+        protected internal virtual void EndMeshes() { }
+    }
+
+    public abstract class ModelBuilderBase<T> : ModelBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected ModelBuilderBase() { }
     }
 }

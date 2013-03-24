@@ -7,58 +7,53 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class VertexDeclarationBuilder : VertexDeclarationBuilderBase
+    public sealed class VertexDeclarationBuilder : VertexDeclarationBuilderBase<VertexDeclaration>
     {
         VertexDeclaration instance;
 
         int currentElementIndex;
 
-        public override Type ActualType
-        {
-            get { return typeof(VertexDeclaration); }
-        }
-
-        public override void SetVertexStride(uint value)
+        protected override void SetVertexStride(uint value)
         {
             instance.VertexStride = (int) value;
         }
 
-        public override void SetElementCount(uint value)
+        protected override void SetElementCount(uint value)
         {
             instance.Elements = new VertexElement[value];
         }
 
-        public override void BeginElement(int index)
+        protected override void BeginElement(int index)
         {
             currentElementIndex = index;
         }
 
-        public override void SetElementOffset(uint value)
+        protected override void SetElementOffset(uint value)
         {
             instance.Elements[currentElementIndex].Offset = (int) value;
         }
 
-        public override void SetElementFormat(int value)
+        protected override void SetElementFormat(int value)
         {
             instance.Elements[currentElementIndex].Format = value;
         }
 
-        public override void SetElementUsage(int value)
+        protected override void SetElementUsage(int value)
         {
             instance.Elements[currentElementIndex].Usage = value;
         }
 
-        public override void SetElementUsageIndex(uint value)
+        protected override void SetElementUsageIndex(uint value)
         {
             instance.Elements[currentElementIndex].UsageIndex = (int) value;
         }
 
-        public override void Begin()
+        protected override void Begin(object deviceContext)
         {
             instance = new VertexDeclaration();
         }
 
-        public override object End()
+        protected override object End()
         {
             return instance;
         }

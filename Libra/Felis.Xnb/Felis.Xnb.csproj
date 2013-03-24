@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoundingSphereBuilderBase.cs" />
+    <Compile Include="BoundingSphereReader.cs" />
     <Compile Include="CharReader.cs" />
     <Compile Include="GenericTypeBuilder.cs" />
     <Compile Include="GenericTypeBuilderAttribute.cs" />

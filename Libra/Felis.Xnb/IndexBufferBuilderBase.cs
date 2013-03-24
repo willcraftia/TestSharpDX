@@ -13,10 +13,22 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Graphics.IndexBuffer"; }
         }
 
-        public abstract void SetIsSixteenBits(bool value);
+        protected IndexBufferBuilderBase() { }
 
-        public abstract void SetDataSize(uint value);
+        protected internal abstract void SetIsSixteenBits(bool value);
 
-        public abstract void SetIndexData(byte[] value);
+        protected internal abstract void SetDataSize(uint value);
+
+        protected internal abstract void SetIndexData(byte[] value);
+    }
+
+    public abstract class IndexBufferBuilderBase<T> : IndexBufferBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected IndexBufferBuilderBase() { }
     }
 }

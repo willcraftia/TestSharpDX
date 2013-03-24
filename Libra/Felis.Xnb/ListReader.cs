@@ -24,7 +24,7 @@ namespace Felis.Xnb
 
         protected internal override object Read(ContentReader input)
         {
-            builder.Begin();
+            builder.Begin(input.DeviceContext);
 
             // Count
             var count = input.ReadUInt32();

@@ -23,6 +23,8 @@ namespace Felis.Xnb
 
         public ContentManager ContentManager { get; private set; }
 
+        public object DeviceContext { get; private set; }
+
         public char TargetPlatform { get; private set; }
 
         public byte FormatVersion { get; private set; }
@@ -35,13 +37,15 @@ namespace Felis.Xnb
 
         public uint DecompressedFileSize { get; private set; }
 
-        public ContentReader(Stream stream, string assetName, ContentManager contentManager, Action<IDisposable> recordDisposableObject)
+        public ContentReader(Stream stream, string assetName,
+            ContentManager contentManager, object deviceContext, Action<IDisposable> recordDisposableObject)
             : base(stream)
         {
             if (contentManager == null) throw new ArgumentNullException("contentManager");
             if (assetName == null) throw new ArgumentNullException("assetName");
 
             ContentManager = contentManager;
+            DeviceContext = deviceContext;
             this.recordDisposableObject = recordDisposableObject;
 
             fixupListMap = new Dictionary<int, List<Delegate>>();

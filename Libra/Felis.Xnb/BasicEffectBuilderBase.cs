@@ -15,18 +15,28 @@ namespace Felis.Xnb
 
         protected BasicEffectBuilderBase() { }
 
-        public abstract void SetTexture(string value);
+        protected internal abstract void SetTexture(string value);
 
-        public abstract void SetDiffuseColor(object value);
+        protected internal abstract void SetDiffuseColor(object value);
 
-        public abstract void SetEmissiveColor(object value);
+        protected internal abstract void SetEmissiveColor(object value);
 
-        public abstract void SetSpecularColor(object value);
+        protected internal abstract void SetSpecularColor(object value);
 
-        public abstract void SetSpecularPower(float value);
+        protected internal abstract void SetSpecularPower(float value);
 
-        public abstract void SetAlpha(float value);
+        protected internal abstract void SetAlpha(float value);
 
-        public abstract void SetVertexColorEnabled(bool value);
+        protected internal abstract void SetVertexColorEnabled(bool value);
+    }
+
+    public abstract class BasicEffectBuilderBase<T> : BasicEffectBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected BasicEffectBuilderBase() { }
     }
 }

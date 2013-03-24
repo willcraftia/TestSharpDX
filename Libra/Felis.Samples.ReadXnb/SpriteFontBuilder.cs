@@ -8,51 +8,46 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class SpriteFontBuilder : SpriteFontBuilderBase
+    public sealed class SpriteFontBuilder : SpriteFontBuilderBase<SpriteFont>
     {
         SpriteFont instance;
 
-        public override Type ActualType
-        {
-            get { return typeof(SpriteFont); }
-        }
-
-        public override void SetTexture(object value)
+        protected override void SetTexture(object value)
         {
             instance.Texture = value as Texture2D;
         }
 
-        public override void SetGlyphs(object value)
+        protected override void SetGlyphs(object value)
         {
             instance.Glyphs = value as List<Rectangle>;
         }
 
-        public override void SetCropping(object value)
+        protected override void SetCropping(object value)
         {
             instance.Cropping = value as List<Rectangle>;
         }
 
-        public override void SetCharacterMap(object value)
+        protected override void SetCharacterMap(object value)
         {
             instance.Characters = value as List<char>;
         }
 
-        public override void SetVerticalLineSpacing(int value)
+        protected override void SetVerticalLineSpacing(int value)
         {
             instance.VerticalLineSpacing = value;
         }
 
-        public override void SetHorizontalSpacing(float value)
+        protected override void SetHorizontalSpacing(float value)
         {
             instance.HorizontalSpacing = value;
         }
 
-        public override void SetKering(object value)
+        protected override void SetKering(object value)
         {
             instance.Kerning = value as List<Vector3>;
         }
 
-        public override void SetDefaultCharacter(object value)
+        protected override void SetDefaultCharacter(object value)
         {
             if (value == null)
             {
@@ -64,12 +59,12 @@ namespace Felis.Samples.ReadXnb
             }
         }
 
-        public override void Begin()
+        protected override void Begin(object deviceContext)
         {
             instance = new SpriteFont();
         }
 
-        public override object End()
+        protected override object End()
         {
             return instance;
         }

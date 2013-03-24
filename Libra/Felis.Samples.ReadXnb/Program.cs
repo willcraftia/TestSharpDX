@@ -16,6 +16,7 @@ namespace Felis.Samples.ReadXnb
             contentManager.TypeReaderManager.RegisterTypeBuilder<Vector3Builder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<RectangleBuilder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<MatrixBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<BoundingSphereBuilder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<VertexBufferBuilder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<VertexDeclarationBuilder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<IndexBufferBuilder>();

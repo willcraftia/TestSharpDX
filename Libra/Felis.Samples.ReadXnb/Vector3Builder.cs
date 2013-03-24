@@ -7,28 +7,23 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class Vector3Builder : Vector3BuilderBase
+    public sealed class Vector3Builder : Vector3BuilderBase<Vector3>
     {
         Vector3 instance;
 
-        public override Type ActualType
-        {
-            get { return typeof(Vector3); }
-        }
-
-        public override void SetValues(float x, float y, float z)
+        protected override void SetValues(float x, float y, float z)
         {
             instance.X = x;
             instance.Y = y;
             instance.Z = z;
         }
 
-        public override void Begin()
+        protected override void Begin(object deviceContext)
         {
             instance = new Vector3();
         }
 
-        public override object End()
+        protected override object End()
         {
             return instance;
         }

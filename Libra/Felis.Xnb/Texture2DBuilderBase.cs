@@ -13,24 +13,36 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Graphics.Texture2D"; }
         }
 
-        public abstract void SetSurfaceFormat(int value);
+        protected Texture2DBuilderBase() { }
 
-        public abstract void SetWidth(uint value);
+        protected internal abstract void SetSurfaceFormat(int value);
 
-        public abstract void SetHeight(uint value);
+        protected internal abstract void SetWidth(uint value);
 
-        public abstract void SetMipCount(uint value);
+        protected internal abstract void SetHeight(uint value);
 
-        public virtual void BeginMips() { }
+        protected internal abstract void SetMipCount(uint value);
 
-        public abstract void BeginMip(int index);
+        protected internal virtual void BeginMips() { }
 
-        public abstract void SetMipDataSize(uint value);
+        protected internal abstract void BeginMip(int index);
 
-        public abstract void SetMipImageData(byte[] value);
+        protected internal abstract void SetMipDataSize(uint value);
 
-        public virtual void EndMip() { }
+        protected internal abstract void SetMipImageData(byte[] value);
 
-        public virtual void EndMips() { }
+        protected internal virtual void EndMip() { }
+
+        protected internal virtual void EndMips() { }
+    }
+
+    public abstract class Texture2DBuilderBase<T> : Texture2DBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected Texture2DBuilderBase() { }
     }
 }

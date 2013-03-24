@@ -21,5 +21,7 @@ namespace Felis.Samples.ReadXnb
         public float Alpha;
 
         public bool VertexColorEnabled;
+
+        public BasicEffect(Device device) { }
     }
 }

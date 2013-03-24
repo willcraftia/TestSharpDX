@@ -12,6 +12,8 @@ namespace Felis.Xnb
 
         MatrixReader matrixReader;
 
+        BoundingSphereReader boundingSphereReader;
+
         public override string TargetType
         {
             get { return "Microsoft.Xna.Framework.Graphics.Model"; }
@@ -29,12 +31,15 @@ namespace Felis.Xnb
             matrixReader = new MatrixReader();
             matrixReader.Initialize(manager);
 
+            boundingSphereReader = new BoundingSphereReader();
+            boundingSphereReader.Initialize(manager);
+
             base.Initialize(manager);
         }
 
         protected internal override object Read(ContentReader input)
         {
-            builder.Begin();
+            builder.Begin(input.DeviceContext);
 
             // Bone count
             var boneCount = input.ReadUInt32();
@@ -111,16 +116,14 @@ namespace Felis.Xnb
                 builder.SetMeshParentBone(ReadBoneReference(input, (int) boneCount));
 
                 // BoundingSphere
-                builder.SetMeshBoundingSphere(
-                    input.ReadSingle(), input.ReadSingle(), input.ReadSingle(),
-                    input.ReadSingle());
+                builder.SetMeshBoundingSphere(boundingSphereReader.Read(input));
 
                 // Tag
                 builder.SetMeshTag(input.ReadObject());
 
                 // Mesh part count
                 var partCount = input.ReadUInt32();
-                builder.setMeshPartCount(partCount);
+                builder.SetMeshPartCount(partCount);
 
                 builder.BeginMeshParts();
 

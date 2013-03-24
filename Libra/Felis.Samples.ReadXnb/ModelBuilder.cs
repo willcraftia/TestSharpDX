@@ -7,7 +7,7 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class ModelBuilder : ModelBuilderBase
+    public sealed class ModelBuilder : ModelBuilderBase<Model>
     {
         #region VertexBufferFixup
 
@@ -80,38 +80,33 @@ namespace Felis.Samples.ReadXnb
 
         ModelMeshPart currentMeshPart;
 
-        public override Type ActualType
-        {
-            get { return typeof(Model); }
-        }
-
-        public override void SetBoneCount(uint value)
+        protected override void SetBoneCount(uint value)
         {
             instance.Bones = new ModelBone[value];
         }
 
-        public override void BeginBone(int index)
+        protected override void BeginBone(int index)
         {
             instance.Bones[index] = new ModelBone();
             currentBone = instance.Bones[index];
         }
 
-        public override void SetBoneName(string value)
+        protected override void SetBoneName(string value)
         {
             currentBone.Name = value;
         }
 
-        public override void SetBoneTransform(object value)
+        protected override void SetBoneTransform(object value)
         {
             currentBone.Transform = (Matrix) value;
         }
 
-        public override void BeginBoneHierarchy(int index)
+        protected override void BeginBoneHierarchy(int index)
         {
             currentBone = instance.Bones[index];
         }
 
-        public override void SetBoneHierarchyParentBone(int value)
+        protected override void SetBoneHierarchyParentBone(int value)
         {
             if (value != 0)
             {
@@ -119,17 +114,17 @@ namespace Felis.Samples.ReadXnb
             }
         }
 
-        public override void SetBoneHierarchyChildBoneCount(uint value)
+        protected override void SetBoneHierarchyChildBoneCount(uint value)
         {
             currentBone.Children = new ModelBone[value];
         }
 
-        public override void BeginBoneHierarchyChildBone(int index)
+        protected override void BeginBoneHierarchyChildBone(int index)
         {
             currentChildBoneIndex = index;
         }
 
-        public override void SetBoneHierarchyChildBone(int value)
+        protected override void SetBoneHierarchyChildBone(int value)
         {
             if (value != 0)
             {
@@ -137,23 +132,23 @@ namespace Felis.Samples.ReadXnb
             }
         }
 
-        public override void SetMeshCount(uint value)
+        protected override void SetMeshCount(uint value)
         {
             instance.Meshes = new ModelMesh[value];
         }
     
-        public override void BeginMesh(int index)
+        protected override void BeginMesh(int index)
         {
             instance.Meshes[index] = new ModelMesh();
             currentMesh = instance.Meshes[index];
         }
 
-        public override void SetMeshName(string value)
+        protected override void SetMeshName(string value)
         {
             currentMesh.Name = value;
         }
 
-        public override void SetMeshParentBone(int value)
+        protected override void SetMeshParentBone(int value)
         {
             if (value != 0)
             {
@@ -161,68 +156,68 @@ namespace Felis.Samples.ReadXnb
             }
         }
 
-        public override void SetMeshBoundingSphere(float x, float y, float z, float radius)
+        protected override void SetMeshBoundingSphere(object value)
         {
-            currentMesh.BoundingSphere = new BoundingSphere(new Vector3(x, y, z), radius);
+            currentMesh.BoundingSphere = (BoundingSphere) value;
         }
 
-        public override void SetMeshTag(object value)
+        protected override void SetMeshTag(object value)
         {
             currentMesh.Tag = value;
         }
 
-        public override void setMeshPartCount(uint value)
+        protected override void SetMeshPartCount(uint value)
         {
             currentMesh.MeshParts = new ModelMeshPart[value];
         }
 
-        public override void BeginMeshPart(int index)
+        protected override void BeginMeshPart(int index)
         {
             currentMesh.MeshParts[index] = new ModelMeshPart();
             currentMeshPart = currentMesh.MeshParts[index];
         }
 
-        public override void SetMeshPartVertexOffset(uint value)
+        protected override void SetMeshPartVertexOffset(uint value)
         {
             currentMeshPart.VertexOffset = (int) value;
         }
 
-        public override void SetMeshPartNumVertices(uint value)
+        protected override void SetMeshPartNumVertices(uint value)
         {
             currentMeshPart.NumVertices = (int) value;
         }
 
-        public override void SetMeshPartStartIndex(uint value)
+        protected override void SetMeshPartStartIndex(uint value)
         {
             currentMeshPart.StartIndex = (int) value;
         }
 
-        public override void SetMeshPartPrimitiveCount(uint value)
+        protected override void SetMeshPartPrimitiveCount(uint value)
         {
             currentMeshPart.PrimitiveCount = (int) value;
         }
 
-        public override void SetMeshPartTag(object value)
+        protected override void SetMeshPartTag(object value)
         {
             currentMeshPart.Tag = value;
         }
 
-        public override Action<object> GetMeshPartVertexBufferCallback()
+        protected override Action<object> GetMeshPartVertexBufferCallback()
         {
             return new VertexBufferFixup(currentMeshPart).Fixup;
         }
 
-        public override Action<object> GetMeshPartIndexBufferCallback()
+        protected override Action<object> GetMeshPartIndexBufferCallback()
         {
             return new IndexBufferFixup(currentMeshPart).Fixup;
         }
 
-        public override Action<object> GetMeshPartEffectCallback()
+        protected override Action<object> GetMeshPartEffectCallback()
         {
             return new EffectFixup(currentMesh, currentMeshPart).Fixup;
         }
 
-        public override void SetRootBone(int value)
+        protected override void SetRootBone(int value)
         {
             if (value != 0)
             {
@@ -230,17 +225,17 @@ namespace Felis.Samples.ReadXnb
             }
         }
 
-        public override void SetTag(object value)
+        protected override void SetTag(object value)
         {
             instance.Tag = value;
         }
 
-        public override void Begin()
+        protected override void Begin(object deviceContext)
         {
             instance = new Model();
         }
 
-        public override object End()
+        protected override object End()
         {
             return instance;
         }

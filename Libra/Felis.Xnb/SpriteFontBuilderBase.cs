@@ -13,20 +13,32 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Graphics.SpriteFont"; }
         }
 
-        public abstract void SetTexture(object value);
+        protected SpriteFontBuilderBase() { }
 
-        public abstract void SetGlyphs(object value);
+        protected internal abstract void SetTexture(object value);
 
-        public abstract void SetCropping(object value);
+        protected internal abstract void SetGlyphs(object value);
 
-        public abstract void SetCharacterMap(object value);
+        protected internal abstract void SetCropping(object value);
 
-        public abstract void SetVerticalLineSpacing(int value);
+        protected internal abstract void SetCharacterMap(object value);
 
-        public abstract void SetHorizontalSpacing(float value);
+        protected internal abstract void SetVerticalLineSpacing(int value);
 
-        public abstract void SetKering(object value);
+        protected internal abstract void SetHorizontalSpacing(float value);
 
-        public abstract void SetDefaultCharacter(object value);
+        protected internal abstract void SetKering(object value);
+
+        protected internal abstract void SetDefaultCharacter(object value);
+    }
+
+    public abstract class SpriteFontBuilderBase<T> : SpriteFontBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected SpriteFontBuilderBase() { }
     }
 }

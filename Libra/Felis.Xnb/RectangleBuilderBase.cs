@@ -13,6 +13,18 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Rectangle"; }
         }
 
-        public abstract void SetValues(int x, int y, int width, int height);
+        protected RectangleBuilderBase() { }
+
+        protected internal abstract void SetValues(int x, int y, int width, int height);
+    }
+
+    public abstract class RectangleBuilderBase<T> : RectangleBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected RectangleBuilderBase() { }
     }
 }

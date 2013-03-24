@@ -13,24 +13,36 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Graphics.VertexDeclaration"; }
         }
 
-        public abstract void SetVertexStride(uint value);
+        protected VertexDeclarationBuilderBase() { }
 
-        public abstract void SetElementCount(uint value);
+        protected internal abstract void SetVertexStride(uint value);
 
-        public virtual void BeginElements() { }
+        protected internal abstract void SetElementCount(uint value);
 
-        public abstract void BeginElement(int index);
+        protected internal virtual void BeginElements() { }
 
-        public abstract void SetElementOffset(uint value);
+        protected internal abstract void BeginElement(int index);
 
-        public abstract void SetElementFormat(int value);
+        protected internal abstract void SetElementOffset(uint value);
 
-        public abstract void SetElementUsage(int value);
+        protected internal abstract void SetElementFormat(int value);
 
-        public abstract void SetElementUsageIndex(uint value);
+        protected internal abstract void SetElementUsage(int value);
 
-        public virtual void EndElement() { }
+        protected internal abstract void SetElementUsageIndex(uint value);
 
-        public virtual void EndElements() { }
+        protected internal virtual void EndElement() { }
+
+        protected internal virtual void EndElements() { }
+    }
+
+    public abstract class VertexDeclarationBuilderBase<T> : VertexDeclarationBuilderBase
+    {
+        public override Type ActualType
+        {
+            get { return typeof(T); }
+        }
+
+        protected VertexDeclarationBuilderBase() { }
     }
 }

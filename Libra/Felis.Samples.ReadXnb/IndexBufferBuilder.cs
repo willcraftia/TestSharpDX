@@ -7,36 +7,40 @@ using Felis.Xnb;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class IndexBufferBuilder : IndexBufferBuilderBase
+    public sealed class IndexBufferBuilder : IndexBufferBuilderBase<IndexBuffer>
     {
+        Device device;
+
         IndexBuffer instance;
 
-        public override Type ActualType
-        {
-            get { return typeof(IndexBuffer); }
-        }
-
-        public override void SetIsSixteenBits(bool value)
+        protected override void SetIsSixteenBits(bool value)
         {
             instance.IsSixteenBits = value;
         }
 
-        public override void SetDataSize(uint value)
+        protected override void SetDataSize(uint value)
         {
             instance.DataSize = (int) value;
         }
 
-        public override void SetIndexData(byte[] value)
+        protected override void SetIndexData(byte[] value)
         {
             instance.IndexData = value;
         }
 
-        public override void Begin()
+        protected override void Initialize(ContentManager contentManager)
         {
-            instance = new IndexBuffer();
+            device = contentManager.Device as Device;
+
+            base.Initialize(contentManager);
         }
 
-        public override object End()
+        protected override void Begin(object deviceContext)
+        {
+            instance = new IndexBuffer(device);
+        }
+
+        protected override object End()
         {
             return instance;
         }
