@@ -18,7 +18,7 @@ namespace Felis.Xnb
             get { return "Microsoft.Xna.Framework.Content.StringReader"; }
         }
 
-        protected internal override object Read(XnbReader input)
+        protected internal override object Read(ContentReader input)
         {
             return input.ReadString();
         }

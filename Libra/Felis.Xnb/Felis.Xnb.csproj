@@ -70,9 +70,9 @@
     <Compile Include="TypeBuilder.cs" />
     <Compile Include="TypeReader.cs" />
     <Compile Include="Vector3Reader.cs" />
-    <Compile Include="XnbReader.cs" />
+    <Compile Include="ContentReader.cs" />
     <Compile Include="TypeReaderManager.cs" />
-    <Compile Include="XnbManager.cs" />
+    <Compile Include="ContentManager.cs" />
     <Compile Include="StringReader.cs" />
     <Compile Include="VertexBufferReader.cs" />
     <Compile Include="VertexDeclarationReader.cs" />

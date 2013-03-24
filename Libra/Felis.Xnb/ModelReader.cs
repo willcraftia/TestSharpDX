@@ -32,7 +32,7 @@ namespace Felis.Xnb
             base.Initialize(manager);
         }
 
-        protected internal override object Read(XnbReader input)
+        protected internal override object Read(ContentReader input)
         {
             builder.Begin();
 
@@ -175,7 +175,7 @@ namespace Felis.Xnb
             return builder.End();
         }
 
-        int ReadBoneReference(XnbReader input, int boneCount)
+        int ReadBoneReference(ContentReader input, int boneCount)
         {
             if (boneCount < 255)
             {

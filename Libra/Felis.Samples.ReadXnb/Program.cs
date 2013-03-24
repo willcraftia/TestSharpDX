@@ -1,7 +1,6 @@
 ﻿#region Using
 
 using System;
-using System.IO;
 using Felis.Xnb;
 
 #endregion
@@ -12,40 +11,27 @@ namespace Felis.Samples.ReadXnb
     {
         static void Main(string[] args)
         {
-            var typeReaderManager = new TypeReaderManager();
-            typeReaderManager.RegisterStandardTypeReaders();
+            var contentManager = new ContentManager();
+            contentManager.TypeReaderManager.RegisterStandardTypeReaders();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<Vector3Builder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<RectangleBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<MatrixBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<VertexBufferBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<VertexDeclarationBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<IndexBufferBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<BasicEffectBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<ModelBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<Texture2DBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<SpriteFontBuilder>();
+            contentManager.RootDirectory = "../../Content/";
 
-            typeReaderManager.RegisterTypeBuilder<Vector3Builder>();
-            typeReaderManager.RegisterTypeBuilder<RectangleBuilder>();
-            typeReaderManager.RegisterTypeBuilder<MatrixBuilder>();
-            typeReaderManager.RegisterTypeBuilder<VertexBufferBuilder>();
-            typeReaderManager.RegisterTypeBuilder<VertexDeclarationBuilder>();
-            typeReaderManager.RegisterTypeBuilder<IndexBufferBuilder>();
-            typeReaderManager.RegisterTypeBuilder<BasicEffectBuilder>();
-            typeReaderManager.RegisterTypeBuilder<ModelBuilder>();
-            typeReaderManager.RegisterTypeBuilder<Texture2DBuilder>();
-            typeReaderManager.RegisterTypeBuilder<SpriteFontBuilder>();
+            var dudeModel = contentManager.Load<Model>("dude");
+            Console.WriteLine("Model loaded.");
 
-            using (var stream = File.OpenRead("../../Content/dude.xnb"))
-            {
-                using (var reader = new XnbReader(stream, "dude", typeReaderManager, null))
-                {
-                    var instance = reader.ReadXnb();
+            var spriteFont = contentManager.Load<SpriteFont>("SpriteFont");
+            Console.WriteLine("SpriteFont loaded.");
 
-                    Console.WriteLine(instance);
-                }
-            }
-
-            using (var stream = File.OpenRead("../../Content/SpriteFont.xnb"))
-            {
-                using (var reader = new XnbReader(stream, "SpriteFont", typeReaderManager, null))
-                {
-                    var instance = reader.ReadXnb();
-
-                    Console.WriteLine(instance);
-                }
-            }
-
+            Console.WriteLine("Press enter key to exit...");
             Console.ReadLine();
         }
     }

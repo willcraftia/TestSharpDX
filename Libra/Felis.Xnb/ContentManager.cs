@@ -8,7 +8,7 @@ using System.IO;
 
 namespace Felis.Xnb
 {
-    public class XnbManager : IDisposable
+    public class ContentManager : IDisposable
     {
         string rootDirectory;
 
@@ -29,7 +29,7 @@ namespace Felis.Xnb
             }
         }
 
-        public XnbManager()
+        public ContentManager()
         {
             rootDirectory = string.Empty;
             TypeReaderManager = new TypeReaderManager();
@@ -37,17 +37,17 @@ namespace Felis.Xnb
             disposableObjects = new List<IDisposable>();
         }
 
-        public object Load(string assetName)
+        public T Load<T>(string assetName)
         {
             object asset;
             if (assetByName.TryGetValue(assetName, out asset))
-                return asset;
+                return (T) asset;
 
             asset = ReadAsset(assetName, null);
 
             assetByName[assetName] = asset;
 
-            return asset;
+            return (T) asset;
         }
 
         public void Unload()
@@ -66,10 +66,10 @@ namespace Felis.Xnb
 
             using (var stream = File.OpenRead(filePath))
             {
-                //using (var reader = new XnbReader(stream, assetName, this, recordDisposableObject))
-                //{
-                //    return reader.ReadXnb();
-                //}
+                using (var reader = new ContentReader(stream, assetName, this, recordDisposableObject))
+                {
+                    return reader.ReadXnb();
+                }
             }
 
             throw new NotImplementedException();
@@ -84,7 +84,7 @@ namespace Felis.Xnb
 
         bool disposed;
 
-        ~XnbManager()
+        ~ContentManager()
         {
             Dispose(false);
         }

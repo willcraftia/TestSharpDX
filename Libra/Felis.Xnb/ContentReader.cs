@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Felis.Xnb
 {
-    public class XnbReader : BinaryReader
+    public class ContentReader : BinaryReader
     {
         Action<IDisposable> recordDisposableObject;
 
@@ -21,7 +21,7 @@ namespace Felis.Xnb
 
         Dictionary<int, List<Delegate>> fixupListMap;
 
-        public TypeReaderManager TypeReaderManager { get; private set; }
+        public ContentManager ContentManager { get; private set; }
 
         public char TargetPlatform { get; private set; }
 
@@ -35,13 +35,13 @@ namespace Felis.Xnb
 
         public uint DecompressedFileSize { get; private set; }
 
-        public XnbReader(Stream stream, string assetName, TypeReaderManager typeReaderManager, Action<IDisposable> recordDisposableObject)
+        public ContentReader(Stream stream, string assetName, ContentManager contentManager, Action<IDisposable> recordDisposableObject)
             : base(stream)
         {
-            if (typeReaderManager == null) throw new ArgumentNullException("typeReaderManager");
+            if (contentManager == null) throw new ArgumentNullException("contentManager");
             if (assetName == null) throw new ArgumentNullException("assetName");
 
-            TypeReaderManager = typeReaderManager;
+            ContentManager = contentManager;
             this.recordDisposableObject = recordDisposableObject;
 
             fixupListMap = new Dictionary<int, List<Delegate>>();
@@ -121,7 +121,7 @@ namespace Felis.Xnb
                 originalTypeReaderNames[i] = readerName;
 
                 // Actual type reader.
-                typeReaders[i] = TypeReaderManager.GetTypeReaderByReaderName(readerName);
+                typeReaders[i] = ContentManager.TypeReaderManager.GetTypeReaderByReaderName(readerName);
             }
         }
 
@@ -210,6 +210,10 @@ namespace Felis.Xnb
             if (recordDisposableObject != null)
             {
                 recordDisposableObject(disposable);
+            }
+            else
+            {
+                ContentManager.RecordDisposableObject(disposable);
             }
         }
     }

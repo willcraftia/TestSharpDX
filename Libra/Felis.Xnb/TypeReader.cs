@@ -26,6 +26,6 @@ namespace Felis.Xnb
             Initialized = true;
         }
 
-        protected internal abstract object Read(XnbReader input);
+        protected internal abstract object Read(ContentReader input);
     }
 }

@@ -22,7 +22,7 @@ namespace Felis.Xnb
             base.Initialize(manager);
         }
 
-        protected internal override object Read(XnbReader input)
+        protected internal override object Read(ContentReader input)
         {
             builder.Begin();
 
