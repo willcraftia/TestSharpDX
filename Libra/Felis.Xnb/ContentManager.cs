@@ -43,7 +43,7 @@ namespace Felis.Xnb
             if (assetByName.TryGetValue(assetName, out asset))
                 return (T) asset;
 
-            asset = ReadAsset(assetName, null);
+            asset = ReadAsset<T>(assetName, null);
 
             assetByName[assetName] = asset;
 
@@ -59,7 +59,7 @@ namespace Felis.Xnb
             assetByName.Clear();
         }
 
-        protected object ReadAsset(string assetName, Action<IDisposable> recordDisposableObject)
+        protected T ReadAsset<T>(string assetName, Action<IDisposable> recordDisposableObject)
         {
             var filename = assetName + ".xnb";
             var filePath = Path.Combine(rootDirectory, filename);
@@ -68,11 +68,9 @@ namespace Felis.Xnb
             {
                 using (var reader = new ContentReader(stream, assetName, this, recordDisposableObject))
                 {
-                    return reader.ReadXnb();
+                    return (T) reader.ReadXnb();
                 }
             }
-
-            throw new NotImplementedException();
         }
 
         internal void RecordDisposableObject(IDisposable disposable)
