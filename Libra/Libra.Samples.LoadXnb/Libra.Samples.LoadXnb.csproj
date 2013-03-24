@@ -54,9 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libra.Content.Xnb\Libra.Content.Xnb.csproj">
-      <Project>{08A2490E-56A2-4D68-BAD8-F61380B358D0}</Project>
-      <Name>Libra.Content.Xnb</Name>
+    <ProjectReference Include="..\Felis.Xnb\Felis.Xnb.csproj">
+      <Project>{BF2F1A7D-B8B1-4193-BAB1-A8466C27B7C4}</Project>
+      <Name>Felis.Xnb</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libra.Games.SharpDX\Libra.Games.SharpDX.csproj">
       <Project>{18B2993B-626D-4337-91A2-ED0239B8D843}</Project>
@@ -77,6 +77,10 @@
     <ProjectReference Include="..\Libra.Input\Libra.Input.csproj">
       <Project>{A2F37986-5187-4A6F-85A0-F38F66FCF786}</Project>
       <Name>Libra.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libra.Xnb\Libra.Xnb.csproj">
+      <Project>{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}</Project>
+      <Name>Libra.Xnb</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libra\Libra.csproj">
       <Project>{C16661A2-A917-456C-95CE-AFADD59474D7}</Project>

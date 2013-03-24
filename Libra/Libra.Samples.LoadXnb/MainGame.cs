@@ -2,11 +2,12 @@
 
 using System;
 using System.IO;
+using Felis.Xnb;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
-using Libra.Content.Xnb;
 using Libra.Input;
+using Libra.Xnb;
 
 #endregion
 
@@ -58,13 +59,25 @@ namespace Libra.Samples.LoadXnb
 
         protected override void LoadContent()
         {
-            var manager = new XnbManager(Device);
-            manager.TypeReaderManager.LoadFrom(AppDomain.CurrentDomain);
-            manager.RootDirectory = "Content";
+            var contentManager = new ContentManager(Device);
+            contentManager.TypeReaderManager.RegisterStandardTypeReaders();
+            contentManager.TypeReaderManager.RegisterStandardTypeReaders();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<Vector3Builder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<RectangleBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<MatrixBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<BoundingSphereBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<VertexBufferBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<VertexDeclarationBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<IndexBufferBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<BasicEffectBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<ModelBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<Texture2DBuilder>();
+            contentManager.TypeReaderManager.RegisterTypeBuilder<SpriteFontBuilder>();
+            contentManager.RootDirectory = "Content";
 
-            gridModel = manager.Load<Model>("grid");
+            gridModel = contentManager.Load<Model>("grid");
 
-            dudeModel = manager.Load<Model>("dude");
+            dudeModel = contentManager.Load<Model>("dude");
 
             var viewport = Device.ImmediateContext.Viewport;
 
