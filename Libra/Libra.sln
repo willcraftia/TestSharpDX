@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Felis.Xnb", "Felis.Xnb\Feli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Felis.Samples.ReadXnb", "Felis.Samples.ReadXnb\Felis.Samples.ReadXnb.csproj", "{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Xnb", "Libra.Xnb\Libra.Xnb.csproj", "{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -295,6 +297,16 @@ Global
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|Mixed Platforms.Build.0 = Debug|x86
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|x86.ActiveCfg = Release|x86
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|x86.Build.0 = Release|x86
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
