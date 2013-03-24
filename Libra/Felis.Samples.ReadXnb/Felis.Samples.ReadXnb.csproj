@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Felis.Samples.ReadXnb</RootNamespace>
+    <AssemblyName>Felis.Samples.ReadXnb</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BasicEffectBuilder.cs" />
+    <Compile Include="IndexBufferBuilder.cs" />
+    <Compile Include="MatrixBuilder.cs" />
+    <Compile Include="BasicEffect.cs" />
+    <Compile Include="BoundingSphere.cs" />
+    <Compile Include="Effect.cs" />
+    <Compile Include="IndexBuffer.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="Mip.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="ModelBone.cs" />
+    <Compile Include="ModelMesh.cs" />
+    <Compile Include="ModelMeshPart.cs" />
+    <Compile Include="Rectangle.cs" />
+    <Compile Include="RectangleBuilder.cs" />
+    <Compile Include="SpriteFont.cs" />
+    <Compile Include="Texture2D.cs" />
+    <Compile Include="Vector3.cs" />
+    <Compile Include="VertexBuffer.cs" />
+    <Compile Include="VertexDeclaration.cs" />
+    <Compile Include="VertexElement.cs" />
+    <Compile Include="ModelBuilder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpriteFontBuilder.cs" />
+    <Compile Include="Texture2DBuilder.cs" />
+    <Compile Include="Vector3Builder.cs" />
+    <Compile Include="VertexBufferBuilder.cs" />
+    <Compile Include="VertexDeclarationBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\dude.xnb" />
+    <None Include="Content\head_0.xnb" />
+    <None Include="Content\jacket_0.xnb" />
+    <None Include="Content\pants_0.xnb" />
+    <None Include="Content\SpriteFont.xnb" />
+    <None Include="Content\upBodyC_0.xnb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Felis.Xnb\Felis.Xnb.csproj">
+      <Project>{BF2F1A7D-B8B1-4193-BAB1-A8466C27B7C4}</Project>
+      <Name>Felis.Xnb</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
