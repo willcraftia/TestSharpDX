@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BasicEffectBuilder.cs" />
     <Compile Include="BoundingSphereBuilder.cs" />
+    <Compile Include="XnbManager.cs" />
     <Compile Include="IndexBufferBuilder.cs" />
     <Compile Include="MatrixBuilder.cs" />
     <Compile Include="ModelBuilder.cs" />
