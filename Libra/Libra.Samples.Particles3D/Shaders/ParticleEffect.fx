@@ -43,7 +43,7 @@ struct VertexShaderInput
 
 struct VertexShaderOutput
 {
-    float4 Position             : POSITION0;
+    float4 Position             : SV_Position;
     float4 Color                : COLOR0;
     float2 TextureCoordinate    : COLOR1;
 };
@@ -118,7 +118,7 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
     return output;
 }
 
-float4 ParticlePixelShader(VertexShaderOutput input) : SV_Target0
+float4 ParticlePixelShader(VertexShaderOutput input) : SV_Target
 {
     return Texture.Sample(Sampler, input.TextureCoordinate) * input.Color;
 }
