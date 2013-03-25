@@ -9,6 +9,7 @@ using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Input;
+using Libra.Xnb;
 
 #endregion
 
@@ -72,9 +73,10 @@ namespace Libra.Samples.Primitives3D
         {
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
-            var contentLoader = new AdhocContentLoader(Device, AppDomain.CurrentDomain);
-            contentLoader.CompilerFactory.SourceRootDirectory = "../../Content/";
-            spriteFont = contentLoader.Load<SpriteFont>("hudFont.json", "JsonFontSerializer", "FontDescriptionProcessor");
+            var xnbManager = new XnbManager(Device);
+            xnbManager.RootDirectory = "Content";
+
+            spriteFont = xnbManager.Load<SpriteFont>("hudFont");
 
             primitives.Add(new CubePrimitive(Device));
             primitives.Add(new SpherePrimitive(Device));
