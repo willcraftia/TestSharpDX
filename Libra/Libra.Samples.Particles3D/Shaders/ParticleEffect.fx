@@ -34,7 +34,12 @@ sampler Sampler : register(s0);
 
 struct VertexShaderInput
 {
-    float2 Corner   : POSITION0;
+    // TODO
+    //
+    // D3D11 では float2 で パック型 Short2 を受け取る事ができない？
+    // int2 (ないしは vector<int, 2>) ならば正しく受け取れる。
+    // なお、D3DX には変換用に D3DX_R16G16_SINT_to_INT2 関数がある。
+    int2   Corner   : POSITION0;
     float3 Position : POSITION1;
     float3 Velocity : NORMAL0;
     float4 Random   : COLOR0;
