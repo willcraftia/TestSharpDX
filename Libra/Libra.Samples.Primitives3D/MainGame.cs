@@ -18,6 +18,8 @@ namespace Libra.Samples.Primitives3D
 
         GraphicsManager graphicsManager;
 
+        XnbManager content;
+
         SpriteBatch spriteBatch;
 
         SpriteFont spriteFont;
@@ -64,16 +66,16 @@ namespace Libra.Samples.Primitives3D
                 DirectInputEnabled = true
             };
             graphicsManager = new GraphicsManager(this);
+
+            content = new XnbManager(Services);
+            content.RootDirectory = "Content";
         }
 
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
-            var xnbManager = new XnbManager(Services);
-            xnbManager.RootDirectory = "Content";
-
-            spriteFont = xnbManager.Load<SpriteFont>("hudFont");
+            spriteFont = content.Load<SpriteFont>("hudFont");
 
             primitives.Add(new CubePrimitive(Device));
             primitives.Add(new SpherePrimitive(Device));
