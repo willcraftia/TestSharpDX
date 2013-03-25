@@ -46,7 +46,7 @@ namespace Libra.Games
 
         public static readonly int DefaultBackBufferWidth = 800;
         
-        public static readonly int DefaultBackBufferHeight = 600;
+        public static readonly int DefaultBackBufferHeight = 480;
 
         static readonly DeviceProfile[] profiles =
         {
