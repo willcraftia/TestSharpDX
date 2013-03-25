@@ -14,10 +14,10 @@ namespace Libra.Samples.Particles3D
 {
     public abstract class ParticleSystem : DrawableGameComponent
     {
-        #region CBSettings
+        #region ShaderSettings
 
         [StructLayout(LayoutKind.Explicit, Size = 96)]
-        struct CBSettings
+        struct ShaderSettings
         {
             [FieldOffset(0)]
             public float Duration;
@@ -57,9 +57,9 @@ namespace Libra.Samples.Particles3D
 
         #endregion
 
-        #region CBParameters
+        #region ShaderParameters
 
-        struct CBParameters
+        struct ShaderParameters
         {
             public Matrix View;
 
@@ -97,7 +97,7 @@ namespace Libra.Samples.Particles3D
 
         IndexBuffer indexBuffer;
 
-        CBParameters constantBufferParameters;
+        ShaderParameters constants;
 
         int firstActiveParticle;
         
@@ -183,7 +183,7 @@ namespace Libra.Samples.Particles3D
             pixelShader = Device.CreatePixelShader();
             pixelShader.Initialize(psBytecode);
 
-            var cbSettings = new CBSettings
+            var shaderSettings = new ShaderSettings
             {
                 Duration = (float) settings.Duration.TotalSeconds,
                 DurationRandomness = settings.DurationRandomness,
@@ -198,10 +198,10 @@ namespace Libra.Samples.Particles3D
 
             settingsConstantBuffer = Device.CreateConstantBuffer();
             settingsConstantBuffer.Usage = ResourceUsage.Immutable;
-            settingsConstantBuffer.Initialize(cbSettings);
+            settingsConstantBuffer.Initialize(shaderSettings);
 
             constantBuffer = Device.CreateConstantBuffer();
-            constantBuffer.Initialize<CBParameters>();
+            constantBuffer.Initialize<ShaderParameters>();
 
             var texture = content.Load<Texture2D>(settings.TextureName);
             textureView = Device.CreateShaderResourceView();
@@ -275,46 +275,36 @@ namespace Libra.Samples.Particles3D
                 context.BlendState = settings.BlendState;
                 context.DepthStencilState = DepthStencilState.DepthRead;
 
-                constantBufferParameters.ViewportScale = new Vector2(0.5f / context.Viewport.AspectRatio, -0.5f);
-                constantBufferParameters.CurrentTime = currentTime;
-                constantBuffer.SetData(Device.ImmediateContext, constantBufferParameters);
+                constants.ViewportScale = new Vector2(0.5f / context.Viewport.AspectRatio, -0.5f);
+                constants.CurrentTime = currentTime;
+                constantBuffer.SetData(Device.ImmediateContext, constants);
 
                 context.VertexShader = vertexShader;
                 context.PixelShader = pixelShader;
 
                 //context.RasterizerState = RasterizerState.Wireframe;
 
-                context.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                
                 context.VertexShaderConstantBuffers[0] = settingsConstantBuffer;
                 context.VertexShaderConstantBuffers[1] = constantBuffer;
 
                 context.PixelShaderResources[0] = textureView;
                 context.PixelShaderSamplers[0] = SamplerState.LinearClamp;
 
+                context.PrimitiveTopology = PrimitiveTopology.TriangleList;
                 context.SetVertexBuffer(0, vertexBuffer);
                 context.IndexBuffer = indexBuffer;
 
                 if (firstActiveParticle < firstFreeParticle)
                 {
-                    context.DrawIndexed(
-                        (firstFreeParticle - firstActiveParticle) * 6,
-                        firstActiveParticle * 6,
-                        firstActiveParticle * 4);
+                    context.DrawIndexed((firstFreeParticle - firstActiveParticle) * 6, firstActiveParticle * 6);
                 }
                 else
                 {
-                    context.DrawIndexed(
-                        (settings.MaxParticles - firstActiveParticle) * 6,
-                        firstActiveParticle * 6,
-                        firstActiveParticle * 4);
+                    context.DrawIndexed((settings.MaxParticles - firstActiveParticle) * 6, firstActiveParticle * 6);
 
                     if (firstFreeParticle > 0)
                     {
-                        context.DrawIndexed(
-                            firstFreeParticle * 6,
-                            0,
-                            0);
+                        context.DrawIndexed(firstFreeParticle * 6);
                     }
                 }
 
@@ -367,8 +357,8 @@ namespace Libra.Samples.Particles3D
 
         public void SetCamera(Matrix view, Matrix projection)
         {
-            Matrix.Transpose(ref view, out constantBufferParameters.View);
-            Matrix.Transpose(ref projection, out constantBufferParameters.Projection);
+            Matrix.Transpose(ref view, out constants.View);
+            Matrix.Transpose(ref projection, out constants.Projection);
         }
 
         public void AddParticle(Vector3 position, Vector3 velocity)
