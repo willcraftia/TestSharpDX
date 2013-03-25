@@ -20,6 +20,8 @@ namespace Libra.Graphics
             if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Usage must be not immutable.");
+
+            InitializeCore(byteWidth);
         }
 
         protected abstract void InitializeCore(int byteWidth);
