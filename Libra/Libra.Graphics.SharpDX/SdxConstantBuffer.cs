@@ -32,10 +32,9 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        public override void Initialize()
+        protected override void InitializeCore(int byteWidth)
         {
-            if (Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Usage must be not immutable.");
+            ByteWidth = byteWidth;
 
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);
@@ -43,17 +42,14 @@ namespace Libra.Graphics.SharpDX
             D3D11Buffer = new D3D11Buffer(D3D11Device, description);
         }
 
-        public override void Initialize<T>()
+        protected override void InitializeCore<T>(int byteWidth, T data)
         {
-            if (Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Usage must be not immutable.");
-
-            ByteWidth = Marshal.SizeOf(typeof(T));
+            ByteWidth = byteWidth;
 
             D3D11BufferDescription description;
             CreateD3D11BufferDescription(out description);
 
-            D3D11Buffer = new D3D11Buffer(D3D11Device, description);
+            D3D11Buffer = D3D11Buffer.Create<T>(D3D11Device, ref data, description);
         }
 
         public override void GetData<T>(DeviceContext context, out T data)

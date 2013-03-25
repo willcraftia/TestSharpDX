@@ -14,9 +14,35 @@ namespace Libra.Graphics
         {
         }
 
-        public abstract void Initialize();
+        public void Initialize(int byteWidth)
+        {
+            if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
+            if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
+            if (Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Usage must be not immutable.");
+        }
 
-        public abstract void Initialize<T>() where T : struct;
+        protected abstract void InitializeCore(int byteWidth);
+
+        public void Initialize<T>() where T : struct
+        {
+            Initialize(Marshal.SizeOf(typeof(T)));
+        }
+
+        public void Initialize<T>(T data) where T : struct
+        {
+            Initialize<T>(Marshal.SizeOf(typeof(T)), data);
+        }
+
+        public void Initialize<T>(int byteWidth, T data) where T : struct
+        {
+            if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
+            if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
+
+            InitializeCore<T>(byteWidth, data);
+        }
+
+        protected abstract void InitializeCore<T>(int byteWidth, T data) where T : struct;
 
         public abstract void GetData<T>(DeviceContext context, out T data) where T : struct;
 
