@@ -16,6 +16,8 @@ namespace Libra.Samples.Particles3D
     {
         #region ConstantsPerShader
 
+        // 16 バイト倍数の制限に合わせるためレイアウトを明示。
+        // オフセットはシェーダの cbuffer に一致させる。
         [StructLayout(LayoutKind.Explicit, Size = 96)]
         struct ConstantsPerShader
         {
@@ -24,10 +26,6 @@ namespace Libra.Samples.Particles3D
 
             [FieldOffset(4)]
             public float DurationRandomness;
-
-            //public float Dummy0;
-
-            //public float Dummy1;
 
             [FieldOffset(16)]
             public Vector3 Gravity;
@@ -44,10 +42,6 @@ namespace Libra.Samples.Particles3D
             [FieldOffset(64)]
             public Vector2 RotateSpeed;
 
-            //public float Dummy2;
-
-            //public float Dummy3;
-
             [FieldOffset(80)]
             public Vector2 StartSize;
 
@@ -59,18 +53,21 @@ namespace Libra.Samples.Particles3D
 
         #region ConstantsPerFrame
 
+        // 16 バイト倍数の制限に合わせるためレイアウトを明示。
+        [StructLayout(LayoutKind.Explicit, Size = 144)]
         struct ConstantsPerFrame
         {
+            [FieldOffset(0)]
             public Matrix View;
 
+            [FieldOffset(64)]
             public Matrix Projection;
 
+            [FieldOffset(128)]
             public Vector2 ViewportScale;
 
+            [FieldOffset(136)]
             public float CurrentTime;
-
-            // 16 の倍数とするためのダミー。
-            public float Dummy0;
         }
 
         #endregion
@@ -280,8 +277,6 @@ namespace Libra.Samples.Particles3D
                 context.VertexShader = vertexShader;
                 context.PixelShader = pixelShader;
 
-                //context.RasterizerState = RasterizerState.Wireframe;
-
                 context.VertexShaderConstantBuffers[0] = constantBufferPerShader;
                 context.VertexShaderConstantBuffers[1] = constantBufferPerFrame;
 
@@ -324,11 +319,6 @@ namespace Libra.Samples.Particles3D
                     firstNewParticle * 4,
                     (firstFreeParticle - firstNewParticle) * 4,
                     SetDataOptions.NoOverwrite);
-
-                //ParticleVertex[] temp = new ParticleVertex[(firstFreeParticle - firstNewParticle) * 4];
-                //vertexBuffer.GetData(Device.ImmediateContext, temp);
-
-                //Console.WriteLine("" + temp.GetType());
             }
             else
             {
