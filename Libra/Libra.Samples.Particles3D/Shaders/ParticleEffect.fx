@@ -39,18 +39,18 @@ struct VertexShaderInput
     // D3D11 では float2 で パック型 Short2 を受け取る事ができない？
     // int2 (ないしは vector<int, 2>) ならば正しく受け取れる。
     // なお、D3DX には変換用に D3DX_R16G16_SINT_to_INT2 関数がある。
-    int2   Corner   : POSITION0;
-    float3 Position : POSITION1;
-    float3 Velocity : NORMAL0;
-    float4 Random   : COLOR0;
-    float  Time     : TEXCOORD0;
+    int2   Corner   : CORNER;
+    float3 Position : POSITION;
+    float3 Velocity : VELOCITY;
+    float4 Random   : RANDOM;
+    float  Time     : TIME;
 };
 
 struct VertexShaderOutput
 {
     float4 Position             : SV_Position;
-    float4 Color                : COLOR0;
-    float2 TextureCoordinate    : COLOR1;
+    float4 Color                : COLOR;
+    float2 TextureCoordinate    : TEXCOORD;
 };
 
 float4 ComputeParticlePosition(float3 position, float3 velocity, float age, float normalizedAge)

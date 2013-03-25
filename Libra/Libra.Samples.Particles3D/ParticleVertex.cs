@@ -21,11 +21,11 @@ namespace Libra.Samples.Particles3D
         public float Time;
 
         public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration(
-            new InputElement("POSITION", 0, InputElementFormat.Short2),
-            new InputElement("POSITION", 1, InputElementFormat.Vector3),
-            new InputElement("NORMAL",   0, InputElementFormat.Vector3),
-            new InputElement("COLOR",    0, InputElementFormat.Color),
-            new InputElement("TEXCOORD", 0, InputElementFormat.Single)
+            new InputElement("CORNER",   0, InputElementFormat.Short2),
+            new InputElement("POSITION", 0, InputElementFormat.Vector3),
+            new InputElement("VELOCITY", 0, InputElementFormat.Vector3),
+            new InputElement("RANDOM",   0, InputElementFormat.Color),
+            new InputElement("TIME",     0, InputElementFormat.Single)
             );
     }
 }
