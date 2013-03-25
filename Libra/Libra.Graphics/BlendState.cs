@@ -134,10 +134,10 @@ namespace Libra.Graphics
         {
             Additive = new BlendState
             {
-                ColorSourceBlend = Blend.One,
-                AlphaSourceBlend = Blend.One,
-                ColorDestinationBlend = Blend.InverseSourceAlpha,
-                AlphaDestinationBlend = Blend.InverseDestinationAlpha,
+                ColorSourceBlend = Blend.SourceAlpha,
+                AlphaSourceBlend = Blend.SourceAlpha,
+                ColorDestinationBlend = Blend.One,
+                AlphaDestinationBlend = Blend.One,
                 Name = "Additive"
             };
 
