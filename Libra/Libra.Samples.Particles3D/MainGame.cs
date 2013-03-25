@@ -6,6 +6,7 @@ using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Input;
+using Libra.Xnb;
 
 #endregion
 
@@ -20,13 +21,17 @@ namespace Libra.Samples.Particles3D
         SpriteBatch spriteBatch;
 
         SpriteFont font;
-        
-        //Model grid;
+
+        Model grid;
 
         ParticleSystem explosionParticles;
+        
         ParticleSystem explosionSmokeParticles;
+        
         ParticleSystem projectileTrailParticles;
+        
         ParticleSystem smokePlumeParticles;
+        
         ParticleSystem fireParticles;
 
         enum ParticleState
@@ -49,13 +54,17 @@ namespace Libra.Samples.Particles3D
         IJoystick joystick;
 
         KeyboardState currentKeyboardState;
+        
         JoystickState currentGamePadState;
 
         KeyboardState lastKeyboardState;
+        
         JoystickState lastGamePadState;
 
         float cameraArc = -5;
+        
         float cameraRotation = 0;
+        
         float cameraDistance = 200;
 
         public MainGame()
@@ -130,8 +139,6 @@ namespace Libra.Samples.Particles3D
 
             if (timeToNextProjectile <= TimeSpan.Zero)
             { 
-                // 新しい発射体を 1 秒に 1 回ずつ作成します。実際には、パーティクルの移動と
-                // 作成は Projectile クラスの内部で処理されます。
                 projectiles.Add(new Projectile(explosionParticles,
                                                explosionSmokeParticles,
                                                projectileTrailParticles));

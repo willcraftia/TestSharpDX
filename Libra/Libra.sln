@@ -49,7 +49,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Felis.Samples.ReadXnb", "Fe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Xnb", "Libra.Xnb\Libra.Xnb.csproj", "{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.Primitives3DContent", "Libra.Samples.Primitives3DContent\Libra.Samples.Primitives3DContent.contentproj", "{3694DB82-3FF2-4F13-8C4A-7591A51C6F11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.Primitives3DContent", "Libra.Samples.Primitives3DContent\Libra.Samples.Primitives3DContent.contentproj", "{3694DB82-3FF2-4F13-8C4A-7591A51C6F11}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.Particles3DContent", "Libra.Samples.Particles3DContent\Libra.Samples.Particles3DContent.contentproj", "{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -303,6 +305,12 @@ Global
 		{3694DB82-3FF2-4F13-8C4A-7591A51C6F11}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{3694DB82-3FF2-4F13-8C4A-7591A51C6F11}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{3694DB82-3FF2-4F13-8C4A-7591A51C6F11}.Release|x86.ActiveCfg = Debug|Any CPU
+		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
