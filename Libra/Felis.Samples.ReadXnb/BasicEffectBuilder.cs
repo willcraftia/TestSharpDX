@@ -9,7 +9,7 @@ namespace Felis.Samples.ReadXnb
 {
     public sealed class BasicEffectBuilder : BasicEffectBuilderBase<BasicEffect>
     {
-        Device device;
+        IGraphicsDeviceService graphicsDeviceService;
 
         BasicEffect instance;
 
@@ -50,14 +50,14 @@ namespace Felis.Samples.ReadXnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as Device;
+            graphicsDeviceService = contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
 
             base.Initialize(contentManager);
         }
 
         protected override void Begin(object deviceContext)
         {
-            instance = new BasicEffect(device);
+            instance = new BasicEffect(graphicsDeviceService.GraphicsDevice);
         }
 
         protected override object End()

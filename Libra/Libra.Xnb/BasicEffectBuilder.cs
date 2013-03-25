@@ -12,21 +12,21 @@ namespace Libra.Xnb
     {
         ContentManager contentManager;
 
-        IDevice device;
+        IGraphicsService graphicsService;
 
         BasicEffect instance;
 
         protected override void Initialize(ContentManager contentManager)
         {
             this.contentManager = contentManager;
-            device = contentManager.Device as IDevice;
+            graphicsService = contentManager.ServiceProvider.GetRequiredService<IGraphicsService>();
 
             base.Initialize(contentManager);
         }
 
         protected override void Begin(object deviceContext)
         {
-            instance = new BasicEffect(device);
+            instance = new BasicEffect(graphicsService.Device);
         }
 
         protected override void SetTexture(string value)
@@ -35,7 +35,7 @@ namespace Libra.Xnb
             {
                 var texture = contentManager.Load<Texture2D>(value);
 
-                var shaderResourceView = device.CreateShaderResourceView();
+                var shaderResourceView = graphicsService.Device.CreateShaderResourceView();
                 shaderResourceView.Initialize(texture);
 
                 instance.Texture = shaderResourceView;

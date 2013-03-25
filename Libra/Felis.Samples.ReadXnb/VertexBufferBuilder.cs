@@ -9,7 +9,7 @@ namespace Felis.Samples.ReadXnb
 {
     public sealed class VertexBufferBuilder : VertexBufferBuilderBase<VertexBuffer>
     {
-        Device device;
+        IGraphicsDeviceService graphicsDeviceService;
 
         VertexBuffer instance;
 
@@ -35,14 +35,14 @@ namespace Felis.Samples.ReadXnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as Device;
+            graphicsDeviceService = contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
 
             base.Initialize(contentManager);
         }
 
         protected override void Begin(object deviceContext)
         {
-            instance = new VertexBuffer(device);
+            instance = new VertexBuffer(graphicsDeviceService.GraphicsDevice);
         }
 
         protected override object End()

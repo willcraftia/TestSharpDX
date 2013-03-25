@@ -10,13 +10,13 @@ namespace Libra.Xnb
 {
     public sealed class IndexBufferBuilder : IndexBufferBuilderBase<IndexBuffer>
     {
-        IDevice device;
+        IGraphicsService graphicsService;
 
         IndexBuffer instance;
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as IDevice;
+            graphicsService = contentManager.ServiceProvider.GetRequiredService<IGraphicsService>();
 
             base.Initialize(contentManager);
         }
@@ -37,7 +37,7 @@ namespace Libra.Xnb
 
         protected override void Begin(object deviceContext)
         {
-            instance = device.CreateIndexBuffer();
+            instance = graphicsService.Device.CreateIndexBuffer();
         }
 
         protected override object End()

@@ -16,9 +16,9 @@ namespace Felis.Xnb
 
         List<IDisposable> disposableObjects;
 
-        public TypeReaderManager TypeReaderManager { get; private set; }
+        public IServiceProvider ServiceProvider { get; private set; }
 
-        public object Device { get; private set; }
+        public TypeReaderManager TypeReaderManager { get; private set; }
 
         public string RootDirectory
         {
@@ -31,11 +31,19 @@ namespace Felis.Xnb
             }
         }
 
-        public ContentManager(object device = null)
+        public ContentManager(IServiceProvider serviceProvider)
+            : this(serviceProvider, string.Empty)
         {
-            Device = device;
-            
-            rootDirectory = string.Empty;
+        }
+
+        public ContentManager(IServiceProvider serviceProvider, string rootDirectory)
+        {
+            if (serviceProvider == null) throw new ArgumentNullException("serviceProvider");
+            if (rootDirectory == null) throw new ArgumentNullException("rootDirectory");
+
+            ServiceProvider = serviceProvider;
+            this.rootDirectory = rootDirectory;
+
             TypeReaderManager = new TypeReaderManager(this);
             assetByName = new Dictionary<string, object>();
             disposableObjects = new List<IDisposable>();

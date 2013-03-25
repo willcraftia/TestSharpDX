@@ -70,7 +70,7 @@ namespace Libra.Samples.Primitives3D
         {
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
-            var xnbManager = new XnbManager(Device);
+            var xnbManager = new XnbManager(Services);
             xnbManager.RootDirectory = "Content";
 
             spriteFont = xnbManager.Load<SpriteFont>("hudFont");

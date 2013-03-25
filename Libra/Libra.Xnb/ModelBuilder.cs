@@ -76,8 +76,6 @@ namespace Libra.Xnb
 
         #endregion
 
-        IDevice device;
-
         Model instance;
 
         List<ModelBone> bones;
@@ -98,8 +96,6 @@ namespace Libra.Xnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as IDevice;
-
             base.Initialize(contentManager);
         }
 

@@ -9,7 +9,7 @@ namespace Felis.Samples.ReadXnb
 {
     public sealed class IndexBufferBuilder : IndexBufferBuilderBase<IndexBuffer>
     {
-        Device device;
+        IGraphicsDeviceService graphicsDeviceService;
 
         IndexBuffer instance;
 
@@ -30,14 +30,14 @@ namespace Felis.Samples.ReadXnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as Device;
+            graphicsDeviceService = contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService)) as IGraphicsDeviceService;
 
             base.Initialize(contentManager);
         }
 
         protected override void Begin(object deviceContext)
         {
-            instance = new IndexBuffer(device);
+            instance = new IndexBuffer(graphicsDeviceService.GraphicsDevice);
         }
 
         protected override object End()

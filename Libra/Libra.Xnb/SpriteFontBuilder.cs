@@ -11,7 +11,7 @@ namespace Libra.Xnb
 {
     public sealed class SpriteFontBuilder : SpriteFontBuilderBase<SpriteFont>
     {
-        IDevice device;
+        IGraphicsService graphicsService;
 
         ShaderResourceView texture;
 
@@ -31,14 +31,14 @@ namespace Libra.Xnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as IDevice;
+            graphicsService = contentManager.ServiceProvider.GetRequiredService<IGraphicsService>();
 
             base.Initialize(contentManager);
         }
 
         protected override void SetTexture(object value)
         {
-            texture = device.CreateShaderResourceView();
+            texture = graphicsService.Device.CreateShaderResourceView();
             texture.Initialize(value as Texture2D);
         }
 

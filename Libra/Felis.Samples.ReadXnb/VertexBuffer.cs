@@ -14,6 +14,6 @@ namespace Felis.Samples.ReadXnb
 
         public byte[] VertexData;
 
-        public VertexBuffer(Device device) { }
+        public VertexBuffer(GraphicsDevice graphicsDevice) { }
     }
 }

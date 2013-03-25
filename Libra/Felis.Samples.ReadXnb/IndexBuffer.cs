@@ -14,6 +14,6 @@ namespace Felis.Samples.ReadXnb
 
         public byte[] IndexData;
 
-        public IndexBuffer(Device device) { }
+        public IndexBuffer(GraphicsDevice graphicsDevice) { }
     }
 }

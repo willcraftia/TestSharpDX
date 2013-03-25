@@ -22,6 +22,6 @@ namespace Felis.Samples.ReadXnb
 
         public bool VertexColorEnabled;
 
-        public BasicEffect(Device device) { }
+        public BasicEffect(GraphicsDevice graphicsDevice) { }
     }
 }

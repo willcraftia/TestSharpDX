@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace Libra.Games
+namespace Libra
 {
     public static class ServiceProviderExtension
     {

@@ -11,21 +11,17 @@ namespace Libra.Xnb
     {
         Felis.Xnb.ContentManager entity;
 
-        IDevice device;
-
         public string RootDirectory
         {
             get { return entity.RootDirectory; }
             set { entity.RootDirectory = value; }
         }
 
-        public XnbManager(IDevice device)
+        public XnbManager(IServiceProvider serviceProvider)
         {
-            if (device == null) throw new ArgumentNullException("device");
+            if (serviceProvider == null) throw new ArgumentNullException("serviceProvider");
 
-            this.device = device;
-
-            entity = new Felis.Xnb.ContentManager(device);
+            entity = new Felis.Xnb.ContentManager(serviceProvider);
             InitializeEntity();
         }
 
@@ -53,7 +49,7 @@ namespace Libra.Xnb
 
         public T Load<T>(string assetName, DeviceContext context = null)
         {
-            return entity.Load<T>(assetName, context ?? device.ImmediateContext);
+            return entity.Load<T>(assetName, context);
         }
 
         public void Unload()

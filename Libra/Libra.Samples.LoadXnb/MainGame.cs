@@ -58,7 +58,7 @@ namespace Libra.Samples.LoadXnb
 
         protected override void LoadContent()
         {
-            var xnbManager = new XnbManager(Device);
+            var xnbManager = new XnbManager(Services);
             xnbManager.RootDirectory = "Content";
 
             gridModel = xnbManager.Load<Model>("grid");

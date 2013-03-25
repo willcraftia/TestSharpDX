@@ -10,7 +10,7 @@ namespace Libra.Xnb
 {
     public sealed class VertexBufferBuilder : VertexBufferBuilderBase<VertexBuffer>
     {
-        IDevice device;
+        IGraphicsService graphicsService;
 
         VertexBuffer instance;
 
@@ -18,7 +18,7 @@ namespace Libra.Xnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as IDevice;
+            graphicsService = contentManager.ServiceProvider.GetRequiredService<IGraphicsService>();
 
             base.Initialize(contentManager);
         }
@@ -44,7 +44,7 @@ namespace Libra.Xnb
 
         protected override void Begin(object deviceContext)
         {
-            instance = device.CreateVertexBuffer();
+            instance = graphicsService.Device.CreateVertexBuffer();
         }
 
         protected override object End()

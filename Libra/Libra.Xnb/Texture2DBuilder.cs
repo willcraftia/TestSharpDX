@@ -10,7 +10,7 @@ namespace Libra.Xnb
 {
     public sealed class Texture2DBuilder : Texture2DBuilderBase<Texture2D>
     {
-        IDevice device;
+        IGraphicsService graphicsService;
 
         DeviceContext currentContext;
 
@@ -20,7 +20,7 @@ namespace Libra.Xnb
 
         protected override void Initialize(ContentManager contentManager)
         {
-            device = contentManager.Device as IDevice;
+            graphicsService = contentManager.ServiceProvider.GetRequiredService<IGraphicsService>();
 
             base.Initialize(contentManager);
         }
@@ -69,9 +69,9 @@ namespace Libra.Xnb
         protected override void Begin(object deviceContext)
         {
             currentContext = deviceContext as DeviceContext;
-            if (currentContext == null) currentContext = device.ImmediateContext;
+            if (currentContext == null) currentContext = graphicsService.Device.ImmediateContext;
 
-            instance = device.CreateTexture2D();
+            instance = graphicsService.Device.CreateTexture2D();
         }
 
         protected override object End()

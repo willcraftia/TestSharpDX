@@ -9,9 +9,45 @@ namespace Felis.Samples.ReadXnb
 {
     class Program
     {
+        #region GraphicsDeviceService
+
+        sealed class GraphicsDeviceService : IGraphicsDeviceService
+        {
+            public GraphicsDevice GraphicsDevice { get; private set; }
+
+            public GraphicsDeviceService()
+            {
+                GraphicsDevice = new GraphicsDevice();
+            }
+        }
+
+        #endregion
+
+        #region ServiceProvider
+
+        sealed class ServiceProvider : IServiceProvider
+        {
+            GraphicsDeviceService graphicsDeviceService;
+
+            public ServiceProvider()
+            {
+                graphicsDeviceService = new GraphicsDeviceService();
+            }
+
+            public object GetService(Type serviceType)
+            {
+                if (serviceType == typeof(IGraphicsDeviceService))
+                    return graphicsDeviceService;
+
+                throw new ArgumentException("Unknown service type: " + serviceType, "serviceType");
+            }
+        }
+
+        #endregion
+
         static void Main(string[] args)
         {
-            var contentManager = new ContentManager();
+            var contentManager = new ContentManager(new ServiceProvider());
             contentManager.TypeReaderManager.RegisterStandardTypeReaders();
             contentManager.TypeReaderManager.RegisterTypeBuilder<Vector3Builder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<RectangleBuilder>();

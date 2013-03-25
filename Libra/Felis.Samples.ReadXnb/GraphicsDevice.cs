@@ -6,7 +6,7 @@ using System;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class Device
+    public sealed class GraphicsDevice
     {
     }
 }

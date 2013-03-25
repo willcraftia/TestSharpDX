@@ -6,7 +6,8 @@ using System;
 
 namespace Felis.Samples.ReadXnb
 {
-    public sealed class DeviceContext
+    public interface IGraphicsDeviceService
     {
+        GraphicsDevice GraphicsDevice { get; }
     }
 }
