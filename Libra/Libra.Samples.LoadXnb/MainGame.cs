@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using Felis.Xnb;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
@@ -59,24 +58,12 @@ namespace Libra.Samples.LoadXnb
 
         protected override void LoadContent()
         {
-            var contentManager = new ContentManager(Device);
-            contentManager.TypeReaderManager.RegisterStandardTypeReaders();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<Vector3Builder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<RectangleBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<MatrixBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<BoundingSphereBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<VertexBufferBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<VertexDeclarationBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<IndexBufferBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<BasicEffectBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<ModelBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<Texture2DBuilder>();
-            contentManager.TypeReaderManager.RegisterTypeBuilder<SpriteFontBuilder>();
-            contentManager.RootDirectory = "Content";
+            var xnbManager = new XnbManager(Device);
+            xnbManager.RootDirectory = "Content";
 
-            gridModel = contentManager.Load<Model>("grid");
+            gridModel = xnbManager.Load<Model>("grid");
 
-            dudeModel = contentManager.Load<Model>("dude");
+            dudeModel = xnbManager.Load<Model>("dude");
 
             var viewport = Device.ImmediateContext.Viewport;
 
