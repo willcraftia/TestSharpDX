@@ -61,7 +61,6 @@ namespace Libra.Samples.LoadXnb
         {
             var contentManager = new ContentManager(Device);
             contentManager.TypeReaderManager.RegisterStandardTypeReaders();
-            contentManager.TypeReaderManager.RegisterStandardTypeReaders();
             contentManager.TypeReaderManager.RegisterTypeBuilder<Vector3Builder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<RectangleBuilder>();
             contentManager.TypeReaderManager.RegisterTypeBuilder<MatrixBuilder>();
