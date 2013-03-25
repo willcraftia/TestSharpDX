@@ -7,7 +7,7 @@
 
 // XNA の ParticleEffect.fx をシェーダ モデル 4.0 へ変更。
 
-cbuffer Settings : register(b0)
+cbuffer PerShader : register(b0)
 {
     float  Duration             : packoffset(c0);
     float  DurationRandomness   : packoffset(c0.y);
@@ -21,7 +21,7 @@ cbuffer Settings : register(b0)
     float2 EndSize              : packoffset(c5.z);
 };
 
-cbuffer Parameters : register(b1)
+cbuffer PerFrame : register(b1)
 {
     float4x4 View               : packoffset(c0);
     float4x4 Projection         : packoffset(c4);

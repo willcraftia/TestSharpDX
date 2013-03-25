@@ -14,10 +14,10 @@ namespace Libra.Samples.Particles3D
 {
     public abstract class ParticleSystem : DrawableGameComponent
     {
-        #region ShaderSettings
+        #region ConstantsPerShader
 
         [StructLayout(LayoutKind.Explicit, Size = 96)]
-        struct ShaderSettings
+        struct ConstantsPerShader
         {
             [FieldOffset(0)]
             public float Duration;
@@ -57,9 +57,9 @@ namespace Libra.Samples.Particles3D
 
         #endregion
 
-        #region ShaderParameters
+        #region ConstantsPerFrame
 
-        struct ShaderParameters
+        struct ConstantsPerFrame
         {
             public Matrix View;
 
@@ -83,9 +83,9 @@ namespace Libra.Samples.Particles3D
 
         PixelShader pixelShader;
 
-        ConstantBuffer settingsConstantBuffer;
+        ConstantBuffer constantBufferPerShader;
 
-        ConstantBuffer constantBuffer;
+        ConstantBuffer constantBufferPerFrame;
 
         ShaderResourceView textureView;
 
@@ -93,11 +93,9 @@ namespace Libra.Samples.Particles3D
 
         VertexBuffer vertexBuffer;
 
-        //DynamicVertexBuffer vertexBuffer;
-
         IndexBuffer indexBuffer;
 
-        ShaderParameters constants;
+        ConstantsPerFrame constantsPerFrame;
 
         int firstActiveParticle;
         
@@ -183,7 +181,7 @@ namespace Libra.Samples.Particles3D
             pixelShader = Device.CreatePixelShader();
             pixelShader.Initialize(psBytecode);
 
-            var shaderSettings = new ShaderSettings
+            var constantsPerShader = new ConstantsPerShader
             {
                 Duration = (float) settings.Duration.TotalSeconds,
                 DurationRandomness = settings.DurationRandomness,
@@ -196,12 +194,12 @@ namespace Libra.Samples.Particles3D
                 EndSize = new Vector2(settings.MinEndSize, settings.MaxEndSize)
             };
 
-            settingsConstantBuffer = Device.CreateConstantBuffer();
-            settingsConstantBuffer.Usage = ResourceUsage.Immutable;
-            settingsConstantBuffer.Initialize(shaderSettings);
+            constantBufferPerShader = Device.CreateConstantBuffer();
+            constantBufferPerShader.Usage = ResourceUsage.Immutable;
+            constantBufferPerShader.Initialize(constantsPerShader);
 
-            constantBuffer = Device.CreateConstantBuffer();
-            constantBuffer.Initialize<ShaderParameters>();
+            constantBufferPerFrame = Device.CreateConstantBuffer();
+            constantBufferPerFrame.Initialize<ConstantsPerFrame>();
 
             var texture = content.Load<Texture2D>(settings.TextureName);
             textureView = Device.CreateShaderResourceView();
@@ -275,17 +273,17 @@ namespace Libra.Samples.Particles3D
                 context.BlendState = settings.BlendState;
                 context.DepthStencilState = DepthStencilState.DepthRead;
 
-                constants.ViewportScale = new Vector2(0.5f / context.Viewport.AspectRatio, -0.5f);
-                constants.CurrentTime = currentTime;
-                constantBuffer.SetData(Device.ImmediateContext, constants);
+                constantsPerFrame.ViewportScale = new Vector2(0.5f / context.Viewport.AspectRatio, -0.5f);
+                constantsPerFrame.CurrentTime = currentTime;
+                constantBufferPerFrame.SetData(Device.ImmediateContext, constantsPerFrame);
 
                 context.VertexShader = vertexShader;
                 context.PixelShader = pixelShader;
 
                 //context.RasterizerState = RasterizerState.Wireframe;
 
-                context.VertexShaderConstantBuffers[0] = settingsConstantBuffer;
-                context.VertexShaderConstantBuffers[1] = constantBuffer;
+                context.VertexShaderConstantBuffers[0] = constantBufferPerShader;
+                context.VertexShaderConstantBuffers[1] = constantBufferPerFrame;
 
                 context.PixelShaderResources[0] = textureView;
                 context.PixelShaderSamplers[0] = SamplerState.LinearClamp;
@@ -357,8 +355,8 @@ namespace Libra.Samples.Particles3D
 
         public void SetCamera(Matrix view, Matrix projection)
         {
-            Matrix.Transpose(ref view, out constants.View);
-            Matrix.Transpose(ref projection, out constants.Projection);
+            Matrix.Transpose(ref view, out constantsPerFrame.View);
+            Matrix.Transpose(ref projection, out constantsPerFrame.Projection);
         }
 
         public void AddParticle(Vector3 position, Vector3 velocity)
