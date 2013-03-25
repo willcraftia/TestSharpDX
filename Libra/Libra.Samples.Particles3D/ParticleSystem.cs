@@ -3,7 +3,9 @@
 using System;
 using Libra.Games;
 using Libra.Graphics;
+using Libra.Graphics.Compiler;
 using Libra.PackedVector;
+using Libra.Xnb;
 
 #endregion
 
@@ -11,22 +13,80 @@ namespace Libra.Samples.Particles3D
 {
     public abstract class ParticleSystem : DrawableGameComponent
     {
+        #region CBSettings
+
+        struct CBSettings
+        {
+            public float Duration;
+
+            public float DurationRandomness;
+
+            public float Dummy0;
+
+            public float Dummy1;
+
+            public Vector3 Gravity;
+
+            public float EndVelocity;
+
+            public Vector4 MinColor;
+
+            public Vector4 MaxColor;
+
+            public Vector2 RotateSpeed;
+
+            public float Dummy2;
+
+            public float Dummy3;
+
+            public Vector2 StartSize;
+
+            public Vector2 EndSize;
+        }
+
+        #endregion
+
+        #region CBParameters
+
+        struct CBParameters
+        {
+            public Matrix View;
+
+            public Matrix Projection;
+
+            public Vector2 ViewportScale;
+
+            public float CurrentTime;
+
+            // 16 の倍数とするためのダミー。
+            public float Dummy0;
+        }
+
+        #endregion
+
         ParticleSettings settings = new ParticleSettings();
 
-        //ContentManager content;
+        XnbManager content;
 
-        //Effect particleEffect;
+        VertexShader vertexShader;
 
-        //EffectParameter effectViewParameter;
-        //EffectParameter effectProjectionParameter;
-        //EffectParameter effectViewportScaleParameter;
-        //EffectParameter effectTimeParameter;
+        PixelShader pixelShader;
+
+        ConstantBuffer settingsConstantBuffer;
+
+        ConstantBuffer constantBuffer;
+
+        ShaderResourceView textureView;
 
         ParticleVertex[] particles;
+
+        VertexBuffer vertexBuffer;
 
         //DynamicVertexBuffer vertexBuffer;
 
         IndexBuffer indexBuffer;
+
+        CBParameters constantBufferParameters;
 
         int firstActiveParticle;
         
@@ -42,10 +102,10 @@ namespace Libra.Samples.Particles3D
 
         static Random random = new Random();
 
-        protected ParticleSystem(Game game/*, ContentManager content*/)
+        protected ParticleSystem(Game game, XnbManager content)
             : base(game)
         {
-            //this.content = content;
+            this.content = content;
         }
 
         public override void Initialize()
@@ -71,6 +131,10 @@ namespace Libra.Samples.Particles3D
         {
             LoadParticleEffect();
 
+            vertexBuffer = Device.CreateVertexBuffer();
+            vertexBuffer.Usage = ResourceUsage.Dynamic;
+            vertexBuffer.Initialize(ParticleVertex.VertexDeclaration, settings.MaxParticles * 4);
+
             //vertexBuffer = new DynamicVertexBuffer(Device, ParticleVertex.VertexDeclaration,
             //                                       settings.MaxParticles * 4, BufferUsage.WriteOnly);
 
@@ -87,46 +151,53 @@ namespace Libra.Samples.Particles3D
                 indices[i * 6 + 5] = (ushort) (i * 4 + 3);
             }
 
-            //indexBuffer = new IndexBuffer(Device, typeof(ushort), indices.Length, BufferUsage.WriteOnly);
-
-            //indexBuffer.SetData(indices);
+            indexBuffer = Device.CreateIndexBuffer();
+            indexBuffer.Usage = ResourceUsage.Immutable;
+            indexBuffer.Initialize(indices);
         }
 
         void LoadParticleEffect()
         {
-            //Effect effect = content.Load<Effect>("ParticleEffect");
+            // TODO
+            //
+            // シェーダは全てのパーティクル システムで共通であるため、
+            // 外部から指定するか、あるいは、共有リソースとして定義すべき。
 
-            //particleEffect = effect.Clone();
+            var compiler = new ShaderCompiler();
+            compiler.RootPath = "Shaders";
 
-            //EffectParameterCollection parameters = particleEffect.Parameters;
+            var vsBytecode = compiler.CompileFromFile("ParticleEffect.fx", "ParticleVertexShader", VertexShaderProfile.vs_4_0);
+            var psBytecode = compiler.CompileFromFile("ParticleEffect.fx", "ParticlePixelShader", PixelShaderProfile.ps_4_0);
 
-            //// フレームごとに変更されるパラメーターへのショートカットを検索します。
-            //effectViewParameter = parameters["View"];
-            //effectProjectionParameter = parameters["Projection"];
-            //effectViewportScaleParameter = parameters["ViewportScale"];
-            //effectTimeParameter = parameters["CurrentTime"];
+            vertexShader = Device.CreateVertexShader();
+            vertexShader.Initialize(vsBytecode);
 
-            //// 変更されないパラメーターの値を設定します。
-            //parameters["Duration"].SetValue((float) settings.Duration.TotalSeconds);
-            //parameters["DurationRandomness"].SetValue(settings.DurationRandomness);
-            //parameters["Gravity"].SetValue(settings.Gravity);
-            //parameters["EndVelocity"].SetValue(settings.EndVelocity);
-            //parameters["MinColor"].SetValue(settings.MinColor.ToVector4());
-            //parameters["MaxColor"].SetValue(settings.MaxColor.ToVector4());
+            pixelShader = Device.CreatePixelShader();
+            pixelShader.Initialize(psBytecode);
 
-            //parameters["RotateSpeed"].SetValue(
-            //    new Vector2(settings.MinRotateSpeed, settings.MaxRotateSpeed));
+            var cbSettings = new CBSettings
+            {
+                Duration = (float) settings.Duration.TotalSeconds,
+                DurationRandomness = settings.DurationRandomness,
+                Gravity = settings.Gravity,
+                EndVelocity = settings.EndVelocity,
+                MinColor = settings.MinColor.ToVector4(),
+                MaxColor = settings.MaxColor.ToVector4(),
+                RotateSpeed = new Vector2(settings.MinRotateSpeed, settings.MaxRotateSpeed),
+                StartSize = new Vector2(settings.MinStartSize, settings.MaxStartSize),
+                EndSize = new Vector2(settings.MinEndSize, settings.MaxEndSize)
+            };
 
-            //parameters["StartSize"].SetValue(
-            //    new Vector2(settings.MinStartSize, settings.MaxStartSize));
+            settingsConstantBuffer = Device.CreateConstantBuffer();
+            settingsConstantBuffer.Usage = ResourceUsage.Immutable;
+            settingsConstantBuffer.Initialize(cbSettings);
 
-            //parameters["EndSize"].SetValue(
-            //    new Vector2(settings.MinEndSize, settings.MaxEndSize));
+            constantBuffer = Device.CreateConstantBuffer();
+            constantBuffer.Initialize<CBParameters>();
 
-            //// パーティクル テクスチャを読み込み、エフェクトに設定します。
-            //Texture2D texture = content.Load<Texture2D>(settings.TextureName);
-
-            //parameters["Texture"].SetValue(texture);
+            var texture = content.Load<Texture2D>(settings.TextureName);
+            textureView = Device.CreateShaderResourceView();
+            textureView.Initialize(texture);
         }
 
         public override void Update(GameTime gameTime)
@@ -184,13 +255,7 @@ namespace Libra.Samples.Particles3D
 
         public override void Draw(GameTime gameTime)
         {
-            var device = Device;
             var context = Device.ImmediateContext;
-
-            //if (vertexBuffer.IsContentLost)
-            //{
-            //    vertexBuffer.SetData(particles);
-            //}
 
             if (firstNewParticle != firstFreeParticle)
             {
@@ -202,12 +267,47 @@ namespace Libra.Samples.Particles3D
                 context.BlendState = settings.BlendState;
                 context.DepthStencilState = DepthStencilState.DepthRead;
 
-                //effectViewportScaleParameter.SetValue(new Vector2(0.5f / context.RasterizerStage.Viewport.AspectRatio, -0.5f));
+                constantBufferParameters.ViewportScale = new Vector2(0.5f / context.Viewport.AspectRatio, -0.5f);
+                constantBufferParameters.CurrentTime = currentTime;
+                constantBuffer.SetData(Device.ImmediateContext, constantBufferParameters);
 
-                //effectTimeParameter.SetValue(currentTime);
+                context.VertexShader = vertexShader;
+                context.PixelShader = pixelShader;
 
-                //device.SetVertexBuffer(vertexBuffer);
+                context.PixelShaderSamplers[0] = SamplerState.LinearClamp;
+
+                context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+                
+                context.VertexShaderConstantBuffers[0] = settingsConstantBuffer;
+                context.VertexShaderConstantBuffers[1] = constantBuffer;
+
+                context.PixelShaderResources[0] = textureView;
+
+                context.SetVertexBuffer(0, vertexBuffer);
                 context.IndexBuffer = indexBuffer;
+
+                if (firstActiveParticle < firstFreeParticle)
+                {
+                    context.DrawIndexed(
+                        (firstFreeParticle - firstActiveParticle) * 2 * 3,
+                        firstActiveParticle * 6,
+                        firstActiveParticle * 4);
+                }
+                else
+                {
+                    context.DrawIndexed(
+                        (firstFreeParticle - firstActiveParticle) * 2 * 3,
+                        firstActiveParticle * 6,
+                        firstActiveParticle * 4);
+
+                    if (firstFreeParticle > 0)
+                    {
+                        context.DrawIndexed(
+                            firstFreeParticle * 2 * 3,
+                            0,
+                            0);
+                    }
+                }
 
                 //foreach (EffectPass pass in particleEffect.CurrentTechnique.Passes)
                 //{
@@ -215,6 +315,13 @@ namespace Libra.Samples.Particles3D
 
                 //    if (firstActiveParticle < firstFreeParticle)
                 //    {
+
+                // baseVertex = 0
+                // minVertexIndex = firstActiveParticle * 4
+                // numVertices = (firstFreeParticle - firstActiveParticle) * 4
+                // startIndex = firstActiveParticle * 6
+                // primitiveCount = (firstFreeParticle - firstActiveParticle) * 2
+
                 //        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
                 //                                     firstActiveParticle * 4, (firstFreeParticle - firstActiveParticle) * 4,
                 //                                     firstActiveParticle * 6, (firstFreeParticle - firstActiveParticle) * 2);
@@ -242,7 +349,36 @@ namespace Libra.Samples.Particles3D
 
         void AddNewParticlesToVertexBuffer()
         {
-            int stride = ParticleVertex.SizeInBytes;
+            //int stride = ParticleVertex.VertexDeclaration.Stride;
+
+            if (firstNewParticle < firstFreeParticle)
+            {
+                vertexBuffer.SetData(Device.ImmediateContext,
+                    particles,
+                    firstNewParticle * 4,
+                    (firstFreeParticle - firstNewParticle) * 4,
+                    firstNewParticle * 4,
+                    SetDataOptions.NoOverwrite);
+            }
+            else
+            {
+                vertexBuffer.SetData(Device.ImmediateContext,
+                    particles,
+                    firstNewParticle * 4,
+                    (firstFreeParticle - firstNewParticle) * 4,
+                    firstNewParticle * 4,
+                    SetDataOptions.NoOverwrite);
+
+                if (firstFreeParticle > 0)
+                {
+                    vertexBuffer.SetData(Device.ImmediateContext,
+                        particles,
+                        0,
+                        firstFreeParticle * 4,
+                        0,
+                        SetDataOptions.NoOverwrite);
+                }
+            }
 
             //if (firstNewParticle < firstFreeParticle)
             //{
@@ -271,8 +407,8 @@ namespace Libra.Samples.Particles3D
 
         public void SetCamera(Matrix view, Matrix projection)
         {
-            //effectViewParameter.SetValue(view);
-            //effectProjectionParameter.SetValue(projection);
+            constantBufferParameters.View = view;
+            constantBufferParameters.Projection = projection;
         }
 
         public void AddParticle(Vector3 position, Vector3 velocity)

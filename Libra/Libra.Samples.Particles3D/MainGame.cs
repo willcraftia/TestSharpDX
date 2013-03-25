@@ -7,6 +7,7 @@ using Libra.Games.SharpDX;
 using Libra.Graphics;
 using Libra.Input;
 using Libra.Xnb;
+using Libra.Samples.Particles3D.ParticleSystems;
 
 #endregion
 
@@ -79,11 +80,11 @@ namespace Libra.Samples.Particles3D
 
             content = new XnbManager(Services, "Content");
 
-            //explosionParticles = new ExplosionParticleSystem(this, Content);
-            //explosionSmokeParticles = new ExplosionSmokeParticleSystem(this, Content);
-            //projectileTrailParticles = new ProjectileTrailParticleSystem(this, Content);
-            //smokePlumeParticles = new SmokePlumeParticleSystem(this, Content);
-            //fireParticles = new FireParticleSystem(this, Content);
+            explosionParticles = new ExplosionParticleSystem(this, content);
+            explosionSmokeParticles = new ExplosionSmokeParticleSystem(this, content);
+            projectileTrailParticles = new ProjectileTrailParticleSystem(this, content);
+            smokePlumeParticles = new SmokePlumeParticleSystem(this, content);
+            fireParticles = new FireParticleSystem(this, content);
 
             smokePlumeParticles.DrawOrder = 100;
             explosionSmokeParticles.DrawOrder = 200;
