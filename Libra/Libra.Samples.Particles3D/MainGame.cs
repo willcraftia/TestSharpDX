@@ -18,6 +18,8 @@ namespace Libra.Samples.Particles3D
 
         GraphicsManager graphics;
 
+        XnbManager content;
+
         SpriteBatch spriteBatch;
 
         SpriteFont font;
@@ -75,7 +77,7 @@ namespace Libra.Samples.Particles3D
             };
             graphics = new GraphicsManager(this);
 
-            //Content.RootDirectory = "Content";
+            content = new XnbManager(Services, "Content");
 
             //explosionParticles = new ExplosionParticleSystem(this, Content);
             //explosionSmokeParticles = new ExplosionSmokeParticleSystem(this, Content);
@@ -100,8 +102,8 @@ namespace Libra.Samples.Particles3D
         {
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
-            //font = Content.Load<SpriteFont>("font");
-            //grid = Content.Load<Model>("grid");
+            font = content.Load<SpriteFont>("font");
+            grid = content.Load<Model>("grid");
 
             keyboard = platform.CreateKeyboard();
             joystick = platform.CreateJoystick();

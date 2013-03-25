@@ -18,10 +18,16 @@ namespace Libra.Xnb
         }
 
         public XnbManager(IServiceProvider serviceProvider)
+            : this(serviceProvider, string.Empty)
+        {
+        }
+
+        public XnbManager(IServiceProvider serviceProvider, string rootDirectory)
         {
             if (serviceProvider == null) throw new ArgumentNullException("serviceProvider");
+            if (rootDirectory == null) throw new ArgumentNullException("rootDirectory");
 
-            entity = new Felis.Xnb.ContentManager(serviceProvider);
+            entity = new Felis.Xnb.ContentManager(serviceProvider, rootDirectory);
             InitializeEntity();
         }
 

@@ -67,8 +67,7 @@ namespace Libra.Samples.Primitives3D
             };
             graphicsManager = new GraphicsManager(this);
 
-            content = new XnbManager(Services);
-            content.RootDirectory = "Content";
+            content = new XnbManager(Services, "Content");
         }
 
         protected override void LoadContent()
