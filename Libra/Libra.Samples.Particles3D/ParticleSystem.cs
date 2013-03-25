@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Runtime.InteropServices;
 using Libra.Games;
 using Libra.Graphics;
 using Libra.Graphics.Compiler;
@@ -15,32 +16,42 @@ namespace Libra.Samples.Particles3D
     {
         #region CBSettings
 
+        [StructLayout(LayoutKind.Explicit, Size = 96)]
         struct CBSettings
         {
+            [FieldOffset(0)]
             public float Duration;
 
+            [FieldOffset(4)]
             public float DurationRandomness;
 
-            public float Dummy0;
+            //public float Dummy0;
 
-            public float Dummy1;
+            //public float Dummy1;
 
+            [FieldOffset(16)]
             public Vector3 Gravity;
 
+            [FieldOffset(28)]
             public float EndVelocity;
 
+            [FieldOffset(32)]
             public Vector4 MinColor;
 
+            [FieldOffset(48)]
             public Vector4 MaxColor;
 
+            [FieldOffset(64)]
             public Vector2 RotateSpeed;
 
-            public float Dummy2;
+            //public float Dummy2;
 
-            public float Dummy3;
+            //public float Dummy3;
 
+            [FieldOffset(80)]
             public Vector2 StartSize;
 
+            [FieldOffset(88)]
             public Vector2 EndSize;
         }
 
@@ -134,9 +145,6 @@ namespace Libra.Samples.Particles3D
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Dynamic;
             vertexBuffer.Initialize(ParticleVertex.VertexDeclaration, settings.MaxParticles * 4);
-
-            //vertexBuffer = new DynamicVertexBuffer(Device, ParticleVertex.VertexDeclaration,
-            //                                       settings.MaxParticles * 4, BufferUsage.WriteOnly);
 
             ushort[] indices = new ushort[settings.MaxParticles * 6];
 
@@ -274,7 +282,7 @@ namespace Libra.Samples.Particles3D
                 context.VertexShader = vertexShader;
                 context.PixelShader = pixelShader;
 
-                context.PixelShaderSamplers[0] = SamplerState.LinearClamp;
+                //context.RasterizerState = RasterizerState.Wireframe;
 
                 context.PrimitiveTopology = PrimitiveTopology.TriangleList;
                 
@@ -282,6 +290,7 @@ namespace Libra.Samples.Particles3D
                 context.VertexShaderConstantBuffers[1] = constantBuffer;
 
                 context.PixelShaderResources[0] = textureView;
+                context.PixelShaderSamplers[0] = SamplerState.LinearClamp;
 
                 context.SetVertexBuffer(0, vertexBuffer);
                 context.IndexBuffer = indexBuffer;
@@ -289,57 +298,25 @@ namespace Libra.Samples.Particles3D
                 if (firstActiveParticle < firstFreeParticle)
                 {
                     context.DrawIndexed(
-                        (firstFreeParticle - firstActiveParticle) * 2 * 3,
+                        (firstFreeParticle - firstActiveParticle) * 6,
                         firstActiveParticle * 6,
                         firstActiveParticle * 4);
                 }
                 else
                 {
                     context.DrawIndexed(
-                        (firstFreeParticle - firstActiveParticle) * 2 * 3,
+                        (settings.MaxParticles - firstActiveParticle) * 6,
                         firstActiveParticle * 6,
                         firstActiveParticle * 4);
 
                     if (firstFreeParticle > 0)
                     {
                         context.DrawIndexed(
-                            firstFreeParticle * 2 * 3,
+                            firstFreeParticle * 6,
                             0,
                             0);
                     }
                 }
-
-                //foreach (EffectPass pass in particleEffect.CurrentTechnique.Passes)
-                //{
-                //    pass.Apply();
-
-                //    if (firstActiveParticle < firstFreeParticle)
-                //    {
-
-                // baseVertex = 0
-                // minVertexIndex = firstActiveParticle * 4
-                // numVertices = (firstFreeParticle - firstActiveParticle) * 4
-                // startIndex = firstActiveParticle * 6
-                // primitiveCount = (firstFreeParticle - firstActiveParticle) * 2
-
-                //        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
-                //                                     firstActiveParticle * 4, (firstFreeParticle - firstActiveParticle) * 4,
-                //                                     firstActiveParticle * 6, (firstFreeParticle - firstActiveParticle) * 2);
-                //    }
-                //    else
-                //    {
-                //        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
-                //                                     firstActiveParticle * 4, (settings.MaxParticles - firstActiveParticle) * 4,
-                //                                     firstActiveParticle * 6, (settings.MaxParticles - firstActiveParticle) * 2);
-
-                //        if (firstFreeParticle > 0)
-                //        {
-                //            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
-                //                                         0, firstFreeParticle * 4,
-                //                                         0, firstFreeParticle * 2);
-                //        }
-                //    }
-                //}
 
                 context.DepthStencilState = DepthStencilState.Default;
             }
@@ -349,66 +326,49 @@ namespace Libra.Samples.Particles3D
 
         void AddNewParticlesToVertexBuffer()
         {
-            //int stride = ParticleVertex.VertexDeclaration.Stride;
+            int stride = ParticleVertex.VertexDeclaration.Stride;
 
             if (firstNewParticle < firstFreeParticle)
             {
                 vertexBuffer.SetData(Device.ImmediateContext,
+                    firstNewParticle * stride * 4,
                     particles,
                     firstNewParticle * 4,
                     (firstFreeParticle - firstNewParticle) * 4,
-                    firstNewParticle * 4,
                     SetDataOptions.NoOverwrite);
+
+                //ParticleVertex[] temp = new ParticleVertex[(firstFreeParticle - firstNewParticle) * 4];
+                //vertexBuffer.GetData(Device.ImmediateContext, temp);
+
+                //Console.WriteLine("" + temp.GetType());
             }
             else
             {
                 vertexBuffer.SetData(Device.ImmediateContext,
+                    firstNewParticle * stride * 4,
                     particles,
                     firstNewParticle * 4,
-                    (firstFreeParticle - firstNewParticle) * 4,
-                    firstNewParticle * 4,
+                    (settings.MaxParticles - firstNewParticle) * 4,
                     SetDataOptions.NoOverwrite);
 
                 if (firstFreeParticle > 0)
                 {
                     vertexBuffer.SetData(Device.ImmediateContext,
+                        firstNewParticle * stride * 4,
                         particles,
                         0,
                         firstFreeParticle * 4,
-                        0,
                         SetDataOptions.NoOverwrite);
                 }
             }
-
-            //if (firstNewParticle < firstFreeParticle)
-            //{
-            //    vertexBuffer.SetData(firstNewParticle * stride * 4, particles,
-            //                         firstNewParticle * 4,
-            //                         (firstFreeParticle - firstNewParticle) * 4,
-            //                         stride, SetDataOptions.NoOverwrite);
-            //}
-            //else
-            //{
-            //    vertexBuffer.SetData(firstNewParticle * stride * 4, particles,
-            //                         firstNewParticle * 4,
-            //                         (settings.MaxParticles - firstNewParticle) * 4,
-            //                         stride, SetDataOptions.NoOverwrite);
-
-            //    if (firstFreeParticle > 0)
-            //    {
-            //        vertexBuffer.SetData(0, particles,
-            //                             0, firstFreeParticle * 4,
-            //                             stride, SetDataOptions.NoOverwrite);
-            //    }
-            //}
 
             firstNewParticle = firstFreeParticle;
         }
 
         public void SetCamera(Matrix view, Matrix projection)
         {
-            constantBufferParameters.View = view;
-            constantBufferParameters.Projection = projection;
+            Matrix.Transpose(ref view, out constantBufferParameters.View);
+            Matrix.Transpose(ref projection, out constantBufferParameters.Projection);
         }
 
         public void AddParticle(Vector3 position, Vector3 velocity)

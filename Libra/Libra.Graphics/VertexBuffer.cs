@@ -110,13 +110,13 @@ namespace Libra.Graphics
             }
         }
 
-        public void SetData<T>(DeviceContext context, params T[] data) where T : struct
+        public void SetData<T>(DeviceContext context, T[] data) where T : struct
         {
             SetData(context, data, 0, data.Length);
         }
 
-        public void SetData<T>(DeviceContext context, T[] data, int sourceIndex, int elementCount,
-            int destinationIndex, SetDataOptions options = SetDataOptions.None) where T : struct
+        public void SetData<T>(DeviceContext context, int offsetInBytes, T[] data, int sourceIndex, int elementCount,
+            SetDataOptions options = SetDataOptions.None) where T : struct
         {
             if (Usage != ResourceUsage.Dynamic)
                 throw new InvalidOperationException("Resource not writable.");
@@ -130,28 +130,25 @@ namespace Libra.Graphics
                 var dataPointer = gcHandle.AddrOfPinnedObject();
                 var sizeOfT = Marshal.SizeOf(typeof(T));
 
-                unsafe
+                var sourcePointer = (IntPtr) (dataPointer + sourceIndex * sizeOfT);
+                var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+
+                // メモ
+                //
+                // D3D11MapFlags.DoNotWait は、Discard と NoOverwite では使えない。
+                // D3D11MapFlags 参照のこと。
+
+                var mappedResource = context.Map(this, 0, (DeviceContext.MapMode) options);
+                var destinationPointer = (IntPtr) (mappedResource.Pointer + offsetInBytes);
+
+                try
                 {
-                    var sourcePointer = (IntPtr) ((byte*) dataPointer + sourceIndex * sizeOfT);
-                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
-
-                    // メモ
-                    //
-                    // D3D11MapFlags.DoNotWait は、Discard と NoOverwite では使えない。
-                    // D3D11MapFlags 参照のこと。
-
-                    var mappedResource = context.Map(this, 0, (DeviceContext.MapMode) options);
-                    var destinationPtr = (IntPtr) (mappedResource.Pointer + destinationIndex * sizeOfT);
-
-                    try
-                    {
-                        GraphicsHelper.CopyMemory(destinationPtr, sourcePointer, sizeInBytes);
-                    }
-                    finally
-                    {
-                        // Unmap
-                        context.Unmap(this, 0);
-                    }
+                    GraphicsHelper.CopyMemory(destinationPointer, sourcePointer, sizeInBytes);
+                }
+                finally
+                {
+                    // Unmap
+                    context.Unmap(this, 0);
                 }
             }
             finally
