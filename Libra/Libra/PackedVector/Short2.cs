@@ -92,7 +92,7 @@ namespace Libra.PackedVector
 
         public override string ToString()
         {
-            return "{packedValue:" + packedValue + "}";
+            return "{" + packedValue.ToString("X8") + "}";
         }
 
         #endregion
