@@ -65,7 +65,7 @@ namespace Libra.Graphics
 
         public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
-            AssetInitialized();
+            AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
             if (startIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
@@ -76,7 +76,7 @@ namespace Libra.Graphics
 
         public void GetData<T>(DeviceContext context, T[] data) where T : struct
         {
-            AssetInitialized();
+            AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
 
@@ -85,7 +85,7 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
-            AssetInitialized();
+            AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
             if (startIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
@@ -149,7 +149,7 @@ namespace Libra.Graphics
             if (initialized) throw new InvalidOperationException("Already initialized.");
         }
 
-        void AssetInitialized()
+        void AssertInitialized()
         {
             if (!initialized) throw new InvalidOperationException("Not initialized.");
         }
