@@ -67,7 +67,7 @@ namespace Libra.Graphics
             AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
-            if (startIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
+            if (startIndex < 0) throw new ArgumentOutOfRangeException("startIndex");
             if (data.Length < (startIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
 
             GetDataCore(context, data, startIndex, elementCount);
@@ -83,7 +83,7 @@ namespace Libra.Graphics
             AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
-            if (startIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
+            if (startIndex < 0) throw new ArgumentOutOfRangeException("startIndex");
             if (data.Length < (startIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
 
             if (Usage == ResourceUsage.Immutable)
@@ -139,7 +139,7 @@ namespace Libra.Graphics
             AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
-            if (sourceIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
+            if (sourceIndex < 0) throw new ArgumentOutOfRangeException("startIndex");
             if (data.Length < (sourceIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
             
             if (Usage != ResourceUsage.Dynamic) throw new InvalidOperationException("Resource not writable.");
