@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.LensFlareCont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.ShadowMapping", "Libra.Samples.ShadowMapping\Libra.Samples.ShadowMapping.csproj", "{A027B206-054A-4F71-9215-7DECA452218F}"
 EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.ShadowMappingContent", "Libra.Samples.ShadowMappingContent\Libra.Samples.ShadowMappingContent.contentproj", "{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -343,6 +345,12 @@ Global
 		{A027B206-054A-4F71-9215-7DECA452218F}.Release|Mixed Platforms.Build.0 = Release|x86
 		{A027B206-054A-4F71-9215-7DECA452218F}.Release|x86.ActiveCfg = Release|x86
 		{A027B206-054A-4F71-9215-7DECA452218F}.Release|x86.Build.0 = Release|x86
+		{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E745E2EA-5EA8-405D-AC7F-DC10F9F194E1}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

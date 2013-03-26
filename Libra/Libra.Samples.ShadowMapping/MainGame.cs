@@ -4,6 +4,7 @@ using System;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
+using Libra.Graphics.Compiler;
 using Libra.Input;
 using Libra.Xnb;
 
@@ -43,6 +44,14 @@ namespace Libra.Samples.ShadowMapping
         
         JoystickState currentJoystickState;
 
+        VertexShader createShadowMapVertexShader;
+
+        PixelShader createShadowMapPixelShader;
+
+        VertexShader drawModelVertexShader;
+
+        PixelShader drawModelPixelShader;
+
         Model gridModel;
 
         Model dudeModel;
@@ -80,6 +89,21 @@ namespace Libra.Samples.ShadowMapping
 
         protected override void LoadContent()
         {
+            var compiler = new ShaderCompiler();
+            compiler.RootPath = "../../Shaders/";
+
+            createShadowMapVertexShader = Device.CreateVertexShader();
+            createShadowMapVertexShader.Initialize(compiler.CompileVertexShader("CreateShadowMap.fx", "VS"));
+
+            createShadowMapPixelShader = Device.CreatePixelShader();
+            createShadowMapPixelShader.Initialize(compiler.CompilePixelShader("CreateShadowMap.fx", "PS"));
+
+            drawModelVertexShader = Device.CreateVertexShader();
+            drawModelVertexShader.Initialize(compiler.CompileVertexShader("DrawModel.fx", "VS"));
+
+            drawModelPixelShader = Device.CreatePixelShader();
+            drawModelPixelShader.Initialize(compiler.CompilePixelShader("DrawModel.fx", "PS"));
+
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
             gridModel = content.Load<Model>("grid");
