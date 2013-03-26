@@ -113,5 +113,12 @@ namespace Libra
             float num = a - b;
             return ((-float.Epsilon <= num) && (num <= float.Epsilon));
         }
+
+        public static bool IsPowerOf2(int value)
+        {
+            if (value < 1) return false;
+
+            return (value & (value - 1)) == 0;
+        }
     }
 }
