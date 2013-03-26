@@ -66,9 +66,9 @@ namespace Libra.Graphics
                 vector = (vector / a);
             }
 
-            vector.X = (((vector.X + 1f) * 0.5f) * Width) + X;
-            vector.Y = (((-vector.Y + 1f) * 0.5f) * Height) + Y;
-            vector.Z = (vector.Z * (MaxDepth - MinDepth)) + MinDepth;
+            vector.X = (vector.X + 1f) * 0.5f * Width + X;
+            vector.Y = (-vector.Y + 1f) * 0.5f * Height + Y;
+            vector.Z = vector.Z * (MaxDepth - MinDepth) + MinDepth;
 
             return vector;
         }
@@ -76,12 +76,12 @@ namespace Libra.Graphics
         public Vector3 Unproject(Vector3 source, Matrix projection, Matrix view, Matrix world)
         {
             var matrix = Matrix.Invert(Matrix.Multiply(Matrix.Multiply(world, view), projection));
-            source.X = (((source.X - X) / (Width)) * 2f) - 1f;
-            source.Y = -((((source.Y - Y) / (Height)) * 2f) - 1f);
+            source.X = (source.X - X) / Width * 2f - 1f;
+            source.Y = -((source.Y - Y) / Height * 2f - 1f);
             source.Z = (source.Z - MinDepth) / (MaxDepth - MinDepth);
             var vector = (Vector3) Vector3.Transform(source, matrix);
 
-            float a = (((source.X * matrix.M14) + (source.Y * matrix.M24)) + (source.Z * matrix.M34)) + matrix.M44;
+            float a = source.X * matrix.M14 + source.Y * matrix.M24 + source.Z * matrix.M34 + matrix.M44;
             if (!MathHelper.WithinEpsilon(a, 1f))
             {
                 vector = (vector / a);
