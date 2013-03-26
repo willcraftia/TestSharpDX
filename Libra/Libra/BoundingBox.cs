@@ -84,52 +84,40 @@ namespace Libra
             return Collision.BoxContainsSphere(ref this, ref sphere);
         }
 
-        public static void FromPoints(Vector3[] points, out BoundingBox result)
+        public static void CreateFromPoints(IEnumerable<Vector3> points, out BoundingBox result)
         {
-            if (points == null)
-                throw new ArgumentNullException("points");
+            if (points == null) throw new ArgumentNullException("points");
 
-            Vector3 min = new Vector3(float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue);
+            var min = new Vector3(float.MaxValue);
+            var max = new Vector3(float.MinValue);
 
-            for (int i = 0; i < points.Length; ++i)
+            foreach (var point in points)
             {
-                Vector3.Min(ref min, ref points[i], out min);
-                Vector3.Max(ref max, ref points[i], out max);
+                min = Vector3.Min(min, point);
+                max = Vector3.Max(max, point);
             }
 
             result = new BoundingBox(min, max);
         }
 
-        public static BoundingBox FromPoints(Vector3[] points)
+        public static BoundingBox CreateFromPoints(IEnumerable<Vector3> points)
         {
-            if (points == null)
-                throw new ArgumentNullException("points");
-
-            Vector3 min = new Vector3(float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue);
-
-            for (int i = 0; i < points.Length; ++i)
-            {
-                Vector3.Min(ref min, ref points[i], out min);
-                Vector3.Max(ref max, ref points[i], out max);
-            }
-
-            return new BoundingBox(min, max);
+            BoundingBox result;
+            CreateFromPoints(points, out result);
+            return result;
         }
 
-        public static void FromSphere(ref BoundingSphere sphere, out BoundingBox result)
+        public static void CreateFromSphere(ref BoundingSphere sphere, out BoundingBox result)
         {
             result.Min = new Vector3(sphere.Center.X - sphere.Radius, sphere.Center.Y - sphere.Radius, sphere.Center.Z - sphere.Radius);
             result.Max = new Vector3(sphere.Center.X + sphere.Radius, sphere.Center.Y + sphere.Radius, sphere.Center.Z + sphere.Radius);
         }
 
-        public static BoundingBox FromSphere(BoundingSphere sphere)
+        public static BoundingBox CreateFromSphere(BoundingSphere sphere)
         {
-            BoundingBox box;
-            box.Min = new Vector3(sphere.Center.X - sphere.Radius, sphere.Center.Y - sphere.Radius, sphere.Center.Z - sphere.Radius);
-            box.Max = new Vector3(sphere.Center.X + sphere.Radius, sphere.Center.Y + sphere.Radius, sphere.Center.Z + sphere.Radius);
-            return box;
+            BoundingBox result;
+            CreateFromSphere(ref sphere, out result);
+            return result;
         }
 
         public static void Merge(ref BoundingBox value1, ref BoundingBox value2, out BoundingBox result)
@@ -140,10 +128,9 @@ namespace Libra
 
         public static BoundingBox Merge(BoundingBox value1, BoundingBox value2)
         {
-            BoundingBox box;
-            Vector3.Min(ref value1.Min, ref value2.Min, out box.Min);
-            Vector3.Max(ref value1.Max, ref value2.Max, out box.Max);
-            return box;
+            BoundingBox result;
+            Merge(ref value1, ref value2, out result);
+            return result;
         }
 
         #region IEquatable
