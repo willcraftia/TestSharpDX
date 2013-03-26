@@ -8,7 +8,7 @@
 // XNA の DrawModel.fx からシャドウマップ生成のためのシェーダを分離。
 // および、シェーダ モデル 4.0 へ変更。
 
-cbuffer PerFrame : register(b0)
+cbuffer Parameters : register(b0)
 {
     float4x4 World          : packoffset(c0);
     float4x4 LightViewProj  : packoffset(c4);
@@ -20,7 +20,7 @@ struct VSOutput
     float  Depth    : TEXCOORD0;
 };
 
-VSOutput VS(float4 Position : POSITION)
+VSOutput VS(float4 Position : SV_Position)
 {
     VSOutput output;
 

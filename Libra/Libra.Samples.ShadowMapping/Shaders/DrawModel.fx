@@ -8,19 +8,15 @@
 // XNA の DrawModel.fx をシェーダ モデル 4.0 へ変更。
 // シャドウマップ生成シェーダは CreateShadowMap.fx へ分離。
 
-cbuffer PerShader : register(b0)
-{
-    float3 LightDirection   : packoffset(c0);
-    float  DepthBias        : packoffset(c0.w);
-    float4 AmbientColor     : packoffset(c1);
-};
-
-cbuffer PerFrame : register(b1)
+cbuffer Parameters : register(b0)
 {
     float4x4 World          : packoffset(c0);
     float4x4 View           : packoffset(c4);
     float4x4 Projection     : packoffset(c8);
     float4x4 LightViewProj  : packoffset(c12);
+    float3   LightDirection : packoffset(c16);
+    float    DepthBias      : packoffset(c16.w);
+    float4   AmbientColor   : packoffset(c17);
 };
 
 Texture2D Texture   : register(t0);
