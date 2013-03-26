@@ -23,7 +23,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        public override void Initialize(byte[] shaderBytecode)
+        protected override void InitializeCore(byte[] shaderBytecode)
         {
             if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
 

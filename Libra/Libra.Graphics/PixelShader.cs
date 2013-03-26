@@ -8,6 +8,8 @@ namespace Libra.Graphics
 {
     public abstract class PixelShader : IDisposable
     {
+        bool initialized;
+
         public IDevice Device { get; private set; }
 
         public string Name { get; set; }
@@ -19,7 +21,16 @@ namespace Libra.Graphics
             Device = device;
         }
 
-        public abstract void Initialize(byte[] shaderBytecode);
+        public void Initialize(byte[] shaderBytecode)
+        {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+
+            InitializeCore(shaderBytecode);
+
+            initialized = true;
+        }
+
+        protected abstract void InitializeCore(byte[] shaderBytecode);
 
         #region IDisposable
 
