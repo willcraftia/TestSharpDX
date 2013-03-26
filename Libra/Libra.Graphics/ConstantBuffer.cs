@@ -28,7 +28,7 @@ namespace Libra.Graphics
 
         public void Initialize(int byteWidth)
         {
-            if (initialized) throw new InvalidOperationException("Already initialized.");
+            AssertNotInitialized();
             if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
             if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
             if (Usage == ResourceUsage.Immutable)
@@ -41,7 +41,7 @@ namespace Libra.Graphics
 
         public void Initialize<T>(int byteWidth, T data) where T : struct
         {
-            if (initialized) throw new InvalidOperationException("Already initialized.");
+            AssertNotInitialized();
             if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
             if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
 
@@ -52,6 +52,7 @@ namespace Libra.Graphics
 
         public void GetData<T>(DeviceContext context, out T data) where T : struct
         {
+            AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
 
             GetDataCore(context, out data);
@@ -59,6 +60,7 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, T data) where T : struct
         {
+            AssertInitialized();
             if (context == null) throw new ArgumentNullException("context");
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Data can not be set from CPU.");
@@ -100,5 +102,15 @@ namespace Libra.Graphics
         protected abstract void InitializeCore<T>(int byteWidth, T data) where T : struct;
 
         protected abstract void GetDataCore<T>(DeviceContext context, out T data) where T : struct;
+
+        void AssertNotInitialized()
+        {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+        }
+
+        void AssertInitialized()
+        {
+            if (!initialized) throw new InvalidOperationException("Not initialized.");
+        }
     }
 }
