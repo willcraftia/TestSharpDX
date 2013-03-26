@@ -22,6 +22,7 @@ namespace Libra.Graphics
         {
             get
             {
+                AssertInitialized();
                 if (isQueryResultStillOutstanding)
                 {
                     ulong result;
@@ -62,6 +63,7 @@ namespace Libra.Graphics
 
         public void Begin(DeviceContext context = null)
         {
+            AssertInitialized();
             if (inBeginEndPair)
                 throw new InvalidOperationException("Cannot nest Begin calls on a single OcclusionQuery");
 
@@ -77,6 +79,7 @@ namespace Libra.Graphics
 
         public void End()
         {
+            AssertInitialized();
             if (!inBeginEndPair)
                 throw new InvalidOperationException("Begin must be called before End");
 
@@ -92,6 +95,11 @@ namespace Libra.Graphics
         protected abstract void EndCore(DeviceContext context);
 
         protected abstract bool PullQueryResult(DeviceContext context, out ulong result);
+
+        void AssertInitialized()
+        {
+            if (!initialized) throw new InvalidOperationException("Not initialized.");
+        }
 
         #region IDisposable
 

@@ -56,8 +56,11 @@ namespace Libra.Graphics.SharpDX
 
         protected override void DisposeOverride(bool disposing)
         {
-            if (D3D11Query != null)
-                D3D11Query.Dispose();
+            if (disposing)
+            {
+                if (D3D11Query != null)
+                    D3D11Query.Dispose();
+            }
 
             base.DisposeOverride(disposing);
         }
