@@ -108,14 +108,14 @@ namespace Libra.Graphics.Compiler
             return D3DCShaderSignature.GetInputOutputSignature(shaderBytecode).Data;
         }
 
-        public byte[] CompileFromStream(Stream stream, string entrypoint, VertexShaderProfile profile)
+        public byte[] CompileVertexShader(Stream stream, string entrypoint, VertexShaderProfile profile = VertexShaderProfile.vs_5_0)
         {
-            return CompileFromStream(stream, entrypoint, ToString(profile));
+            return Compile(stream, entrypoint, ToString(profile));
         }
 
-        public byte[] CompileFromStream(Stream stream, string entrypoint, PixelShaderProfile profile)
+        public byte[] CompilePixelShader(Stream stream, string entrypoint, PixelShaderProfile profile = PixelShaderProfile.ps_5_0)
         {
-            return CompileFromStream(stream, entrypoint, ToString(profile));
+            return Compile(stream, entrypoint, ToString(profile));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Libra.Graphics.Compiler
         /// <param name="entrypoint"></param>
         /// <param name="profile"></param>
         /// <returns></returns>
-        public byte[] CompileFromStream(Stream stream, string entrypoint, string profile)
+        public byte[] Compile(Stream stream, string entrypoint, string profile)
         {
             if (stream == null) throw new ArgumentNullException("stream");
             if (entrypoint == null) throw new ArgumentNullException("entrypoint");
@@ -158,12 +158,12 @@ namespace Libra.Graphics.Compiler
             return d3dCCompilationResult.Bytecode.Data;
         }
 
-        public byte[] CompileFromFile(string path, string entrypoint, VertexShaderProfile profile)
+        public byte[] CompileVertexShader(string path, string entrypoint, VertexShaderProfile profile = VertexShaderProfile.vs_5_0)
         {
             return CompileFromFile(path, entrypoint, ToString(profile));
         }
 
-        public byte[] CompileFromFile(string path, string entrypoint, PixelShaderProfile profile)
+        public byte[] CompilePixelShader(string path, string entrypoint, PixelShaderProfile profile = PixelShaderProfile.ps_5_0)
         {
             return CompileFromFile(path, entrypoint, ToString(profile));
         }
@@ -202,7 +202,7 @@ namespace Libra.Graphics.Compiler
 
             using (var stream = File.OpenRead(realPath))
             {
-                return CompileFromStream(stream, entrypoint, profile);
+                return Compile(stream, entrypoint, profile);
             }
         }
 

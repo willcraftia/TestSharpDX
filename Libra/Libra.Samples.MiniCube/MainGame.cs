@@ -90,8 +90,8 @@ namespace Libra.Samples.MiniCube
             compiler.RootPath = "Shaders";
             compiler.PackMatrixRowMajor = true;
 
-            var vsBytecode = compiler.CompileFromFile("MiniCube.fx", "VS", VertexShaderProfile.vs_4_0);
-            var psBytecode = compiler.CompileFromFile("MiniCube.fx", "PS", PixelShaderProfile.ps_4_0);
+            var vsBytecode = compiler.CompileVertexShader("MiniCube.fx", "VS");
+            var psBytecode = compiler.CompilePixelShader("MiniCube.fx", "PS");
 
             vertexShader = Device.CreateVertexShader();
             vertexShader.Initialize(vsBytecode);
