@@ -8,6 +8,9 @@ using System.Text;
 #endregion
 
 // MonoGame の SpriteFont から移植。
+// ただし、MonoGame では、SpriteEffect の適用に関するロジックにおいて、
+// 行列演算による非効率な変換を行なっているため、
+// DirectX Tool Kit を参考に行列演算を用いないロジックへ修正。
 
 namespace Libra.Graphics
 {
