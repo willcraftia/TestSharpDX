@@ -141,11 +141,9 @@ namespace Libra.Samples.LensFlare
             var context = Device.ImmediateContext;
 
             var infiniteView = View;
-
             infiniteView.Translation = Vector3.Zero;
 
             var viewport = context.Viewport;
-
             var projectedPosition = viewport.Project(-LightDirection, Projection, infiniteView, Matrix.Identity);
 
             if ((projectedPosition.Z < 0) || (projectedPosition.Z > 1))
@@ -174,15 +172,14 @@ namespace Libra.Samples.LensFlare
             context.SetVertexBuffer(0, vertexBuffer);
 
             basicEffect.World = Matrix.CreateTranslation(lightPosition.X, lightPosition.Y, 0);
-
-            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(
-                0, viewport.Width, viewport.Height, 0, 0, 1);
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, 0, 1);
 
             basicEffect.Apply(context);
 
             occlusionQuery.Begin();
 
-            context.Draw(4);
+            // TriangleStrip で 3 * 2 の三角形を描画。
+            context.Draw(6);
 
             occlusionQuery.End();
 
@@ -220,14 +217,11 @@ namespace Libra.Samples.LensFlare
                 var flarePosition = lightPosition + flareVector * flare.Position;
 
                 var flareColor = flare.Color.ToVector4();
-
                 flareColor.W *= occlusionAlpha;
 
                 var flareOrigin = new Vector2(flare.Texture.Width, flare.Texture.Height) / 2;
-
-                spriteBatch.Draw(flare.TextureView, flarePosition, null,
-                                 new Color(flareColor), 1, flareOrigin,
-                                 flare.Scale, SpriteEffects.None, 0);
+                
+                spriteBatch.Draw(flare.TextureView, flarePosition, null, new Color(flareColor), 1, flareOrigin, flare.Scale);
             }
 
             spriteBatch.End();
