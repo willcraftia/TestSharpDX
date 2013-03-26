@@ -51,7 +51,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Xnb", "Libra.Xnb\Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.Primitives3DContent", "Libra.Samples.Primitives3DContent\Libra.Samples.Primitives3DContent.contentproj", "{3694DB82-3FF2-4F13-8C4A-7591A51C6F11}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.Particles3DContent", "Libra.Samples.Particles3DContent\Libra.Samples.Particles3DContent.contentproj", "{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.Particles3DContent", "Libra.Samples.Particles3DContent\Libra.Samples.Particles3DContent.contentproj", "{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.LensFlare", "Libra.Samples.LensFlare\Libra.Samples.LensFlare.csproj", "{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.LensFlareContent", "Libra.Samples.LensFlareContent\Libra.Samples.LensFlareContent.contentproj", "{2C8C0A9F-DD82-403D-B724-04552093B8FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -311,6 +315,22 @@ Global
 		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{5D5486FD-132D-4165-9C7C-6F19BC7DC9F4}.Release|x86.ActiveCfg = Debug|Any CPU
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Debug|x86.ActiveCfg = Debug|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Debug|x86.Build.0 = Debug|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Release|Any CPU.ActiveCfg = Release|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Release|x86.ActiveCfg = Release|x86
+		{A00C2B91-FDF0-4CF0-A656-F66AF2484FDE}.Release|x86.Build.0 = Release|x86
+		{2C8C0A9F-DD82-403D-B724-04552093B8FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8C0A9F-DD82-403D-B724-04552093B8FE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2C8C0A9F-DD82-403D-B724-04552093B8FE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C8C0A9F-DD82-403D-B724-04552093B8FE}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8C0A9F-DD82-403D-B724-04552093B8FE}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2C8C0A9F-DD82-403D-B724-04552093B8FE}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
