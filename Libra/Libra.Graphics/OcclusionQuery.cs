@@ -34,6 +34,7 @@ namespace Libra.Graphics
                         PixelCount = result;
                     }
 
+                    currentContext = null;
                     isQueryResultStillOutstanding = false;
                 }
 
@@ -81,7 +82,6 @@ namespace Libra.Graphics
 
             EndCore(currentContext);
 
-            currentContext = null;
             inBeginEndPair = false;
         }
 
