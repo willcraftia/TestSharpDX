@@ -219,6 +219,11 @@ namespace Libra.Graphics.SharpDX
             return new SdxRenderTargetView(this);
         }
 
+        public OcclusionQuery CreateOcclusionQuery()
+        {
+            return new SdxOcclusionQuery(this);
+        }
+
         public int CheckMultisampleQualityLevels(SurfaceFormat format, int sampleCount)
         {
             if (sampleCount < 1) throw new ArgumentOutOfRangeException("sampleCount");

@@ -47,6 +47,8 @@ namespace Libra.Graphics
 
         RenderTargetView CreateRenderTargetView();
 
+        OcclusionQuery CreateOcclusionQuery();
+
         int CheckMultisampleQualityLevels(SurfaceFormat format, int sampleCount);
 
         int CheckMultisampleQualityLevels(DepthFormat format, int sampleCount);

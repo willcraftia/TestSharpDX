@@ -66,6 +66,7 @@
     <Compile Include="SdxGraphicsFactory.cs" />
     <Compile Include="SdxIndexBuffer.cs" />
     <Compile Include="SdxInputLayout.cs" />
+    <Compile Include="SdxOcclusionQuery.cs" />
     <Compile Include="SdxOutput.cs" />
     <Compile Include="SdxOutputCollection.cs" />
     <Compile Include="SdxPixelShader.cs" />
