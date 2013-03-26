@@ -764,7 +764,7 @@ namespace Libra
             A = R = G = B = ToByte(value);
         }
 
-        public Color(byte red, byte green, byte blue, byte alpha)
+        public Color(byte red, byte green, byte blue, byte alpha = 255)
         {
             R = red;
             G = green;
@@ -772,7 +772,7 @@ namespace Libra
             A = alpha;
         }
 
-        public Color(float red, float green, float blue, float alpha)
+        public Color(float red, float green, float blue, float alpha = 1)
         {
             R = ToByte(red);
             G = ToByte(green);
@@ -788,7 +788,7 @@ namespace Libra
             A = ToByte(value.W);
         }
 
-        public Color(Vector3 value, float alpha)
+        public Color(Vector3 value, float alpha = 1)
         {
             R = ToByte(value.X);
             G = ToByte(value.Y);
@@ -835,6 +835,20 @@ namespace Libra
             // SharpDX のロジックでは Scale 倍での丸めが XNA と異なる。
             return (byte) MathHelper.Clamp((float) Math.Round(value * Scale), 0, Scale);
         }
+
+        public static Color Multiply(Color value, float scale)
+        {
+            byte r = (byte) (value.R * scale);
+            byte g = (byte) (value.G * scale);
+            byte b = (byte) (value.B * scale);
+            byte a = (byte) (value.A * scale);
+            return new Color(r, g, b, a);
+        }
+
+        public static Color operator *(Color value, float scale)
+        {
+            return Multiply(value, scale);
+        }		
 
         #region IEquatable
 
