@@ -40,13 +40,15 @@ namespace Libra.Games
         public event EventHandler Disposed;
 
         // D3D11.h: D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT ( 32 )
-        // TODO
-        // 別の所で定義すべきでは？
         public const int MaxMultiSampleCount = 32;
 
-        public static readonly int DefaultBackBufferWidth = 800;
-        
-        public static readonly int DefaultBackBufferHeight = 480;
+        public const int DefaultBackBufferWidth = 800;
+
+        public const int DefaultBackBufferHeight = 480;
+
+        // 自動的に利用可能なサンプル数が選択されるので、
+        // デフォルトは最大サンプル数とする。
+        public const int DefaultBackBufferMultisampleCount = MaxMultiSampleCount;
 
         static readonly DeviceProfile[] profiles =
         {
@@ -66,6 +68,8 @@ namespace Libra.Games
         SurfaceFormat preferredBackBufferFormat;
 
         DepthFormat preferredDepthStencilFormat;
+
+        int preferredBackBufferMultisampleCount;
 
         object resizeSwapChainLock = new object();
 
@@ -117,7 +121,19 @@ namespace Libra.Games
             set { preferredDepthStencilFormat = value; }
         }
 
-        public bool PreferMultiSampling { get; set; }
+        public bool PreferMultisampling { get; set; }
+
+        public int PreferredBackBufferMultisampleCount
+        {
+            get { return preferredBackBufferMultisampleCount; }
+            set
+            {
+                if (!MathHelper.IsPowerOf2(value))
+                    throw new ArgumentException("Value must be a power of 2.", "value");
+
+                preferredBackBufferMultisampleCount = value;
+            }
+        }
 
         public bool SynchronizeWithVerticalRetrace { get; set; }
 
@@ -136,6 +152,7 @@ namespace Libra.Games
             preferredBackBufferHeight = DefaultBackBufferHeight;
             preferredBackBufferFormat = SurfaceFormat.Color;
             preferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            preferredBackBufferMultisampleCount = DefaultBackBufferMultisampleCount;
             Windowed = true;
 
             game.Services.AddService<IGraphicsManager>(this);
@@ -191,13 +208,54 @@ namespace Libra.Games
                 backBufferMode = ResolveFullScreenBackBufferMode(Device);
             }
 
+            // マルチサンプル数の決定。
+            int backBufferMultisampleCount = preferredBackBufferMultisampleCount;
+            int backBufferMultisampleQualityLevels = 0;
+            while (1 < backBufferMultisampleCount)
+            {
+                backBufferMultisampleQualityLevels = Device.CheckMultisampleQualityLevels(
+                    backBufferMode.Format, backBufferMultisampleCount);
+
+                if (0 < backBufferMultisampleQualityLevels)
+                {
+                    // 深度ステンシルを用いる場合、
+                    // 深度ステンシルのマルチサンプリングはレンダ ターゲットと一致させる事になるため、
+                    // 深度ステンシルのフォーマットについても検査。
+                    if (preferredDepthStencilFormat != DepthFormat.None)
+                    {
+                        var depthStencilMultisampleQualityLevels = Device.CheckMultisampleQualityLevels(
+                            preferredDepthStencilFormat, backBufferMultisampleCount);
+
+                        if (0 < depthStencilMultisampleQualityLevels)
+                        {
+                            // 0 より大きいならば有効なサンプル数。
+                            // 最終的な品質レベルは低い方に合わせる。
+                            backBufferMultisampleQualityLevels = Math.Min(
+                                backBufferMultisampleQualityLevels, depthStencilMultisampleQualityLevels);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // 0 より大きいならば有効なサンプル数。
+                        break;
+                    }
+                }
+
+                // 指定のフォーマットでは無効なサンプル数であったため、
+                // サンプル数を一段階落として再検査を試行。
+                backBufferMultisampleCount /= 2;
+            }
+
             var settings = new SwapChainSettings
             {
                 BackBufferWidth = backBufferMode.Width,
                 BackBufferHeight = backBufferMode.Height,
                 BackBufferRefreshRate = backBufferMode.RefreshRate,
                 BackBufferFormat = backBufferMode.Format,
-                BackBufferMultiSampleCount = 2,
+                BackBufferMultisampleCount = backBufferMultisampleCount,
+                // 注意: Quality = 最大レベル - 1
+                BackBufferMultisampleQuality = backBufferMultisampleQualityLevels - 1,
                 DepthStencilFormat = preferredDepthStencilFormat,
                 // TODO
                 // false にしても [alt]+[Enter] が有効なのだが？

@@ -50,7 +50,7 @@ namespace Libra.Graphics
         /// <remarks>
         /// DXGI_SWAP_CHAIN_DESC.SampleDesc.Count。
         /// </remarks>
-        public int BackBufferMultiSampleCount;
+        public int BackBufferMultisampleCount;
 
         /// <summary>
         /// バック バッファのマルチサンプリング品質。
@@ -58,7 +58,7 @@ namespace Libra.Graphics
         /// <remarks>
         /// DXGI_SWAP_CHAIN_DESC.SampleDesc.Quality。
         /// </remarks>
-        public int BackBufferMultiSampleQuality;
+        public int BackBufferMultisampleQuality;
         
         /// <summary>
         /// 出力ウィンドウのハンドル。

@@ -140,15 +140,6 @@ namespace Libra.Graphics.SharpDX
 
         void InitializeDXGISwapChain(ref SwapChainSettings settings)
         {
-            int multiSampleQuality = 0;
-            if (1 < settings.BackBufferMultiSampleCount)
-            {
-                // 注意:
-                // Quality = 最大レベル - 1
-                multiSampleQuality = Device.CheckMultisampleQualityLevels(
-                    settings.BackBufferFormat, settings.BackBufferMultiSampleCount) - 1;
-            }
-
             var dxgiSwapChainFlags = DXGISwapChainFlags.None;
             // DXGISwapChainFlags.AllowModeSwitch のみ対応。
             if (AllowModeSwitch)
@@ -169,8 +160,8 @@ namespace Libra.Graphics.SharpDX
                 },
                 SampleDescription =
                 {
-                    Count = settings.BackBufferMultiSampleCount,
-                    Quality = multiSampleQuality
+                    Count = settings.BackBufferMultisampleCount,
+                    Quality = settings.BackBufferMultisampleQuality
                 },
                 Usage = DXGIUsage.RenderTargetOutput | DXGIUsage.ShaderInput,
                 BufferCount = BackBufferCount,
