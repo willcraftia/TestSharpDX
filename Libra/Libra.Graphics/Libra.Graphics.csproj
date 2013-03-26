@@ -162,6 +162,7 @@
     <Compile Include="IEffectMatrices.cs" />
     <Compile Include="IGraphicsFactory.cs" />
     <Compile Include="IGraphicsService.cs" />
+    <Compile Include="IShaderResourceView.cs" />
     <Compile Include="IVertexType.cs" />
     <Compile Include="ImageFileFormat.cs" />
     <Compile Include="IndexBuffer.cs" />

@@ -6,7 +6,7 @@ using System;
 
 namespace Libra.Graphics
 {
-    public abstract class ShaderResourceView : IDisposable
+    public abstract class ShaderResourceView : IShaderResourceView, IDisposable
     {
         bool initialized;
 
