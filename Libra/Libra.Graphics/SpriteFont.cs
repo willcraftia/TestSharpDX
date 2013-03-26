@@ -37,8 +37,13 @@ namespace Libra.Graphics
 
             public override string ToString()
             {
-                return "{Character:" + Character + ", Bounds:" + Bounds + ", Cropping:" + Cropping +
-                    ", LeftSideBearing:" + LeftSideBearing + ", RightSideBearing" + ", Width:" + Width + "}";
+                return "{Character:" + Character +
+                    " Bounds:" + Bounds +
+                    " Cropping:" + Cropping +
+                    " LeftSideBearing:" + LeftSideBearing +
+                    " RightSideBearing:" + RightSideBearing +
+                    " Width:" + Width +
+                    "}";
             }
 
             #endregion
@@ -119,6 +124,7 @@ namespace Libra.Graphics
             this.texture = texture;
             Characters = new ReadOnlyCollection<char>(characters);
             LineSpacing = lineSpacing;
+            Spacing = spacing;
             DefaultCharacter = defaultCharacter;
 
             glyphMap = new Dictionary<char, Glyph>(characters.Count);
