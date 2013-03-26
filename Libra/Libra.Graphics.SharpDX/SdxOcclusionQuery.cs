@@ -51,5 +51,17 @@ namespace Libra.Graphics.SharpDX
             var d3d11DeviceContext = (context as SdxDeviceContext).D3D11DeviceContext;
             return d3d11DeviceContext.GetData(D3D11Query, D3D11AsynchronousFlags.None, out result);
         }
+
+        #region IDisposable
+
+        protected override void DisposeOverride(bool disposing)
+        {
+            if (D3D11Query != null)
+                D3D11Query.Dispose();
+
+            base.DisposeOverride(disposing);
+        }
+
+        #endregion
     }
 }
