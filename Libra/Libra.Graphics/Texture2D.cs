@@ -10,47 +10,144 @@ namespace Libra.Graphics
 {
     public abstract class Texture2D : Resource
     {
-        public int Width { get; set; }
+        bool initialized;
 
-        public int Height { get; set; }
+        int width;
 
-        public int MipLevels { get; set; }
+        int height;
 
-        public SurfaceFormat Format { get; set; }
+        int mipLevels;
 
-        public int MultisampleCount { get; set; }
+        SurfaceFormat format;
+
+        int multisampleCount;
+
+        public int Width
+        {
+            get { return width; }
+            set
+            {
+                AssertNotInitialized();
+                if (value < 1) throw new ArgumentOutOfRangeException("value");
+
+                width = value;
+            }
+        }
+
+        public int Height
+        {
+            get { return height; }
+            set
+            {
+                AssertNotInitialized();
+                if (value < 1) throw new ArgumentOutOfRangeException("value");
+
+                height = value;
+            }
+        }
+
+        public int MipLevels
+        {
+            get { return mipLevels; }
+            set
+            {
+                AssertNotInitialized();
+                if (value < 1) throw new ArgumentOutOfRangeException("value");
+
+                mipLevels = value;
+            }
+        }
+
+        public SurfaceFormat Format
+        {
+            get { return format; }
+            set
+            {
+                AssertNotInitialized();
+
+                format = value;
+            }
+        }
+
+        public int MultisampleCount
+        {
+            get { return multisampleCount; }
+            set
+            {
+                AssertNotInitialized();
+                if (value < 1) throw new ArgumentOutOfRangeException("value");
+
+                multisampleCount = value;
+            }
+        }
 
         public int MultisampleQuality { get; protected set; }
 
         protected Texture2D(IDevice device)
             : base(device)
         {
-            MipLevels = 1;
-            Format = SurfaceFormat.Color;
-            MultisampleCount = 1;
+            width = 1;
+            height = 1;
+            mipLevels = 1;
+            format = SurfaceFormat.Color;
+            multisampleCount = 1;
             MultisampleQuality = 0;
         }
 
-        public abstract void Initialize();
+        public void Initialize()
+        {
+            AssertNotInitialized();
+            if (Usage == ResourceUsage.Immutable) throw new InvalidOperationException("Usage must be not immutable.");
 
-        public abstract void Initialize(Stream stream);
+            InitializeCore();
+
+            initialized = true;
+        }
+
+        public void Initialize(Stream stream)
+        {
+            AssertNotInitialized();
+            if (stream == null) throw new ArgumentNullException("stream");
+
+            InitializeCore(stream);
+
+            initialized = true;
+        }
 
         public void Initialize(string path)
         {
+            if (path == null) throw new ArgumentNullException("path");
+
             using (var stream = File.OpenRead(path))
             {
                 Initialize(stream);
             }
         }
 
-        public abstract void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png);
+        public void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png)
+        {
+            AssertInitialized();
+            if (context == null) throw new ArgumentNullException("context");
+            if (stream == null) throw new ArgumentNullException("stream");
+
+            SaveCore(context, stream, format);
+        }
 
         // GetData メソッドは、デバッグ目的と位置付ける。
         // データ取得のために内部で Staging リソースをインスタンス化し、
         // データ取得後に破棄するため、GetData の頻繁な呼び出しは GC 負荷となり得る。
 
-        public abstract void GetData<T>(
-            DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount) where T : struct;
+        public void GetData<T>(
+            DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount) where T : struct
+        {
+            AssertInitialized();
+            if (context == null) throw new ArgumentNullException("context");
+            if (data == null) throw new ArgumentNullException("data");
+            if (startIndex < 0) throw new ArgumentOutOfRangeException("startIndex");
+            if (data.Length < (startIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
+
+            GetDataCore(context, level, rectangle, data, startIndex, elementCount);
+        }
 
         public void GetData<T>(DeviceContext context, int level, T[] data) where T : struct
         {
@@ -74,7 +171,10 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, int level, T[] data, int startIndex, int elementCount) where T : struct
         {
+            if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
+            if (startIndex < 0) throw new ArgumentOutOfRangeException("startIndex");
+            if (data.Length < (startIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
 
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Data can not be set from CPU.");
@@ -157,6 +257,25 @@ namespace Libra.Graphics
         public void SetData<T>(DeviceContext context, int level, params T[] data) where T : struct
         {
             SetData(context, level, data, 0, data.Length);
+        }
+
+        protected abstract void InitializeCore();
+
+        protected abstract void InitializeCore(Stream stream);
+
+        protected abstract void SaveCore(DeviceContext context, Stream stream, ImageFileFormat format);
+
+        protected abstract void GetDataCore<T>(
+            DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount) where T : struct;
+
+        void AssertNotInitialized()
+        {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+        }
+
+        void AssertInitialized()
+        {
+            if (!initialized) throw new InvalidOperationException("Not initialized.");
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Libra.Graphics
 {
     public abstract class VertexShader : IDisposable
     {
+        bool initialized;
+
         // VertexShader の破棄と同時に InputLayout も破棄したいため、
         // VertexShader で InputLayout のキャッシュを管理。
 
@@ -31,15 +33,19 @@ namespace Libra.Graphics
 
         public void Initialize(byte[] shaderBytecode)
         {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
             if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
 
             ShaderBytecode = shaderBytecode;
 
             InitializeCore();
+
+            initialized = true;
         }
 
         public InputLayout GetInputLayout(VertexDeclaration vertexDeclaration)
         {
+            if (!initialized) throw new InvalidOperationException("Not initialized.");
             if (vertexDeclaration == null) throw new ArgumentNullException("vertexDeclaration");
 
             lock (inputLayoutMap)

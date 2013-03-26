@@ -22,7 +22,7 @@ namespace Libra.Graphics
             RenderTargetUsage = RenderTargetUsage.Discard;
         }
 
-        public sealed override void Initialize()
+        protected sealed override void InitializeCore()
         {
             InitializeRenderTarget();
 
@@ -30,7 +30,7 @@ namespace Libra.Graphics
                 DepthStencil = InitializeDepthStencil();
         }
 
-        public sealed override void Initialize(Stream stream)
+        protected sealed override void InitializeCore(Stream stream)
         {
             InitializeRenderTarget(stream);
 
@@ -46,8 +46,11 @@ namespace Libra.Graphics
 
         protected override void DisposeOverride(bool disposing)
         {
-            if (DepthStencil != null)
-                DepthStencil.Dispose();
+            if (disposing)
+            {
+                if (DepthStencil != null)
+                    DepthStencil.Dispose();
+            }
 
             base.DisposeOverride(disposing);
         }

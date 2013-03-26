@@ -47,15 +47,8 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        public override void Initialize()
+        protected override void InitializeCore()
         {
-            if (Usage == ResourceUsage.Immutable) throw new InvalidOperationException("Usage must be not immutable.");
-            if (Width < 1) throw new InvalidOperationException("Width < 1: " + Width);
-            if (Height < 1) throw new InvalidOperationException("Height < 1: " + Height);
-            if (MipLevels < 0) throw new InvalidOperationException("MipLevels < 0: " + MipLevels);
-            if (MultisampleCount < 1) throw new InvalidOperationException("MultisampleCount < 1: " + MultisampleCount);
-            if (MultisampleQuality < 0) throw new InvalidOperationException("MultisampleQuality < 0: " + MultisampleQuality);
-
             D3D11Texture2DDescription description;
             CreateD3D11Texture2DDescription(out description);
 
@@ -68,7 +61,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Texture2D = new D3D11Texture2D(D3D11Device, description);
         }
 
-        public override void Initialize(Stream stream)
+        protected override void InitializeCore(Stream stream)
         {
             // TODO
             //
@@ -90,14 +83,15 @@ namespace Libra.Graphics.SharpDX
             Usage = (ResourceUsage) description.Usage;
         }
 
-        public override void Save(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png)
+        protected override void SaveCore(DeviceContext context, Stream stream, ImageFileFormat format = ImageFileFormat.Png)
         {
             var d3d11DeviceContext = (context as SdxDeviceContext).D3D11DeviceContext;
 
             D3D11Resource.ToStream(d3d11DeviceContext, D3D11Texture2D, (D3D11ImageFileFormat) format, stream);
         }
 
-        public override void GetData<T>(DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount)
+        protected override void GetDataCore<T>(
+            DeviceContext context, int level, Rectangle? rectangle, T[] data, int startIndex, int elementCount)
         {
             int w;
             int h;

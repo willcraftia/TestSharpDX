@@ -8,6 +8,8 @@ namespace Libra.Graphics
 {
     public abstract class ShaderResourceView : IDisposable
     {
+        bool initialized;
+
         public IDevice Device { get; private set; }
 
         public Resource Resource { get; private set; }
@@ -21,12 +23,17 @@ namespace Libra.Graphics
 
         public void Initialize(Texture2D texture)
         {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+            if (texture == null) throw new ArgumentNullException("texture");
+
             Resource = texture;
 
-            Initialize();
+            InitializeCore();
+
+            initialized = true;
         }
 
-        protected abstract void Initialize();
+        protected abstract void InitializeCore();
 
         #region IDisposable
 

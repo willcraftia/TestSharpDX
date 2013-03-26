@@ -8,6 +8,8 @@ namespace Libra.Graphics
 {
     public abstract class RenderTargetView : IDisposable
     {
+        bool initialized;
+
         public IDevice Device { get; private set; }
 
         public RenderTarget RenderTarget { get; private set; }
@@ -23,6 +25,7 @@ namespace Libra.Graphics
 
         public void Initialize(RenderTarget renderTarget)
         {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
             if (renderTarget == null) throw new ArgumentNullException("renderTarget");
 
             RenderTarget = renderTarget;
@@ -31,6 +34,8 @@ namespace Libra.Graphics
 
             if (RenderTarget.DepthStencil != null)
                 DepthStencilView = InitializeDepthStencilView();
+
+            initialized = true;
         }
 
         protected abstract void InitializeRenderTargetView();

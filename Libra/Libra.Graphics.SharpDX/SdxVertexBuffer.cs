@@ -52,7 +52,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Buffer = D3D11Buffer.Create<T>(D3D11Device, data, description);
         }
 
-        public override void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount)
+        protected override void GetDataCore<T>(DeviceContext context, T[] data, int startIndex, int elementCount)
         {
             var stagingDescription = new D3D11BufferDescription
             {

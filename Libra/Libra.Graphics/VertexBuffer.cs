@@ -9,6 +9,8 @@ namespace Libra.Graphics
 {
     public abstract class VertexBuffer : Resource
     {
+        bool initialized;
+
         public VertexDeclaration VertexDeclaration { get; private set; }
 
         public int VertexCount { get; private set; }
@@ -20,20 +22,22 @@ namespace Libra.Graphics
 
         public void Initialize(VertexDeclaration vertexDeclaration, int vertexCount)
         {
+            AssertNotInitialized();
             if (vertexDeclaration == null) throw new ArgumentNullException("vertexDeclaration");
             if (vertexCount < 1) throw new ArgumentOutOfRangeException("vertexCount");
-
-            if (Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Usage must be not immutable.");
+            if (Usage == ResourceUsage.Immutable) throw new InvalidOperationException("Usage must be not immutable.");
 
             VertexDeclaration = vertexDeclaration;
             VertexCount = vertexCount;
 
             InitializeCore();
+
+            initialized = true;
         }
 
         public void Initialize<T>(VertexDeclaration vertexDeclaration, T[] data) where T : struct
         {
+            AssertNotInitialized();
             if (vertexDeclaration == null) throw new ArgumentNullException("vertexDeclaration");
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
 
@@ -41,23 +45,33 @@ namespace Libra.Graphics
             VertexCount = Marshal.SizeOf(typeof(T)) * data.Length / vertexDeclaration.Stride;
 
             InitializeCore(data);
+
+            initialized = true;
         }
 
         public void Initialize<T>(T[] data) where T : struct, IVertexType
         {
+            AssertNotInitialized();
             if (data.Length == 0) throw new ArgumentException("Data must be not empty.", "data");
 
             VertexDeclaration = data[0].VertexDeclaration;
             VertexCount = data.Length;
 
             InitializeCore(data);
+
+            initialized = true;
         }
 
-        protected abstract void InitializeCore();
+        public void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
+        {
+            AssertInitialized();
+            if (context == null) throw new ArgumentNullException("context");
+            if (data == null) throw new ArgumentNullException("data");
+            if (startIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
+            if (data.Length < (startIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
 
-        protected abstract void InitializeCore<T>(T[] data) where T : struct;
-
-        public abstract void GetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct;
+            GetDataCore(context, data, startIndex, elementCount);
+        }
 
         public void GetData<T>(DeviceContext context, T[] data) where T : struct
         {
@@ -66,7 +80,11 @@ namespace Libra.Graphics
 
         public void SetData<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct
         {
+            AssertInitialized();
+            if (context == null) throw new ArgumentNullException("context");
             if (data == null) throw new ArgumentNullException("data");
+            if (startIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
+            if (data.Length < (startIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
 
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Data can not be set from CPU.");
@@ -118,8 +136,13 @@ namespace Libra.Graphics
         public void SetData<T>(DeviceContext context, int offsetInBytes, T[] data, int sourceIndex, int elementCount,
             SetDataOptions options = SetDataOptions.None) where T : struct
         {
-            if (Usage != ResourceUsage.Dynamic)
-                throw new InvalidOperationException("Resource not writable.");
+            AssertInitialized();
+            if (context == null) throw new ArgumentNullException("context");
+            if (data == null) throw new ArgumentNullException("data");
+            if (sourceIndex < 1) throw new ArgumentOutOfRangeException("startIndex");
+            if (data.Length < (sourceIndex + elementCount)) throw new ArgumentOutOfRangeException("elementCount");
+            
+            if (Usage != ResourceUsage.Dynamic) throw new InvalidOperationException("Resource not writable.");
 
             if (options == SetDataOptions.Discard && Usage != ResourceUsage.Dynamic)
                 throw new InvalidOperationException("Resource.Usage must be dynamic for discard option.");
@@ -155,6 +178,22 @@ namespace Libra.Graphics
             {
                 gcHandle.Free();
             }
+        }
+
+        protected abstract void InitializeCore();
+
+        protected abstract void InitializeCore<T>(T[] data) where T : struct;
+
+        protected abstract void GetDataCore<T>(DeviceContext context, T[] data, int startIndex, int elementCount) where T : struct;
+
+        void AssertNotInitialized()
+        {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+        }
+
+        void AssertInitialized()
+        {
+            if (!initialized) throw new InvalidOperationException("Not initialized.");
         }
     }
 }

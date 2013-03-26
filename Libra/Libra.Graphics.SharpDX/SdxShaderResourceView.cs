@@ -22,7 +22,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        protected override void Initialize()
+        protected override void InitializeCore()
         {
             D3D11Resource d3d11Resource = null;
             if (Resource is SdxTexture2D)
