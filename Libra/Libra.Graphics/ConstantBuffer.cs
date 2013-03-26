@@ -9,22 +9,12 @@ namespace Libra.Graphics
 {
     public abstract class ConstantBuffer : Resource
     {
+        bool initialized;
+
         protected ConstantBuffer(IDevice device)
             : base(device)
         {
         }
-
-        public void Initialize(int byteWidth)
-        {
-            if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
-            if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
-            if (Usage == ResourceUsage.Immutable)
-                throw new InvalidOperationException("Usage must be not immutable.");
-
-            InitializeCore(byteWidth);
-        }
-
-        protected abstract void InitializeCore(int byteWidth);
 
         public void Initialize<T>() where T : struct
         {
@@ -36,20 +26,40 @@ namespace Libra.Graphics
             Initialize<T>(Marshal.SizeOf(typeof(T)), data);
         }
 
+        public void Initialize(int byteWidth)
+        {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+            if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
+            if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
+            if (Usage == ResourceUsage.Immutable)
+                throw new InvalidOperationException("Usage must be not immutable.");
+
+            InitializeCore(byteWidth);
+
+            initialized = true;
+        }
+
         public void Initialize<T>(int byteWidth, T data) where T : struct
         {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
             if (byteWidth < 1) throw new ArgumentOutOfRangeException("byteWidth");
             if ((byteWidth % 16) != 0) throw new ArgumentException("byteWidth must be a multiple of 16", "byteWidth");
 
             InitializeCore<T>(byteWidth, data);
+
+            initialized = true;
         }
 
-        protected abstract void InitializeCore<T>(int byteWidth, T data) where T : struct;
+        public void GetData<T>(DeviceContext context, out T data) where T : struct
+        {
+            if (context == null) throw new ArgumentNullException("context");
 
-        public abstract void GetData<T>(DeviceContext context, out T data) where T : struct;
+            GetDataCore(context, out data);
+        }
 
         public void SetData<T>(DeviceContext context, T data) where T : struct
         {
+            if (context == null) throw new ArgumentNullException("context");
             if (Usage == ResourceUsage.Immutable)
                 throw new InvalidOperationException("Data can not be set from CPU.");
 
@@ -84,5 +94,11 @@ namespace Libra.Graphics
                 gcHandle.Free();
             }
         }
+
+        protected abstract void InitializeCore(int byteWidth);
+
+        protected abstract void InitializeCore<T>(int byteWidth, T data) where T : struct;
+
+        protected abstract void GetDataCore<T>(DeviceContext context, out T data) where T : struct;
     }
 }
