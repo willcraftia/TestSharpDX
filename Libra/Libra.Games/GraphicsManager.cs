@@ -73,8 +73,6 @@ namespace Libra.Games
 
         object resizeSwapChainLock = new object();
 
-        public DeviceProfile Profile { get; set; }
-
         public IDevice Device { get; private set; }
 
         public ISwapChain SwapChain { get; private set; }
@@ -147,7 +145,6 @@ namespace Libra.Games
 
             this.game = game;
 
-            Profile = DeviceProfile.Level_11_0;
             preferredBackBufferWidth = DefaultBackBufferWidth;
             preferredBackBufferHeight = DefaultBackBufferHeight;
             preferredBackBufferFormat = SurfaceFormat.Color;
