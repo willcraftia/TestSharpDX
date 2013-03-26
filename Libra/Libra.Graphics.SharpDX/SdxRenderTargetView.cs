@@ -6,6 +6,7 @@ using D3D11Device = SharpDX.Direct3D11.Device;
 using D3D11RenderTargetView = SharpDX.Direct3D11.RenderTargetView;
 using D3D11RenderTargetViewDescription = SharpDX.Direct3D11.RenderTargetViewDescription;
 using D3D11RenderTargetViewDimension = SharpDX.Direct3D11.RenderTargetViewDimension;
+using D3D11ShaderResourceView = SharpDX.Direct3D11.ShaderResourceView;
 using DXGIFormat = SharpDX.DXGI.Format;
 
 #endregion
@@ -17,6 +18,8 @@ namespace Libra.Graphics.SharpDX
         public D3D11Device D3D11Device { get; private set; }
 
         public D3D11RenderTargetView D3D11RenderTargetView { get; private set; }
+
+        public D3D11ShaderResourceView D3D11ShaderResourceView { get; private set; }
 
         public SdxRenderTargetView(SdxDevice device)
             : base(device)
@@ -32,6 +35,7 @@ namespace Libra.Graphics.SharpDX
             var d3d11Resource = (RenderTarget as SdxRenderTarget).D3D11Texture2D;
 
             D3D11RenderTargetView = new D3D11RenderTargetView(D3D11Device, d3d11Resource, description);
+            D3D11ShaderResourceView = new D3D11ShaderResourceView(D3D11Device, d3d11Resource);
         }
 
         protected override DepthStencilView InitializeDepthStencilView()
@@ -70,6 +74,9 @@ namespace Libra.Graphics.SharpDX
             {
                 if (D3D11RenderTargetView != null)
                     D3D11RenderTargetView.Dispose();
+
+                if (D3D11ShaderResourceView != null)
+                    D3D11ShaderResourceView.Dispose();
             }
 
             base.DisposeOverride(disposing);
