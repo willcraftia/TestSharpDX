@@ -14,6 +14,100 @@ namespace Libra.Samples.ShadowMapping
 {
     public sealed class MainGame : Game
     {
+        #region CreateShadowMapShader
+
+        sealed class CreateShadowMapShader
+        {
+            public struct CreateShadowMapShaderConstants
+            {
+                public Matrix World;
+
+                public Matrix LightViewProjection;
+            }
+
+            public CreateShadowMapShaderConstants Constants;
+
+            public VertexShader VertexShader { get; private set; }
+
+            public PixelShader PixelShader { get; private set; }
+
+            public ConstantBuffer ConstantBuffer { get; private set; }
+
+            public CreateShadowMapShader(IDevice device, ShaderCompiler compiler)
+            {
+                VertexShader = device.CreateVertexShader();
+                VertexShader.Initialize(compiler.CompileVertexShader("CreateShadowMap.fx", "VS"));
+
+                PixelShader = device.CreatePixelShader();
+                PixelShader.Initialize(compiler.CompilePixelShader("CreateShadowMap.fx", "PS"));
+
+                ConstantBuffer = device.CreateConstantBuffer();
+                ConstantBuffer.Usage = ResourceUsage.Dynamic;
+                ConstantBuffer.Initialize<CreateShadowMapShaderConstants>();
+            }
+
+            public void Apply(DeviceContext context)
+            {
+                ConstantBuffer.SetData(context, Constants);
+
+                context.VertexShaderConstantBuffers[0] = ConstantBuffer;
+                context.VertexShader = VertexShader;
+                context.PixelShader = PixelShader;
+            }
+        }
+
+        #endregion
+
+        #region DrawModelShader
+
+        sealed class DrawModelShader
+        {
+            public struct DrawModelShaderConstants
+            {
+                public Matrix World;
+
+                public Matrix View;
+
+                public Matrix Projection;
+
+                public Matrix LightViewProjection;
+
+                public Vector3 LightDirection;
+
+                public float DepthBias;
+
+                public Vector4 AmbientColor;
+            }
+
+            public DrawModelShaderConstants Constants;
+            
+            public VertexShader VertexShader { get; private set; }
+
+            public PixelShader PixelShader { get; private set; }
+
+            public ConstantBuffer ConstantBuffer { get; private set; }
+
+            public DrawModelShader(IDevice device, ShaderCompiler compiler)
+            {
+                VertexShader = device.CreateVertexShader();
+                VertexShader.Initialize(compiler.CompileVertexShader("DrawModel.fx", "VS"));
+
+                PixelShader = device.CreatePixelShader();
+                PixelShader.Initialize(compiler.CompilePixelShader("DrawModel.fx", "PS"));
+
+                ConstantBuffer = device.CreateConstantBuffer();
+                ConstantBuffer.Usage = ResourceUsage.Dynamic;
+                ConstantBuffer.Initialize<DrawModelShaderConstants>();
+            }
+
+            public void Apply(DeviceContext context)
+            {
+                ConstantBuffer.SetData(context, Constants);
+            }
+        }
+
+        #endregion
+
         const int shadowMapWidthHeight = 2048;
 
         const int windowWidth = 800;
@@ -44,13 +138,9 @@ namespace Libra.Samples.ShadowMapping
         
         JoystickState currentJoystickState;
 
-        VertexShader createShadowMapVertexShader;
+        CreateShadowMapShader createShadowMapShader;
 
-        PixelShader createShadowMapPixelShader;
-
-        VertexShader drawModelVertexShader;
-
-        PixelShader drawModelPixelShader;
+        DrawModelShader drawModelShader;
 
         Model gridModel;
 
@@ -92,17 +182,8 @@ namespace Libra.Samples.ShadowMapping
             var compiler = new ShaderCompiler();
             compiler.RootPath = "../../Shaders/";
 
-            createShadowMapVertexShader = Device.CreateVertexShader();
-            createShadowMapVertexShader.Initialize(compiler.CompileVertexShader("CreateShadowMap.fx", "VS"));
-
-            createShadowMapPixelShader = Device.CreatePixelShader();
-            createShadowMapPixelShader.Initialize(compiler.CompilePixelShader("CreateShadowMap.fx", "PS"));
-
-            drawModelVertexShader = Device.CreateVertexShader();
-            drawModelVertexShader.Initialize(compiler.CompileVertexShader("DrawModel.fx", "VS"));
-
-            drawModelPixelShader = Device.CreatePixelShader();
-            drawModelPixelShader.Initialize(compiler.CompilePixelShader("DrawModel.fx", "PS"));
+            createShadowMapShader = new CreateShadowMapShader(Device, compiler);
+            drawModelShader = new DrawModelShader(Device, compiler);
 
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
 
@@ -210,10 +291,48 @@ namespace Libra.Samples.ShadowMapping
 
         void DrawModel(Model model, bool createShadowMap)
         {
-            string techniqueName = createShadowMap ? "CreateShadowMap" : "DrawWithShadowMap";
+            var context = Device.ImmediateContext;
 
-            Matrix[] transforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(transforms);
+            if (createShadowMap)
+            {
+                createShadowMapShader.Constants.World = world;
+                createShadowMapShader.Constants.LightViewProjection = lightViewProjection;
+                createShadowMapShader.Apply(context);
+            }
+            else
+            {
+                drawModelShader.Constants.World = world;
+                drawModelShader.Constants.View = view;
+                drawModelShader.Constants.Projection = projection;
+                drawModelShader.Constants.LightViewProjection = lightViewProjection;
+                drawModelShader.Constants.LightDirection = lightDir;
+                drawModelShader.Constants.DepthBias = 0.001f;
+                drawModelShader.Constants.AmbientColor = new Vector4(0.15f, 0.15f, 0.15f, 1.0f);
+                drawModelShader.Apply(context);
+
+                context.PixelShaderResources[1] = shadowRenderTargetView;
+            }
+
+            context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+
+            foreach (var mesh in model.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    context.SetVertexBuffer(0, meshPart.VertexBuffer);
+                    context.IndexBuffer = meshPart.IndexBuffer;
+
+                    if (!createShadowMap)
+                    {
+                        context.PixelShaderResources[0] = (meshPart.Effect as BasicEffect).Texture;
+                    }
+
+                    context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
+                }
+            }
+
+            //Matrix[] transforms = new Matrix[model.Bones.Count];
+            //model.CopyAbsoluteBoneTransformsTo(transforms);
 
             //foreach (var mesh in model.Meshes)
             //{
