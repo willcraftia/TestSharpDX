@@ -2,11 +2,7 @@
 
 using System;
 
-using D3D11Device = SharpDX.Direct3D11.Device;
-using D3D11DeviceCreationFlags = SharpDX.Direct3D11.DeviceCreationFlags;
-using D3DFeatureLevel = SharpDX.Direct3D.FeatureLevel;
 using DXGIAdapter1 = SharpDX.DXGI.Adapter1;
-using SDXSharpDXException = SharpDX.SharpDXException;
 
 #endregion
 
@@ -60,25 +56,6 @@ namespace Libra.Graphics.SharpDX
 
             if (0 < dxgiAdapter.Outputs.Length)
                 PrimaryOutput = Outputs[0];
-        }
-
-        public bool IsProfileSupported(DeviceProfile profile)
-        {
-            D3D11Device d3d11Device = null;
-            try
-            {
-                d3d11Device = new D3D11Device(DXGIAdapter, D3D11DeviceCreationFlags.None, (D3DFeatureLevel) profile);
-                return true;
-            }
-            catch (SDXSharpDXException)
-            {
-                return false;
-            }
-            finally
-            {
-                if (d3d11Device != null)
-                    d3d11Device.Dispose();
-            }
         }
 
         #region ToString

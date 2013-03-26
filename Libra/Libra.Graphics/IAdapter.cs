@@ -38,7 +38,5 @@ namespace Libra.Graphics
         IOutput PrimaryOutput { get; }
 
         bool IsDefaultAdapter { get; }
-
-        bool IsProfileSupported(DeviceProfile profile);
     }
 }
