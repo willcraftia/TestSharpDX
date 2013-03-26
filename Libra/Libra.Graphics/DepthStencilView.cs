@@ -8,6 +8,8 @@ namespace Libra.Graphics
 {
     public abstract class DepthStencilView : IDisposable
     {
+        bool initialized;
+
         public IDevice Device { get; private set; }
 
         public DepthStencil DepthStencil { get; private set; }
@@ -21,14 +23,17 @@ namespace Libra.Graphics
 
         public void Initialize(DepthStencil depthStencil)
         {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
             if (depthStencil == null) throw new ArgumentNullException("depthStencil");
 
             DepthStencil = depthStencil;
 
-            Initialize();
+            InitializeCore();
+
+            initialized = true;
         }
 
-        protected abstract void Initialize();
+        protected abstract void InitializeCore();
 
         #region IDisposable
 

@@ -27,10 +27,8 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        public override void Initialize()
+        protected override void InitializeCore()
         {
-            if (Format == DepthFormat.None) throw new InvalidOperationException("Format must be not 'None'.");
-
             D3D11Texture2DDescription description;
             CreateD3D11Texture2DDescription(out description);
 

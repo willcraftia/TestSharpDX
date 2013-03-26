@@ -25,7 +25,7 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        protected override void Initialize()
+        protected override void InitializeCore()
         {
             D3D11DepthStencilViewDescription description;
             CreateD3D11DepthStencilViewDescription(out description);
