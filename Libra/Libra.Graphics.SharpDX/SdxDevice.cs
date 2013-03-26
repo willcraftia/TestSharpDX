@@ -261,7 +261,14 @@ namespace Libra.Graphics.SharpDX
             description.AlphaToCoverageEnable = false;
             description.IndependentBlendEnable = false;
 
-            description.RenderTarget[0].IsBlendEnabled = true;
+            bool isBlendEnabled = true;
+            if (state.ColorSourceBlend == Blend.One &&
+                state.AlphaSourceBlend == Blend.One &&
+                state.ColorDestinationBlend == Blend.Zero &&
+                state.AlphaDestinationBlend == Blend.Zero)
+                isBlendEnabled = false;
+
+            description.RenderTarget[0].IsBlendEnabled = isBlendEnabled;
             description.RenderTarget[0].SourceBlend = (D3D11Blend) state.ColorSourceBlend;
             description.RenderTarget[0].DestinationBlend = (D3D11Blend) state.ColorDestinationBlend;
             description.RenderTarget[0].BlendOperation = (D3D11BlendOperation) state.ColorBlendFunction;
