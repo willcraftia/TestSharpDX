@@ -9,6 +9,8 @@ namespace Libra.Graphics
 {
     public abstract class InputLayout : IDisposable
     {
+        bool initialized;
+
         public IDevice Device { get; private set; }
 
         public int InputStride { get; private set; }
@@ -22,6 +24,7 @@ namespace Libra.Graphics
 
         public void Initialize(byte[] shaderBytecode, params InputElement[] elements)
         {
+            AssertNotInitialized();
             if (elements == null) throw new ArgumentNullException("elements");
             if (elements.Length == 0) throw new ArgumentException("elements is empty", "elements");
 
@@ -31,13 +34,19 @@ namespace Libra.Graphics
             }
 
             InitializeCore(shaderBytecode, elements);
+
+            initialized = true;
         }
 
         public void Initialize(byte[] shaderBytecode, VertexDeclaration vertexDeclaration)
         {
+            AssertNotInitialized();
+
             InputStride = vertexDeclaration.Stride;
 
             InitializeCore(shaderBytecode, vertexDeclaration.Elements);
+
+            initialized = true;
         }
 
         public void Initialize<T>(byte[] shaderBytecode) where T : IVertexType, new()
@@ -46,6 +55,11 @@ namespace Libra.Graphics
         }
 
         protected abstract void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements);
+
+        void AssertNotInitialized()
+        {
+            if (initialized) throw new InvalidOperationException("Already initialized.");
+        }
 
         #region IDisposable
 
