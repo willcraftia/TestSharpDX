@@ -46,6 +46,10 @@ namespace Libra.Games
 
         public const int DefaultBackBufferHeight = 480;
 
+        public const SurfaceFormat DefaultBackBufferFormat = SurfaceFormat.Color;
+
+        public const DepthFormat DefaultDepthStencilFormat = DepthFormat.Depth24Stencil8;
+
         // 自動的に利用可能なサンプル数が選択されるので、
         // デフォルトは最大サンプル数とする。
         public const int DefaultBackBufferMultisampleCount = MaxMultiSampleCount;
@@ -147,8 +151,8 @@ namespace Libra.Games
 
             preferredBackBufferWidth = DefaultBackBufferWidth;
             preferredBackBufferHeight = DefaultBackBufferHeight;
-            preferredBackBufferFormat = SurfaceFormat.Color;
-            preferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+            preferredBackBufferFormat = DefaultBackBufferFormat;
+            preferredDepthStencilFormat = DefaultDepthStencilFormat;
             preferredBackBufferMultisampleCount = DefaultBackBufferMultisampleCount;
             Windowed = true;
 
