@@ -196,7 +196,7 @@ namespace Libra.Samples.LensFlare
             float scale = glowSize * 2 / glowSprite.Width;
 
             spriteBatch.Begin();
-            spriteBatch.Draw(glowSpriteView, lightPosition, null, color, 0, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(glowSpriteView, lightPosition, null, color, 0, origin, scale);
             spriteBatch.End();
         }
 
