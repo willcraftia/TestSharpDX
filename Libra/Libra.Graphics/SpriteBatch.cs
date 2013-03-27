@@ -619,8 +619,8 @@ namespace Libra.Graphics
                 var mappedBuffer = context.Map(contextResoruces.VertexBuffer, 0, mapMode);
                 unsafe
                 {
-                    var vs = (VertexPositionColorTexture*) mappedBuffer.Pointer;
-                    var vertices = (VertexPositionColorTexture*) mappedBuffer.Pointer + contextResoruces.VertexBufferPosition * VerticesPerSprite;
+                    var vertices = (VertexPositionColorTexture*) mappedBuffer.Pointer +
+                        contextResoruces.VertexBufferPosition * VerticesPerSprite;
 
                     for (int i = 0; i < batchSize; i++)
                     {
