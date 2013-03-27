@@ -463,23 +463,25 @@ namespace Libra
 
         public static void Transpose(ref Matrix value, out Matrix result)
         {
-            Matrix temp = new Matrix();
-            temp.M11 = value.M11;
-            temp.M12 = value.M21;
-            temp.M13 = value.M31;
-            temp.M14 = value.M41;
-            temp.M21 = value.M12;
-            temp.M22 = value.M22;
-            temp.M23 = value.M32;
-            temp.M24 = value.M42;
-            temp.M31 = value.M13;
-            temp.M32 = value.M23;
-            temp.M33 = value.M33;
-            temp.M34 = value.M43;
-            temp.M41 = value.M14;
-            temp.M42 = value.M24;
-            temp.M43 = value.M34;
-            temp.M44 = value.M44;
+            var temp = new Matrix
+            {
+                M11 = value.M11,
+                M12 = value.M21,
+                M13 = value.M31,
+                M14 = value.M41,
+                M21 = value.M12,
+                M22 = value.M22,
+                M23 = value.M32,
+                M24 = value.M42,
+                M31 = value.M13,
+                M32 = value.M23,
+                M33 = value.M33,
+                M34 = value.M43,
+                M41 = value.M14,
+                M42 = value.M24,
+                M43 = value.M34,
+                M44 = value.M44
+            };
 
             result = temp;
         }
@@ -633,14 +635,16 @@ namespace Libra
             return result;
         }
 
-        public static void CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane,
-                                              out Matrix result)
+        public static void CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane, out Matrix result)
         {
-            float halfWidth = width * 0.5f;
-            float halfHeight = height * 0.5f;
-
-            CreateOrthographicOffCenter(-halfWidth, halfWidth, -halfHeight, halfHeight,
-                                        zNearPlane, zFarPlane, out result);
+            result = new Matrix
+            {
+                M11 = 2.0f / width,
+                M22 = 2.0f / height,
+                M33 = 1.0f / (zNearPlane - zFarPlane),
+                M43 = zNearPlane / (zNearPlane - zFarPlane),
+                M44 = 1.0f
+            };
         }
 
         public static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane)
@@ -653,15 +657,16 @@ namespace Libra
         public static void CreateOrthographicOffCenter(float left, float right, float bottom, float top,
                                                        float zNearPlane, float zFarPlane, out Matrix result)
         {
-            float zRange = 1.0f / (zFarPlane - zNearPlane);
-
-            result = Matrix.Identity;
-            result.M11 = 2.0f / (right - left);
-            result.M22 = 2.0f / (top - bottom);
-            result.M33 = -zRange;
-            result.M41 = (left + right) / (left - right);
-            result.M42 = (top + bottom) / (bottom - top);
-            result.M43 = -zNearPlane * zRange;
+            result = new Matrix
+            {
+                M11 = 2.0f / (right - left),
+                M22 = 2.0f / (top - bottom),
+                M33 = 1.0f / (zNearPlane - zFarPlane),
+                M41 = (left + right) / (left - right),
+                M42 = (top + bottom) / (bottom - top),
+                M43 = zNearPlane / (zNearPlane - zFarPlane),
+                M44 = 1.0f
+            };
         }
 
         public static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top,
@@ -695,14 +700,23 @@ namespace Libra
                                                         float nearPlaneDistance, float farPlaneDistance,
                                                         out Matrix result)
         {
-            float yScale = (float) (1.0 / Math.Tan(fieldOfView * 0.5f));
+            if (fieldOfView <= 0 || MathHelper.Pi <= fieldOfView) throw new ArgumentOutOfRangeException("fieldOfView");
+            if (aspectRatio <= 0) throw new ArgumentOutOfRangeException("aspectRatio");
+            if (nearPlaneDistance <= 0) throw new ArgumentOutOfRangeException("nearPlaneDistance");
+            if (farPlaneDistance <= 0) throw new ArgumentOutOfRangeException("farPlaneDistance");
+            if (farPlaneDistance <= nearPlaneDistance) throw new ArgumentException("farPlaneDistance <= nearPlaneDistance");
+
+            float yScale = (float) (1.0f / Math.Tan(fieldOfView * 0.5f));
             float xScale = yScale / aspectRatio;
 
-            float halfWidth = nearPlaneDistance / xScale;
-            float halfHeight = nearPlaneDistance / yScale;
-
-            CreatePerspectiveOffCenter(-halfWidth, halfWidth, -halfHeight, halfHeight,
-                                       nearPlaneDistance, farPlaneDistance, out result);
+            result = new Matrix
+            {
+                M11 = xScale,
+                M22 = yScale,
+                M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance),
+                M34 = -1.0f,
+                M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance)
+            };
         }
 
         public static Matrix CreatePerspectiveFieldOfView(float fieldOfView, float aspectRatio,
@@ -717,16 +731,20 @@ namespace Libra
                                                       float nearPlaneDistance, float farPlaneDistance,
                                                       out Matrix result)
         {
-            float zRange = farPlaneDistance / (farPlaneDistance - nearPlaneDistance);
+            if (nearPlaneDistance <= 0) throw new ArgumentOutOfRangeException("nearPlaneDistance");
+            if (farPlaneDistance <= 0) throw new ArgumentOutOfRangeException("farPlaneDistance");
+            if (farPlaneDistance <= nearPlaneDistance) throw new ArgumentException("farPlaneDistance <= nearPlaneDistance");
 
-            result = new Matrix();
-            result.M11 = 2.0f * nearPlaneDistance / (right - left);
-            result.M22 = 2.0f * nearPlaneDistance / (top - bottom);
-            result.M31 = -((left + right) / (left - right));
-            result.M32 = -((top + bottom) / (bottom - top));
-            result.M33 = -zRange;
-            result.M34 = -1.0f;
-            result.M43 = -nearPlaneDistance * zRange;
+            result = new Matrix
+            {
+                M11 = 2.0f * nearPlaneDistance / (right - left),
+                M22 = 2.0f * nearPlaneDistance / (top - bottom),
+                M31 = (left + right) / (right - left),
+                M32 = (top + bottom) / (top - bottom),
+                M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance),
+                M34 = -1.0f,
+                M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance)
+            };
         }
 
         public static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top,
