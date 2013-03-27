@@ -84,8 +84,6 @@ namespace Libra.Xnb
 
         List<ModelBone> currentChildBones;
 
-        ModelBone currentChildBone;
-
         List<ModelMesh> meshes;
 
         ModelMesh currentMesh;
