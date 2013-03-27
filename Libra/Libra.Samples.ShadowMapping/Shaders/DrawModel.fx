@@ -19,11 +19,11 @@ cbuffer Parameters : register(b0)
     float4   AmbientColor   : packoffset(c17);
 };
 
-Texture2D Texture   : register(t0);
-Texture2D ShadowMap : register(t1);
+Texture2D<float4> Texture   : register(t0);
+Texture2D<float>  ShadowMap : register(t1);
 
-sampler TextureSampler      : register(s0);
-sampler ShadowMapSampler    : register(s1);
+SamplerState TextureSampler     : register(s0);
+SamplerState ShadowMapSampler   : register(s1);
 
 struct VSInput
 {
@@ -67,7 +67,7 @@ float4 PS(VSOutput input) : SV_Target
     float2 ShadowTexCoord = 0.5 * lightingPosition.xy / lightingPosition.w + float2( 0.5, 0.5 );
     ShadowTexCoord.y = 1.0f - ShadowTexCoord.y;
 
-    float shadowdepth = ShadowMap.Sample(ShadowMapSampler, ShadowTexCoord).r;
+    float shadowdepth = ShadowMap.Sample(ShadowMapSampler, ShadowTexCoord);
 
     float ourdepth = (lightingPosition.z / lightingPosition.w) - DepthBias;
 
