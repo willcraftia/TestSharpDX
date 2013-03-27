@@ -105,6 +105,7 @@ namespace Libra.Samples.ShadowMapping
                 ConstantBuffer.SetData(context, Constants);
 
                 context.VertexShaderConstantBuffers[0] = ConstantBuffer;
+                context.PixelShaderConstantBuffers[0] = ConstantBuffer;
                 context.VertexShader = VertexShader;
                 context.PixelShader = PixelShader;
             }
