@@ -284,6 +284,8 @@ namespace Libra.Graphics
         /// </remarks>
         public const int SimultaneousRenderTargetCount = 8;
 
+        static readonly Color DiscardColor = Color.Purple;
+
         InputLayout inputLayout;
 
         PrimitiveTopology primitiveTopology;
@@ -578,12 +580,19 @@ namespace Libra.Graphics
                 activeRenderTargetViews[0] = Device.BackBufferRenderTargetView;
 
                 SetRenderTargetsCore(null);
+
+                ClearRenderTargetView(Device.BackBufferRenderTargetView, DiscardColor);
             }
             else
             {
                 activeRenderTargetViews[0] = renderTargetView;
 
                 SetRenderTargetsCore(activeRenderTargetViews);
+
+                if (renderTargetView.RenderTarget.RenderTargetUsage == RenderTargetUsage.Discard)
+                {
+                    ClearRenderTargetView(renderTargetView, DiscardColor);
+                }
             }
         }
 
@@ -602,6 +611,14 @@ namespace Libra.Graphics
                 Array.Clear(activeRenderTargetViews, renderTargetViews.Length, (SimultaneousRenderTargetCount - renderTargetViews.Length));
 
             SetRenderTargetsCore(renderTargetViews);
+
+            if (renderTargetViews[0].RenderTarget.RenderTargetUsage == RenderTargetUsage.Discard)
+            {
+                foreach (var renderTargetView in renderTargetViews)
+                {
+                    ClearRenderTargetView(renderTargetView, DiscardColor);
+                }
+            }
         }
 
         protected abstract void SetRenderTargetsCore(RenderTargetView[] renderTargets);
@@ -620,8 +637,18 @@ namespace Libra.Graphics
 
         protected abstract void SetShaderResourceCore(ShaderStage shaderStage, int slot, IShaderResourceView view);
 
+        public void ClearRenderTargetView(RenderTargetView renderTarget, Color color)
+        {
+            ClearRenderTargetView(renderTarget, ClearOptions.Target | ClearOptions.Depth | ClearOptions.Stencil, color, Viewport.MaxDepth);
+        }
+
+        public void ClearRenderTargetView(RenderTargetView renderTarget, Vector4 color)
+        {
+            ClearRenderTargetView(renderTarget, ClearOptions.Target | ClearOptions.Depth | ClearOptions.Stencil, color, Viewport.MaxDepth);
+        }
+
         public void ClearRenderTargetView(
-            RenderTargetView renderTarget, ClearOptions options, Color color, float depth, byte stencil)
+            RenderTargetView renderTarget, ClearOptions options, Color color, float depth, byte stencil = 0)
         {
             if (renderTarget == null) throw new ArgumentNullException("renderTarget");
 
@@ -629,7 +656,7 @@ namespace Libra.Graphics
         }
 
         public void ClearRenderTargetView(
-            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil)
+            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil = 0)
         {
             if (renderTarget == null) throw new ArgumentNullException("renderTarget");
 
