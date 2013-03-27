@@ -205,9 +205,10 @@ namespace Libra.Graphics.SharpDX
                 int renderTargetCount = renderTargets.Length;
                 for (int i = 0; i < d3d11RenderTargetViews.Length; i++)
                 {
-                    if (i < renderTargetCount)
+                    var sdxRenderTargetView = renderTargets[i] as SdxRenderTargetView;
+                    if (sdxRenderTargetView != null)
                     {
-                        d3d11RenderTargetViews[i] = (renderTargets[i] as SdxRenderTargetView).D3D11RenderTargetView;
+                        d3d11RenderTargetViews[i] = sdxRenderTargetView.D3D11RenderTargetView;
                     }
                     else
                     {
