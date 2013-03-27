@@ -646,7 +646,7 @@ namespace Libra.Graphics
 
         public void Clear(Vector4 color)
         {
-            Clear(ClearOptions.Target | ClearOptions.Depth | ClearOptions.Stencil, color);
+            Clear(ClearOptions.Target | ClearOptions.Depth | ClearOptions.Stencil, color, Viewport.MaxDepth);
         }
 
         public void Clear(ClearOptions options, Color color, float depth = 1f, byte stencil = 0)
