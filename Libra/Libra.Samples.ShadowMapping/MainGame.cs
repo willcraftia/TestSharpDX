@@ -339,12 +339,11 @@ namespace Libra.Samples.ShadowMapping
 
         void DrawShadowMapToScreen()
         {
-            spriteBatch.Begin(0, BlendState.Opaque, SamplerState.PointClamp, null, null);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque, SamplerState.PointClamp);
             spriteBatch.Draw(shadowRenderTargetView, new Rectangle(0, 0, 128, 128), Color.White);
             spriteBatch.End();
 
             var context = Device.ImmediateContext;
-
             context.PixelShaderResources[0] = null;
             context.PixelShaderSamplers[0] = SamplerState.LinearWrap;
         }
