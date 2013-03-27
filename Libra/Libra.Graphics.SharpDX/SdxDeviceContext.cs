@@ -162,9 +162,9 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        protected override void SetRenderTargetsCore(RenderTargetView[] renderTargets)
+        protected override void SetRenderTargetsCore(RenderTargetView[] renderTargetViews)
         {
-            if (renderTargets == null)
+            if (renderTargetViews == null)
             {
                 // レンダ ターゲットと深度ステンシルの解除。
                 D3D11DeviceContext.OutputMerger.SetTargets((D3D11DepthStencilView) null, (D3D11RenderTargetView[]) null);
@@ -189,7 +189,7 @@ namespace Libra.Graphics.SharpDX
             else
             {
                 // 深度ステンシルは先頭のレンダ ターゲットの物を利用。
-                var depthStencilView = renderTargets[0].DepthStencilView;
+                var depthStencilView = renderTargetViews[0].DepthStencilView;
 
                 D3D11DepthStencilView d3d11DepthStencilView = null;
                 if (depthStencilView != null)
@@ -202,10 +202,10 @@ namespace Libra.Graphics.SharpDX
                 // MRT の場合に各レンダ ターゲット間の整合性 (サイズ等) を確認すべき。
 
                 // インタフェース差異のため、D3D 実体参照を作業配列へコピー。
-                int renderTargetCount = renderTargets.Length;
+                int renderTargetCount = renderTargetViews.Length;
                 for (int i = 0; i < d3d11RenderTargetViews.Length; i++)
                 {
-                    var sdxRenderTargetView = renderTargets[i] as SdxRenderTargetView;
+                    var sdxRenderTargetView = renderTargetViews[i] as SdxRenderTargetView;
                     if (sdxRenderTargetView != null)
                     {
                         d3d11RenderTargetViews[i] = sdxRenderTargetView.D3D11RenderTargetView;
@@ -220,6 +220,10 @@ namespace Libra.Graphics.SharpDX
 
                 // 参照を残さないために作業配列をクリア。
                 Array.Clear(d3d11RenderTargetViews, 0, renderTargetCount);
+
+                // ビューポートの更新。
+                var renderTarget = renderTargetViews[0].RenderTarget;
+                Viewport = new Viewport(0, 0, renderTarget.Width, renderTarget.Height);
             }
         }
 
