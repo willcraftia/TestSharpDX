@@ -335,6 +335,18 @@ namespace Libra.Samples.ShadowMapping
                     context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
                 }
             }
+
+            if (!createShadowMap)
+            {
+                // レンダ ターゲットの場合、明示的に参照を外す必要がある。
+                // レンダ ターゲットの Texture2D を、RenderTargetView と ShaderResourceView の
+                // 両方で同時に参照された状態となる時、
+                // 入力側 (ShaderResourceView) には 0 で埋められたテクスチャが強制的に設定される。
+                // もし、ここでレンダ ターゲットの ShaderResourceView を外さなかった場合、
+                // 次の描画で RenderTargetView として設定される事になるため、
+                // 強制リセットが発生する。
+                context.PixelShaderResources[1] = null;
+            }
         }
 
         void DrawShadowMapToScreen()
