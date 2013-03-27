@@ -178,22 +178,19 @@ namespace Libra.Graphics.SharpDX
                 var gcHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
                 try
                 {
-                    unsafe
-                    {
-                        var dataPointer = gcHandle.AddrOfPinnedObject();
-                        var sizeOfT = Marshal.SizeOf(typeof(T));
-                        var destinationPtr = (IntPtr) ((byte*) dataPointer + startIndex * sizeOfT);
-                        var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
+                    var dataPointer = gcHandle.AddrOfPinnedObject();
+                    var sizeOfT = Marshal.SizeOf(typeof(T));
+                    var destinationPointer = (IntPtr) (dataPointer + startIndex * sizeOfT);
+                    var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
 
-                        var dataBox = d3dDeviceContext.MapSubresource(staging, level, D3D11MapMode.Read, D3D11MapFlags.None);
-                        try
-                        {
-                            SDXUtilities.CopyMemory(destinationPtr, dataBox.DataPointer, sizeInBytes);
-                        }
-                        finally
-                        {
-                            d3dDeviceContext.UnmapSubresource(staging, level);
-                        }
+                    var mappedBuffer = d3dDeviceContext.MapSubresource(staging, level, D3D11MapMode.Read, D3D11MapFlags.None);
+                    try
+                    {
+                        SDXUtilities.CopyMemory(destinationPointer, mappedBuffer.DataPointer, sizeInBytes);
+                    }
+                    finally
+                    {
+                        d3dDeviceContext.UnmapSubresource(staging, level);
                     }
                 }
                 finally
