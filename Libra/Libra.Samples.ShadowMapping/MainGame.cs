@@ -342,9 +342,11 @@ namespace Libra.Samples.ShadowMapping
                 // レンダ ターゲットの Texture2D を、RenderTargetView と ShaderResourceView の
                 // 両方で同時に参照された状態となる時、
                 // 入力側 (ShaderResourceView) には 0 で埋められたテクスチャが強制的に設定される。
-                // もし、ここでレンダ ターゲットの ShaderResourceView を外さなかった場合、
-                // 次の描画で RenderTargetView として設定される事になるため、
-                // 強制リセットが発生する。
+                //
+                // 恐らく、ここでレンダ ターゲットの ShaderResourceView を外さなかった場合、
+                // 次の描画で深度マップを描画する際に RenderTargetView として設定するが、
+                // シェーダ ステージには ShaderResourceView として残っているため、
+                // そのタイミングで ShaderResourceView が強制リセットされるのではないか、と。
                 context.PixelShaderResources[1] = null;
             }
         }
