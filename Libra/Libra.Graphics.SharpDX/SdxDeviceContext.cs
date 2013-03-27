@@ -38,7 +38,8 @@ namespace Libra.Graphics.SharpDX
 
         bool deferred;
 
-        D3D11RenderTargetView[] activeD3D11RenderTargetViews;
+        // 作業用配列。
+        D3D11RenderTargetView[] d3d11RenderTargetViews;
 
         public override bool Deferred
         {
@@ -57,7 +58,7 @@ namespace Libra.Graphics.SharpDX
 
             deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
-            activeD3D11RenderTargetViews = new D3D11RenderTargetView[SimultaneousRenderTargetCount];
+            d3d11RenderTargetViews = new D3D11RenderTargetView[SimultaneousRenderTargetCount];
         }
 
         protected override void OnInputLayoutChanged()
@@ -161,18 +162,34 @@ namespace Libra.Graphics.SharpDX
             }
         }
 
-        protected override void SetRenderTargetCore(RenderTargetView renderTarget)
+        protected override void SetRenderTargetsCore(RenderTargetView[] renderTargets)
         {
-            if (renderTarget == null)
+            if (renderTargets == null)
             {
-                // null 指定の場合はレンダ ターゲットおよび深度ステンシルを外す。
+                // レンダ ターゲットと深度ステンシルの解除。
                 D3D11DeviceContext.OutputMerger.SetTargets((D3D11DepthStencilView) null, (D3D11RenderTargetView[]) null);
+
+                var renderTargetView = Device.BackBufferRenderTargetView;
+                var depthStencilView = renderTargetView.DepthStencilView;
+
+                var d3d11RenderTargetView = (renderTargetView as SdxRenderTargetView).D3D11RenderTargetView;
+                D3D11DepthStencilView d3d11DepthStencilView = null;
+                if (depthStencilView != null)
+                {
+                    d3d11DepthStencilView = (depthStencilView as SdxDepthStencilView).D3D11DepthStencilView;
+                }
+
+                // バック バッファのレンダ ターゲットと深度ステンシルの設定。
+                D3D11DeviceContext.OutputMerger.SetTargets(d3d11DepthStencilView, d3d11RenderTargetView);
+
+                // ビューポートの更新。
+                var renderTarget = renderTargetView.RenderTarget;
+                Viewport = new Viewport(0, 0, renderTarget.Width, renderTarget.Height);
             }
             else
             {
-
                 // 深度ステンシルは先頭のレンダ ターゲットの物を利用。
-                var depthStencilView = renderTarget.DepthStencilView;
+                var depthStencilView = renderTargets[0].DepthStencilView;
 
                 D3D11DepthStencilView d3d11DepthStencilView = null;
                 if (depthStencilView != null)
@@ -180,44 +197,29 @@ namespace Libra.Graphics.SharpDX
                     d3d11DepthStencilView = (depthStencilView as SdxDepthStencilView).D3D11DepthStencilView;
                 }
 
-                activeD3D11RenderTargetViews[0] = (renderTarget as SdxRenderTargetView).D3D11RenderTargetView;
+                // TODO
+                //
+                // MRT の場合に各レンダ ターゲット間の整合性 (サイズ等) を確認すべき。
 
-                D3D11DeviceContext.OutputMerger.SetTargets(d3d11DepthStencilView, activeD3D11RenderTargetViews[0]);
-            }
-        }
-
-        protected override void SetRenderTargetsCore(RenderTargetView[] renderTargets)
-        {
-            // 深度ステンシルは先頭のレンダ ターゲットの物を利用。
-            var depthStencilView = renderTargets[0].DepthStencilView;
-
-            D3D11DepthStencilView d3d11DepthStencilView = null;
-            if (depthStencilView != null)
-            {
-                d3d11DepthStencilView = (depthStencilView as SdxDepthStencilView).D3D11DepthStencilView;
-            }
-
-            // TODO
-            //
-            // MRT の場合に各レンダ ターゲット間の整合性 (サイズ等) を確認すべき。
-
-            // インタフェースの差異の関係上、D3D 実体をコピーして保持。
-            for (int i = 0; i < activeD3D11RenderTargetViews.Length; i++)
-            {
-                if (i < renderTargets.Length)
+                // インタフェース差異のため、D3D 実体参照を作業配列へコピー。
+                int renderTargetCount = renderTargets.Length;
+                for (int i = 0; i < d3d11RenderTargetViews.Length; i++)
                 {
-                    if (renderTargets[i] == null)
-                        throw new ArgumentException(string.Format("renderTargets[{0}] is null.", i), "renderTargets");
+                    if (i < renderTargetCount)
+                    {
+                        d3d11RenderTargetViews[i] = (renderTargets[i] as SdxRenderTargetView).D3D11RenderTargetView;
+                    }
+                    else
+                    {
+                        d3d11RenderTargetViews[i] = null;
+                    }
+                }
 
-                    activeD3D11RenderTargetViews[i] = (renderTargets[i] as SdxRenderTargetView).D3D11RenderTargetView;
-                }
-                else
-                {
-                    activeD3D11RenderTargetViews[i] = null;
-                }
+                D3D11DeviceContext.OutputMerger.SetTargets(d3d11DepthStencilView, d3d11RenderTargetViews);
+
+                // 参照を残さないために作業配列をクリア。
+                Array.Clear(d3d11RenderTargetViews, 0, renderTargetCount);
             }
-
-            D3D11DeviceContext.OutputMerger.SetTargets(d3d11DepthStencilView, activeD3D11RenderTargetViews);
         }
 
         protected override void OnVertexShaderChanged()

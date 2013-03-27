@@ -41,7 +41,7 @@ namespace Libra.Graphics.SharpDX
             return new SdxDevice(adapter as SdxAdapter, settings, profiles);
         }
 
-        public ISwapChain CreateSwapChain(IDevice device, SwapChainSettings settings)
+        public SwapChain CreateSwapChain(IDevice device, SwapChainSettings settings)
         {
             return new SdxSwapChain(device as SdxDevice, settings);
         }

@@ -160,7 +160,7 @@ namespace Libra.Games
 
         public IDevice Device { get; private set; }
 
-        public ISwapChain SwapChain { get; private set; }
+        public SwapChain SwapChain { get; private set; }
 
         public Game()
         {

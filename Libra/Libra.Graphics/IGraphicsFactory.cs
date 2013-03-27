@@ -15,6 +15,6 @@ namespace Libra.Graphics
 
         IDevice CreateDevice(IAdapter adapter, DeviceSettings settings, DeviceProfile[] profiles);
 
-        ISwapChain CreateSwapChain(IDevice device, SwapChainSettings settings);
+        SwapChain CreateSwapChain(IDevice device, SwapChainSettings settings);
     }
 }

@@ -25,6 +25,7 @@ using D3D11RasterizerStateDescription = SharpDX.Direct3D11.RasterizerStateDescri
 using D3D11SamplerState = SharpDX.Direct3D11.SamplerState;
 using D3D11SamplerStateDescription = SharpDX.Direct3D11.SamplerStateDescription;
 using D3D11StencilOperation = SharpDX.Direct3D11.StencilOperation;
+using D3D11Texture2D = SharpDX.Direct3D11.Texture2D;
 using D3D11TextureAddressMode = SharpDX.Direct3D11.TextureAddressMode;
 using D3DDriverType = SharpDX.Direct3D.DriverType;
 using D3DFeatureLevel = SharpDX.Direct3D.FeatureLevel;
@@ -55,8 +56,14 @@ namespace Libra.Graphics.SharpDX
         // イベントを発生させるためのトリガーを作れない。
 
         public event EventHandler Disposing;
-        
+
+        public event EventHandler BackBuffersResetting;
+
+        public event EventHandler BackBuffersReset;
+
         public readonly DeviceSettings Settings;
+
+        RenderTarget backBufferRenderTarget;
 
         public IAdapter Adapter { get; private set; }
 
@@ -75,6 +82,8 @@ namespace Libra.Graphics.SharpDX
         public RasterizerStateManager RasterizerStateManager { get; private set; }
 
         public DepthStencilStateManager DepthStencilStateManager { get; private set; }
+
+        public RenderTargetView BackBufferRenderTargetView { get; private set; }
 
         public SdxDevice(SdxAdapter adapter, DeviceSettings settings, DeviceProfile[] profiles)
         {
@@ -201,7 +210,7 @@ namespace Libra.Graphics.SharpDX
 
         public RenderTarget CreateRenderTarget()
         {
-            return new SdxRenderTarget(this);
+            return new SdxRenderTarget(this, false);
         }
 
         public ShaderResourceView CreateShaderResourceView()
@@ -240,6 +249,63 @@ namespace Libra.Graphics.SharpDX
             if (sampleCount == 1) return 0;
 
             return D3D11Device.CheckMultisampleQualityLevels((DXGIFormat) format, sampleCount);
+        }
+
+        public void SetSwapChain(SwapChain swapChain)
+        {
+            swapChain.BackBuffersResizing += OnSwapChainBackBuffersResizing;
+            swapChain.BackBuffersResized += OnSwapChainBackBuffersResized;
+
+            InitializeBackBufferRenderTarget(swapChain);
+
+            // バック バッファ レンダ ターゲットの設定。
+            ImmediateContext.SetRenderTarget(null);
+        }
+
+        void OnSwapChainBackBuffersResizing(object sender, EventArgs e)
+        {
+            ReleaseBackBufferRenderTarget();
+        }
+
+        void OnSwapChainBackBuffersResized(object sender, EventArgs e)
+        {
+            InitializeBackBufferRenderTarget(sender as SwapChain);
+        }
+
+        void InitializeBackBufferRenderTarget(SwapChain swapChain)
+        {
+            // バッファ リサイズ時にバッファの破棄が発生するため、
+            // 深度ステンシルを共有している設定は自由に破棄できずに都合が悪い。
+            // よって、共有不可 (RenderTargetUsage.Preserve) でレンダ ターゲットを生成。
+
+            backBufferRenderTarget = CreateRenderTarget();
+            backBufferRenderTarget.Name = "BackBuffer_0";
+            backBufferRenderTarget.DepthFormat = swapChain.DepthStencilFormat;
+            backBufferRenderTarget.RenderTargetUsage = RenderTargetUsage.Preserve;
+            backBufferRenderTarget.Initialize(swapChain, 0);
+
+            BackBufferRenderTargetView = CreateRenderTargetView();
+            BackBufferRenderTargetView.Initialize(backBufferRenderTarget);
+
+            if (BackBuffersReset != null)
+                BackBuffersReset(this, EventArgs.Empty);
+        }
+
+        void ReleaseBackBufferRenderTarget()
+        {
+            if (BackBuffersResetting != null)
+                BackBuffersResetting(this, EventArgs.Empty);
+
+            if (backBufferRenderTarget != null)
+            {
+                backBufferRenderTarget.Dispose();
+                backBufferRenderTarget = null;
+            }
+            if (BackBufferRenderTargetView != null)
+            {
+                BackBufferRenderTargetView.Dispose();
+                BackBufferRenderTargetView = null;
+            }
         }
 
         D3DFeatureLevel[] ToD3DFeatureLevels(DeviceProfile[] profiles)

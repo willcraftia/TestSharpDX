@@ -12,6 +12,6 @@ namespace Libra.Graphics
 
         IDevice Device { get; }
 
-        ISwapChain SwapChain { get; }
+        SwapChain SwapChain { get; }
     }
 }

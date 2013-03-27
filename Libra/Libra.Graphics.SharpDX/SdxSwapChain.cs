@@ -2,7 +2,7 @@
 
 using System;
 
-using D3D11Texture2D = SharpDX.Direct3D11.Texture2D;
+// DXGI インタフェースのみで構成したい。
 using DXGIFactory1 = SharpDX.DXGI.Factory1;
 using DXGIFormat = SharpDX.DXGI.Format;
 using DXGIModeDescription = SharpDX.DXGI.ModeDescription;
@@ -17,101 +17,114 @@ using DXGIUsage = SharpDX.DXGI.Usage;
 
 namespace Libra.Graphics.SharpDX
 {
-    public sealed class SdxSwapChain : ISwapChain
+    public sealed class SdxSwapChain : SwapChain
     {
         /// <summary>
         /// バック バッファ数。
         /// </summary>
         public const int BackBufferCount = 2;
 
+        int backBufferWidth;
+
+        int backBufferHeight;
+        
+        SurfaceFormat backBufferFormat;
+        
+        int backBufferMultiSampleCount;
+        
+        int backBufferMultiSampleQuality;
+        
+        bool windowed;
+        
+        bool allowModeSwitch;
+        
+        DepthFormat depthStencilFormat;
+        
+        int syncInterval;
+
         RefreshRate refreshRate;
 
         DXGISwapChainFlags dxgiSwapChainFlags;
 
-        SdxRenderTarget renderTarget;
+        public override int BackBufferWidth
+        {
+            get { return backBufferWidth; }
+        }
 
-        public SdxDevice Device { get; private set; }
+        public override int BackBufferHeight
+        {
+            get { return backBufferHeight; }
+        }
 
-        public int BackBufferWidth { get; private set; }
+        public override SurfaceFormat BackBufferFormat
+        {
+            get { return backBufferFormat; }
+        }
 
-        public int BackBufferHeight { get; private set; }
+        public override int BackBufferMultiSampleCount
+        {
+            get { return backBufferMultiSampleCount; }
+        }
 
-        public SurfaceFormat BackBufferFormat { get; private set; }
+        public override int BackBufferMultiSampleQuality
+        {
+            get { return backBufferMultiSampleQuality; }
+        }
 
-        public int BackBufferMultiSampleCount { get; private set; }
+        public override bool Windowed
+        {
+            get { return windowed; }
+        }
 
-        public int BackBufferMultiSampleQuality { get; private set; }
+        public override bool AllowModeSwitch
+        {
+            get { return allowModeSwitch; }
+        }
 
-        public bool Windowed { get; private set; }
+        public override DepthFormat DepthStencilFormat
+        {
+            get { return depthStencilFormat; }
+        }
 
-        public bool AllowModeSwitch { get; private set; }
-
-        public DepthFormat DepthStencilFormat { get; private set; }
-
-        public int SyncInterval { get; private set; }
-
-        public RenderTargetView RenderTargetView { get; private set; }
+        public override int SyncInterval
+        {
+            get { return syncInterval; }
+        }
 
         public DXGISwapChain DXGISwapChain { get; private set; }
 
         public SdxSwapChain(SdxDevice device, SwapChainSettings settings)
+            : base(device)
         {
-            if (device == null) throw new ArgumentNullException("device");
-
-            Device = device;
-
-            DepthStencilFormat = settings.DepthStencilFormat;
-            SyncInterval = settings.SyncInterval;
+            depthStencilFormat = settings.DepthStencilFormat;
+            allowModeSwitch = settings.AllowModeSwitch;
+            syncInterval = settings.SyncInterval;
 
             InitializeDXGISwapChain(ref settings);
-            InitializeBackBuffer();
         }
 
-        public void Present()
+        public override void Present()
         {
             // TODO
             // DXGIPresentFlags を理解できていない。
             DXGISwapChain.Present(SyncInterval, DXGIPresentFlags.None);
         }
 
-        public void ResizeBuffers(int width, int height)
+        protected override void ResizeBuffersCore(int width, int height, int bufferCount, SurfaceFormat format)
         {
-            ResizeBuffers(width, height, 1, BackBufferFormat);
-        }
-
-        public void ResizeBuffers(int width, int height, int bufferCount, SurfaceFormat format)
-        {
-            if (width < 0) throw new ArgumentOutOfRangeException("width");
-            if (height < 0) throw new ArgumentOutOfRangeException("height");
-            if (bufferCount < 0) throw new ArgumentOutOfRangeException("bufferCount");
-
             // ResizeBuffers
             //
             // バック バッファのサイズ、フォーマット、バッファ数を変更。
             // ウィンドウのサイズが変更された時に呼び出す必要がある。
-            //
-            // width = 0 や height = 0 の場合、
-            // 対象ウィンドウのクライアント領域のサイズが用いられる。
-            // bufferCount = 0 の場合、既存のバッファ数が保持される。
-            // 
 
-            BackBufferWidth = width;
-            BackBufferHeight = height;
-            BackBufferFormat = format;
-
-            // ResizeBuffers の前には、スワップ チェーンに関連付けられた
-            // 全てのリソースを解放しなければならない。
-            ReleaseBackBuffer();
+            backBufferWidth = width;
+            backBufferHeight = height;
+            backBufferFormat = format;
 
             DXGISwapChain.ResizeBuffers(bufferCount, width, height, (DXGIFormat) format, dxgiSwapChainFlags);
         }
 
-        public void ResizeTarget()
-        {
-            ResizeTarget(BackBufferWidth, BackBufferHeight);
-        }
-
-        public void ResizeTarget(int width, int height)
+        protected override void ResizeTargetCore(int width, int height)
         {
             // ResizeTarget
             //
@@ -140,7 +153,7 @@ namespace Libra.Graphics.SharpDX
 
         void InitializeDXGISwapChain(ref SwapChainSettings settings)
         {
-            var dxgiSwapChainFlags = DXGISwapChainFlags.None;
+            dxgiSwapChainFlags = DXGISwapChainFlags.None;
             // DXGISwapChainFlags.AllowModeSwitch のみ対応。
             if (AllowModeSwitch)
                 dxgiSwapChainFlags |= DXGISwapChainFlags.AllowModeSwitch;
@@ -171,8 +184,9 @@ namespace Libra.Graphics.SharpDX
                 Flags = dxgiSwapChainFlags
             };
 
-            var dxgiFactory = (Device.Adapter as SdxAdapter).DXGIAdapter.GetParent<DXGIFactory1>();
-            DXGISwapChain = new DXGISwapChain(dxgiFactory, Device.D3D11Device, description);
+            var sdxDevice = Device as SdxDevice;
+            var dxgiFactory = (sdxDevice.Adapter as SdxAdapter).DXGIAdapter.GetParent<DXGIFactory1>();
+            DXGISwapChain = new DXGISwapChain(dxgiFactory, sdxDevice.D3D11Device, description);
 
             // スワップ チェーンの生成では、推測により値が決定されるものも含まれるため、
             // スワップ チェーンの設定を示すプロパティについては、
@@ -180,80 +194,31 @@ namespace Libra.Graphics.SharpDX
 
             description = DXGISwapChain.Description;
 
-            BackBufferWidth = description.ModeDescription.Width;
-            BackBufferHeight = description.ModeDescription.Height;
-            BackBufferFormat = (SurfaceFormat) description.ModeDescription.Format;
+            backBufferWidth = description.ModeDescription.Width;
+            backBufferHeight = description.ModeDescription.Height;
+            backBufferFormat = (SurfaceFormat) description.ModeDescription.Format;
             refreshRate = new RefreshRate
             {
                 Numerator = description.ModeDescription.RefreshRate.Numerator,
                 Denominator = description.ModeDescription.RefreshRate.Denominator
             };
-            BackBufferMultiSampleCount = description.SampleDescription.Count;
-            BackBufferMultiSampleQuality = description.SampleDescription.Quality;
-            Windowed = description.IsWindowed;
+            backBufferMultiSampleCount = description.SampleDescription.Count;
+            backBufferMultiSampleQuality = description.SampleDescription.Quality;
+            windowed = description.IsWindowed;
 
             dxgiSwapChainFlags = description.Flags;
         }
 
-        void InitializeBackBuffer()
-        {
-            var backBuffer = DXGISwapChain.GetBackBuffer<D3D11Texture2D>(0);
-
-            // バッファ リサイズ時にバッファの破棄が発生するため、
-            // 深度ステンシルを共有している設定は自由に破棄できずに都合が悪い。
-            // よって、共有不可 (RenderTargetUsage.Preserve) でレンダ ターゲットを生成。
-
-            renderTarget = Device.CreateRenderTarget() as SdxRenderTarget;
-            renderTarget.Name = "BackBuffer_0";
-            renderTarget.DepthFormat = DepthStencilFormat;
-            renderTarget.RenderTargetUsage = RenderTargetUsage.Preserve;
-            renderTarget.Initialize(backBuffer);
-
-            RenderTargetView = Device.CreateRenderTargetView();
-            RenderTargetView.Initialize(renderTarget);
-        }
-
-        void ReleaseBackBuffer()
-        {
-            if (renderTarget != null)
-            {
-                renderTarget.Dispose();
-                renderTarget = null;
-            }
-
-            if (RenderTargetView != null)
-            {
-                RenderTargetView.Dispose();
-                RenderTargetView = null;
-            }
-        }
-
         #region IDisposable
 
-        bool disposed;
-
-        ~SdxSwapChain()
+        protected override void DisposeOverride(bool disposing)
         {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (disposed) return;
-
             if (disposing)
             {
-                RenderTargetView.Dispose();
                 DXGISwapChain.Dispose();
             }
 
-            disposed = true;
+            base.DisposeOverride(disposing);
         }
 
         #endregion

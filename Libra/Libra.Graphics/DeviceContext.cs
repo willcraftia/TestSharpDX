@@ -292,8 +292,6 @@ namespace Libra.Graphics
 
         IndexBuffer indexBuffer;
 
-        VertexShader lastVertexShader;
-
         RasterizerState rasterizerState;
 
         Viewport viewport;
@@ -304,7 +302,7 @@ namespace Libra.Graphics
 
         DepthStencilState depthStencilState;
 
-        RenderTargetView[] renderTargets;
+        RenderTargetView[] activeRenderTargets;
 
         VertexShader vertexShader;
 
@@ -463,10 +461,16 @@ namespace Libra.Graphics
 
             Device = device;
 
+            // TODO
+            //
+            // 描画中にバック バッファのリサイズが発生したらどうするの？
+            //Device.BackBuffersResetting += OnDeviceBackBuffersResetting;
+            //Device.BackBuffersReset += OnDeviceBackBuffersReset;
+
             vertexBufferBindings = new VertexBufferBinding[InputResourceSlotCuont];
             AutoResolveInputLayout = true;
 
-            renderTargets = new RenderTargetView[SimultaneousRenderTargetCount];
+            activeRenderTargets = new RenderTargetView[SimultaneousRenderTargetCount];
 
             VertexShaderConstantBuffers = new ConstantBufferCollection(this, ShaderStage.Vertex);
             PixelShaderConstantBuffers = new ConstantBufferCollection(this, ShaderStage.Pixel);
@@ -475,6 +479,16 @@ namespace Libra.Graphics
 
             PixelShaderResources = new ShaderResourceCollection(this, ShaderStage.Pixel);
         }
+
+        //void OnDeviceBackBuffersReset(object sender, EventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //void OnDeviceBackBuffersResetting(object sender, EventArgs e)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public VertexBufferBinding GetVertexBuffer(int slot)
         {
@@ -543,23 +557,39 @@ namespace Libra.Graphics
 
         public RenderTargetView GetRenderTarget()
         {
-            return renderTargets[0];
+            return activeRenderTargets[0];
         }
 
         public void GetRenderTargets(RenderTargetView[] result)
         {
-            Array.Copy(renderTargets, result, Math.Min(SimultaneousRenderTargetCount, result.Length));
+            if (result == null) throw new ArgumentNullException("result");
+
+            Array.Copy(activeRenderTargets, result, Math.Min(activeRenderTargets.Length, result.Length));
         }
 
         public void SetRenderTarget(RenderTargetView renderTarget)
         {
-            renderTargets[0] = renderTarget;
+            if (renderTarget == null)
+            {
+                // アクティブなレンダ ターゲットをクリア。
+                Array.Clear(activeRenderTargets, 0, activeRenderTargets.Length);
 
-            SetRenderTargetCore(renderTarget);
+                // #0 にバック バッファ レンダ ターゲットを設定。
+                activeRenderTargets[0] = Device.BackBufferRenderTargetView;
+
+                SetRenderTargetsCore(null);
+            }
+            else
+            {
+                activeRenderTargets[0] = renderTarget;
+
+                SetRenderTargetsCore(activeRenderTargets);
+            }
         }
 
         public void SetRenderTargets(params RenderTargetView[] renderTargets)
         {
+            if (renderTargets == null) throw new ArgumentNullException("renderTargets");
             if (SimultaneousRenderTargetCount < renderTargets.Length)
                 throw new ArgumentOutOfRangeException("renderTargets");
             if (renderTargets.Length == 0)
@@ -567,12 +597,12 @@ namespace Libra.Graphics
             if (renderTargets[0] == null)
                 throw new ArgumentException(string.Format("renderTargets[{0}] is null.", 0), "renderTargets");
 
-            Array.Copy(renderTargets, renderTargets, renderTargets.Length);
+            Array.Copy(renderTargets, activeRenderTargets, renderTargets.Length);
+            if (renderTargets.Length < SimultaneousRenderTargetCount)
+                Array.Clear(activeRenderTargets, renderTargets.Length, (SimultaneousRenderTargetCount - renderTargets.Length));
 
             SetRenderTargetsCore(renderTargets);
         }
-
-        protected abstract void SetRenderTargetCore(RenderTargetView renderTarget);
 
         protected abstract void SetRenderTargetsCore(RenderTargetView[] renderTargets);
 
@@ -593,6 +623,8 @@ namespace Libra.Graphics
         public void ClearRenderTargetView(
             RenderTargetView renderTarget, ClearOptions options, Color color, float depth, byte stencil)
         {
+            if (renderTarget == null) throw new ArgumentNullException("renderTarget");
+
             ClearRenderTargetView(renderTarget, options, color.ToVector4(), depth, stencil);
         }
 
@@ -624,10 +656,10 @@ namespace Libra.Graphics
 
         public void Clear(ClearOptions options, Vector4 color, float depth = 1f, byte stencil = 0)
         {
-            // アクティブに設定されている全てのレンダ ターゲットをクリア。
-            for (int i = 0; i < renderTargets.Length; i++)
+            // アクティブな全レンダ ターゲットをクリア。
+            for (int i = 0; i < activeRenderTargets.Length; i++)
             {
-                var renderTarget = renderTargets[i];
+                var renderTarget = activeRenderTargets[i];
                 if (renderTarget != null)
                 {
                     ClearRenderTargetView(renderTarget, options, color, depth, stencil);

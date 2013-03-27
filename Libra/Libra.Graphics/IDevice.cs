@@ -11,6 +11,10 @@ namespace Libra.Graphics
     {
         event EventHandler Disposing;
 
+        event EventHandler BackBuffersResetting;
+
+        event EventHandler BackBuffersReset;
+
         //readonly DeviceSettings Settings;
 
         IAdapter Adapter { get; }
@@ -20,6 +24,8 @@ namespace Libra.Graphics
         //DeviceFeatures Features { get; }
 
         DeviceContext ImmediateContext { get; }
+
+        RenderTargetView BackBufferRenderTargetView { get; }
 
         DeviceContext CreateDeferredContext();
 
@@ -52,5 +58,7 @@ namespace Libra.Graphics
         int CheckMultisampleQualityLevels(SurfaceFormat format, int sampleCount);
 
         int CheckMultisampleQualityLevels(DepthFormat format, int sampleCount);
+
+        void SetSwapChain(SwapChain swapChain);
     }
 }

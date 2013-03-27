@@ -29,18 +29,17 @@ namespace Libra.Graphics.SharpDX
 
         public D3D11Texture2D D3D11Texture2D { get; private set; }
 
-        public SdxRenderTarget(SdxDevice device)
-            : base(device)
+        public SdxRenderTarget(SdxDevice device, bool isBackBuffer)
+            : base(device, isBackBuffer)
         {
             D3D11Device = device.D3D11Device;
         }
 
-        // バック バッファ用の特殊な初期化メソッド。
-        public void Initialize(D3D11Texture2D d3d11Texture2D)
+        protected override void InitializeCore(SwapChain swapChain, int index)
         {
-            if (d3d11Texture2D == null) throw new ArgumentNullException("d3d11Texture2D");
+            var dxgiSwapChain = (swapChain as SdxSwapChain).DXGISwapChain;
 
-            D3D11Texture2D = d3d11Texture2D;
+            D3D11Texture2D = D3D11Texture2D.FromSwapChain<D3D11Texture2D>(dxgiSwapChain, index);
 
             var description = D3D11Texture2D.Description;
 

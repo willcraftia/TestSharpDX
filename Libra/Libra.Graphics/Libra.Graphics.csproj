@@ -178,7 +178,7 @@
     <Compile Include="VertexPositionTexture.cs" />
     <Compile Include="IOutput.cs" />
     <Compile Include="IOutputCollection.cs" />
-    <Compile Include="ISwapChain.cs" />
+    <Compile Include="SwapChain.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelBone.cs" />
     <Compile Include="ModelBoneCollection.cs" />

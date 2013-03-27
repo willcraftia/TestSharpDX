@@ -40,7 +40,7 @@ namespace Libra.Games
         public event EventHandler Disposed;
 
         // D3D11.h: D3D11_MAX_MULTISAMPLE_SAMPLE_COUNT ( 32 )
-        public const int MaxMultiSampleCount = 32;
+        public const int MaxMultisampleCount = 32;
 
         public const int DefaultBackBufferWidth = 800;
 
@@ -52,7 +52,7 @@ namespace Libra.Games
 
         // 自動的に利用可能なサンプル数が選択されるので、
         // デフォルトは最大サンプル数とする。
-        public const int DefaultBackBufferMultisampleCount = MaxMultiSampleCount;
+        public const int DefaultBackBufferMultisampleCount = MaxMultisampleCount;
 
         static readonly DeviceProfile[] profiles =
         {
@@ -79,7 +79,7 @@ namespace Libra.Games
 
         public IDevice Device { get; private set; }
 
-        public ISwapChain SwapChain { get; private set; }
+        public SwapChain SwapChain { get; private set; }
 
         public int PreferredBackBufferWidth
         {
@@ -169,11 +169,7 @@ namespace Libra.Games
             InitializeDevice();
             InitializeSwapChain();
 
-            // ウィンドウあるいは全画面をリサイズ。
-            // デバイス再構築の場合は、それ自体が通常の状態ではないので、強制リサイズとする。
-            SwapChain.ResizeTarget();
-
-            UpdateViewport();
+            Device.SetSwapChain(SwapChain);
         }
 
         void InitializeDevice()
@@ -268,6 +264,9 @@ namespace Libra.Games
 
             // スワップ チェーンの初期化。
             SwapChain = graphicsFactory.CreateSwapChain(Device, settings);
+
+            // バック バッファのサイズへウィンドウをリサイズ。
+            SwapChain.ResizeTarget();
         }
 
         protected virtual IAdapter ResolveAdapter()
@@ -327,10 +326,6 @@ namespace Libra.Games
             if (Device == null)
                 return false;
 
-            Device.ImmediateContext.SetRenderTarget(SwapChain.RenderTargetView);
-
-            UpdateViewport();
-
             return true;
         }
 
@@ -354,14 +349,6 @@ namespace Libra.Games
         {
             if (DeviceDisposing != null)
                 DeviceDisposing(this, e);
-        }
-
-        void UpdateViewport()
-        {
-            var backBufferWidth = SwapChain.BackBufferWidth;
-            var backBufferHeight = SwapChain.BackBufferHeight;
-            var viewport = new Viewport(0, 0, backBufferWidth, backBufferHeight);
-            Device.ImmediateContext.Viewport = viewport;
         }
 
         #region IDisposable
