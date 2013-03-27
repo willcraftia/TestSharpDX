@@ -335,26 +335,6 @@ namespace Libra.Samples.ShadowMapping
                     context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
                 }
             }
-
-            //Matrix[] transforms = new Matrix[model.Bones.Count];
-            //model.CopyAbsoluteBoneTransformsTo(transforms);
-
-            //foreach (var mesh in model.Meshes)
-            //{
-            //    foreach (Effect effect in mesh.Effects)
-            //    {
-            //        effect.CurrentTechnique = effect.Techniques[techniqueName];
-            //        effect.Parameters["World"].SetValue(world);
-            //        effect.Parameters["View"].SetValue(view);
-            //        effect.Parameters["Projection"].SetValue(projection);
-            //        effect.Parameters["LightDirection"].SetValue(lightDir);
-            //        effect.Parameters["LightViewProj"].SetValue(lightViewProjection);
-
-            //        if (!createShadowMap)
-            //            effect.Parameters["ShadowMap"].SetValue(shadowRenderTarget);
-            //    }
-            //    mesh.Draw();
-            //}
         }
 
         void DrawShadowMapToScreen()
