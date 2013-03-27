@@ -103,6 +103,10 @@ namespace Libra.Samples.ShadowMapping
             public void Apply(DeviceContext context)
             {
                 ConstantBuffer.SetData(context, Constants);
+
+                context.VertexShaderConstantBuffers[0] = ConstantBuffer;
+                context.VertexShader = VertexShader;
+                context.PixelShader = PixelShader;
             }
         }
 
@@ -295,16 +299,16 @@ namespace Libra.Samples.ShadowMapping
 
             if (createShadowMap)
             {
-                createShadowMapShader.Constants.World = world;
-                createShadowMapShader.Constants.LightViewProjection = lightViewProjection;
+                Matrix.Transpose(ref world, out createShadowMapShader.Constants.World);
+                Matrix.Transpose(ref lightViewProjection, out createShadowMapShader.Constants.LightViewProjection);
                 createShadowMapShader.Apply(context);
             }
             else
             {
-                drawModelShader.Constants.World = world;
-                drawModelShader.Constants.View = view;
-                drawModelShader.Constants.Projection = projection;
-                drawModelShader.Constants.LightViewProjection = lightViewProjection;
+                Matrix.Transpose(ref world, out drawModelShader.Constants.World);
+                Matrix.Transpose(ref view, out drawModelShader.Constants.View);
+                Matrix.Transpose(ref projection, out drawModelShader.Constants.Projection);
+                Matrix.Transpose(ref lightViewProjection, out drawModelShader.Constants.LightViewProjection);
                 drawModelShader.Constants.LightDirection = lightDir;
                 drawModelShader.Constants.DepthBias = 0.001f;
                 drawModelShader.Constants.AmbientColor = new Vector4(0.15f, 0.15f, 0.15f, 1.0f);
