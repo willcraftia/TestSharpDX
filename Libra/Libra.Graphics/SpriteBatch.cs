@@ -390,7 +390,7 @@ namespace Libra.Graphics
             Draw(texture, destination, null, color, 0, Vector2.Zero, 0, 0);
         }
 
-        public void Draw(ShaderResourceView texture, Vector2 position, Rectangle? sourceRectangle, Color color)
+        public void Draw(IShaderResourceView texture, Vector2 position, Rectangle? sourceRectangle, Color color)
         {
             var destination = new RectangleF(position.X, position.Y, 1, 1);
 
