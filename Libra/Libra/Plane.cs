@@ -276,7 +276,7 @@ namespace Libra
             float z = plane.Normal.Z;
             float d = plane.D;
 
-            transformation.Invert();
+            Matrix.Invert(ref transformation, out transformation);
             result.Normal.X = (((x * transformation.M11) + (y * transformation.M12)) + (z * transformation.M13)) + (d * transformation.M14);
             result.Normal.Y = (((x * transformation.M21) + (y * transformation.M22)) + (z * transformation.M23)) + (d * transformation.M24);
             result.Normal.Z = (((x * transformation.M31) + (y * transformation.M32)) + (z * transformation.M33)) + (d * transformation.M34);

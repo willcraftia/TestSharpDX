@@ -179,7 +179,7 @@ namespace Libra.Samples.MiniCube
             // ここではテストのためにコンパイル時に行優先としている。
 
             var worldViewProjection = world * view * projection;
-            //worldViewProjection.Transpose();
+            //constantBuffer.SetData(context, Matrix.Transpose(worldViewProjection));
             constantBuffer.SetData(context, worldViewProjection);
 
             context.Draw(36);

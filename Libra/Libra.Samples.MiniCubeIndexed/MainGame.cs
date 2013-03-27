@@ -144,8 +144,7 @@ namespace Libra.Samples.MiniCubeIndexed
 
             var worldViewProjection = world * view * projection;
             // 列優先としているので転置してから設定。
-            worldViewProjection.Transpose();
-            constantBuffer.SetData(context, worldViewProjection);
+            constantBuffer.SetData(context, Matrix.Transpose(worldViewProjection));
 
             context.DrawIndexed(indexBuffer.IndexCount);
 

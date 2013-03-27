@@ -161,16 +161,6 @@ namespace Libra
                 (M14 * (((M21 * temp3) - (M22 * temp5)) + (M23 * temp6))));
         }
 
-        public void Invert()
-        {
-            Invert(ref this, out this);
-        }
-
-        public void Transpose()
-        {
-            Transpose(ref this, out this);
-        }
-
         public bool Decompose(out Vector3 scale, out Quaternion rotation, out Vector3 translation)
         {
             //Source: Unknown
@@ -546,8 +536,9 @@ namespace Libra
 
         public static Matrix Invert(Matrix value)
         {
-            value.Invert();
-            return value;
+            Matrix result;
+            Matrix.Invert(ref value, out result);
+            return result;
         }
 
         public static void CreateBillboard(ref Vector3 objectPosition,
