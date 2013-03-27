@@ -27,7 +27,7 @@ sampler ShadowMapSampler    : register(s1);
 
 struct VSInput
 {
-    float4 Position : POSITION;
+    float4 Position : SV_Position;
     float3 Normal   : NORMAL;
     float2 TexCoord : TEXCOORD0;
 };
