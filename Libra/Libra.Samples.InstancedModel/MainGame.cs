@@ -157,13 +157,15 @@ namespace Libra.Samples.InstancedModel
 
             instanceInputLayout = Device.CreateInputLayout();
             instanceInputLayout.Initialize(instanceVertexShader,
+                // 入力スロット #0
                 new InputElement("SV_Position", 0, InputElementFormat.Vector4, 0),
-                new InputElement("NORMAL", 0, InputElementFormat.Vector3, 0),
-                new InputElement("TEXCOORD", 0, InputElementFormat.Vector2, 0),
-                new InputElement("TRANSFORM", 0, InputElementFormat.Vector4, 1,  0, true, 1),
-                new InputElement("TRANSFORM", 1, InputElementFormat.Vector4, 1, 16, true, 1),
-                new InputElement("TRANSFORM", 2, InputElementFormat.Vector4, 1, 32, true, 1),
-                new InputElement("TRANSFORM", 3, InputElementFormat.Vector4, 1, 48, true, 1)
+                new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0),
+                new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0),
+                // 入力スロット #1
+                new InputElement("TRANSFORM",   0, InputElementFormat.Vector4, 1,  0, true, 1),
+                new InputElement("TRANSFORM",   1, InputElementFormat.Vector4, 1, 16, true, 1),
+                new InputElement("TRANSFORM",   2, InputElementFormat.Vector4, 1, 32, true, 1),
+                new InputElement("TRANSFORM",   3, InputElementFormat.Vector4, 1, 48, true, 1)
                 );
 
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
@@ -270,13 +272,10 @@ namespace Libra.Samples.InstancedModel
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    //GraphicsDevice.SetVertexBuffers(
-                    //    new VertexBufferBinding(meshPart.VertexBuffer, meshPart.VertexOffset, 0),
-                    //    new VertexBufferBinding(instanceVertexBuffer, 0, 1)
-                    //);
-
-                    context.SetVertexBuffer(0, meshPart.VertexBuffer);
-                    context.SetVertexBuffer(1, instanceVertexBuffer);
+                    context.SetVertexBuffers(
+                        new VertexBufferBinding(meshPart.VertexBuffer),
+                        new VertexBufferBinding(instanceVertexBuffer));
+                    
                     context.IndexBuffer = meshPart.IndexBuffer;
                     context.PixelShaderResources[0] = (meshPart.Effect as BasicEffect).Texture;
 
@@ -286,16 +285,6 @@ namespace Libra.Samples.InstancedModel
                     constantBuffer.SetData(context, constants);
 
                     context.DrawIndexedInstanced(meshPart.PrimitiveCount * 3, instances.Length, meshPart.StartIndex, meshPart.VertexOffset);
-                    //context.DrawInstanced(meshPart.PrimitiveCount * 3, instances.Length);
-
-                    //foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                    //{
-                    //    pass.Apply();
-
-                    //    GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                    //                                           meshPart.NumVertices, meshPart.StartIndex,
-                    //                                           meshPart.PrimitiveCount, instances.Length);
-                    //}
                 }
             }
         }
