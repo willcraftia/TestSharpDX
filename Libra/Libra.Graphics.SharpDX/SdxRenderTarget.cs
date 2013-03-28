@@ -183,10 +183,10 @@ namespace Libra.Graphics.SharpDX
                     var destinationPointer = (IntPtr) (dataPointer + startIndex * sizeOfT);
                     var sizeInBytes = ((elementCount == 0) ? data.Length : elementCount) * sizeOfT;
 
-                    var mappedBuffer = d3dDeviceContext.MapSubresource(staging, level, D3D11MapMode.Read, D3D11MapFlags.None);
+                    var mappedResource = d3dDeviceContext.MapSubresource(staging, level, D3D11MapMode.Read, D3D11MapFlags.None);
                     try
                     {
-                        SDXUtilities.CopyMemory(destinationPointer, mappedBuffer.DataPointer, sizeInBytes);
+                        SDXUtilities.CopyMemory(destinationPointer, mappedResource.DataPointer, sizeInBytes);
                     }
                     finally
                     {

@@ -616,10 +616,10 @@ namespace Libra.Graphics
                 // 要調査。
                 // 恐らく、64 ビット ポインタであるから、ではないだろうか？
 
-                var mappedBuffer = context.Map(contextResoruces.VertexBuffer, 0, mapMode);
+                var mappedResource = context.Map(contextResoruces.VertexBuffer, 0, mapMode);
                 unsafe
                 {
-                    var vertices = (VertexPositionColorTexture*) mappedBuffer.Pointer +
+                    var vertices = (VertexPositionColorTexture*) mappedResource.Pointer +
                         contextResoruces.VertexBufferPosition * VerticesPerSprite;
 
                     for (int i = 0; i < batchSize; i++)
