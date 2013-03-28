@@ -16,7 +16,7 @@ namespace Libra.Graphics
         // ModelMeshPart の VertexOffset は、頂点ストライドを掛ける事でバイト単位となる。
         public int Offset;
 
-        public VertexBufferBinding(VertexBuffer vertexBuffer, int offset)
+        public VertexBufferBinding(VertexBuffer vertexBuffer, int offset = 0)
         {
             VertexBuffer = vertexBuffer;
             Offset = offset;
