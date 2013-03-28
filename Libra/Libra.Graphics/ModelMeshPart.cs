@@ -14,6 +14,7 @@ namespace Libra.Graphics
 
         public InputLayout InputLayout { get; set; }
 
+        // XNA に合わせて頂点数単位のオフセットを設定。
         public int VertexOffset { get; set; }
 
         public int NumVertices { get; set; }
