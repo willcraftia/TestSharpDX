@@ -28,15 +28,16 @@ namespace Libra.Graphics
 
                 if (part.PrimitiveCount != 0)
                 {
+                    var vertexStride = part.VertexBuffer.VertexDeclaration.Stride;
+                    var offset = part.VertexOffset * vertexStride;
+
                     context.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                    context.SetVertexBuffer(0, part.VertexBuffer);
+                    context.SetVertexBuffer(0, part.VertexBuffer, offset);
                     context.IndexBuffer = part.IndexBuffer;
 
                     part.Effect.Apply(context);
 
-                    // 頂点バッファのオフセットは、ここで指定すべき。
-                    // InputAssemblerStage への設定で指定すると描画が壊れる。
-                    context.DrawIndexed(part.PrimitiveCount * 3, part.StartIndex, part.VertexOffset);
+                    context.DrawIndexed(part.PrimitiveCount * 3, part.StartIndex);
                 }
             }
         }
