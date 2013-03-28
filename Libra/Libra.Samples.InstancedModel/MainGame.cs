@@ -158,7 +158,10 @@ namespace Libra.Samples.InstancedModel
             instanceInputLayout = Device.CreateInputLayout();
             instanceInputLayout.Initialize(instanceVertexShader,
                 // 入力スロット #0
-                new InputElement("SV_Position", 0, InputElementFormat.Vector4, 0),
+                // TODO
+                // XNB からの VertexDeclaration の定義を合わせなければならない点が面倒。
+                // どうにかして自動的に適切な宣言にできないものか。
+                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0),
                 new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0),
                 new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0),
                 // 入力スロット #1
