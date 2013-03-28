@@ -58,13 +58,7 @@ VSOutput VSCommon(VSInput input, float4x4 instanceTransform)
 
 VSOutput HWInstancingVS(VSInput input, float4x4 instanceTransform : TRANSFORM)
 {
-    VSInput commonInput;
-
-    commonInput.Position = input.Position;
-    commonInput.Normal = input.Normal;
-    commonInput.TexCoord = input.TexCoord;
-
-    return VSCommon(commonInput, mul(World, transpose(instanceTransform)));
+    return VSCommon(input, mul(World, transpose(instanceTransform)));
 }
 
 VSOutput NoInstancingVS(VSInput input)
