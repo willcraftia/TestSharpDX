@@ -133,6 +133,12 @@ namespace Libra.Graphics
             SetData(context, data, 0, data.Length);
         }
 
+        public void SetData<T>(DeviceContext context, T[] data, int sourceIndex, int elementCount,
+            SetDataOptions options = SetDataOptions.None) where T : struct
+        {
+            SetData(context, 0, data, sourceIndex, elementCount, options);
+        }
+
         public void SetData<T>(DeviceContext context, int offsetInBytes, T[] data, int sourceIndex, int elementCount,
             SetDataOptions options = SetDataOptions.None) where T : struct
         {
