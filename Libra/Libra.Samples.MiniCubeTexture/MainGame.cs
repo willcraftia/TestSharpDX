@@ -104,7 +104,7 @@ namespace Libra.Samples.MiniCubeTexture
             pixelShader.Initialize(psBytecode);
 
             inputLayout = Device.CreateInputLayout();
-            inputLayout.Initialize<VertexPositionTexture>(vsBytecode);
+            inputLayout.Initialize<VertexPositionTexture>(vertexShader);
 
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Immutable;
@@ -132,7 +132,7 @@ namespace Libra.Samples.MiniCubeTexture
             context.AutoResolveInputLayout = false;
             context.InputLayout = inputLayout;
             context.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.SetVertexBuffer(0, vertexBuffer);
+            context.SetVertexBuffer(vertexBuffer);
 
             context.VertexShader = vertexShader;
             context.PixelShader = pixelShader;

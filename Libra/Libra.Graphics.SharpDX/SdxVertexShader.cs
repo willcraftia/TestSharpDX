@@ -18,8 +18,6 @@ namespace Libra.Graphics.SharpDX
         public SdxVertexShader(SdxDevice device)
             : base(device)
         {
-            if (device == null) throw new ArgumentNullException("device");
-
             D3D11Device = device.D3D11Device;
         }
 

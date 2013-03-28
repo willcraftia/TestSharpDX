@@ -11,7 +11,7 @@ namespace Libra.Graphics
     public struct VertexPositionNormalTexture: IVertexType, IEquatable<VertexPositionNormalTexture>
     {
         public static readonly VertexDeclaration VertexDeclaration =
-            new VertexDeclaration(InputElement.SVPosition, InputElement.Normal, InputElement.TexCoord);
+            new VertexDeclaration(VertexElement.SVPosition, VertexElement.Normal, VertexElement.TexCoord);
 
         public Vector3 Position;
 

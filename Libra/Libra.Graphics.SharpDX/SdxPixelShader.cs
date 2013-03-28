@@ -18,16 +18,12 @@ namespace Libra.Graphics.SharpDX
         public SdxPixelShader(SdxDevice device)
             : base(device)
         {
-            if (device == null) throw new ArgumentNullException("device");
-
             D3D11Device = device.D3D11Device;
         }
 
-        protected override void InitializeCore(byte[] shaderBytecode)
+        protected override void InitializeCore()
         {
-            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
-
-            D3D11PixelShader = new D3D11PixelShader(D3D11Device, shaderBytecode);
+            D3D11PixelShader = new D3D11PixelShader(D3D11Device, ShaderBytecode);
         }
 
         #region IDisposable

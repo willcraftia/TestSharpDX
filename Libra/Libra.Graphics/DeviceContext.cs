@@ -60,12 +60,7 @@ namespace Libra.Graphics
 
         public sealed class ConstantBufferCollection
         {
-            /// <summary>
-            /// </summary>
-            /// <remarks>
-            /// D3D11.h: D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT ( 14 )
-            /// </remarks>
-            public int Count = 14;
+            public int Count = D3D11Constants.CommnonShaderConstantBufferApiSlotCount;
 
             DeviceContext context;
 
@@ -131,12 +126,7 @@ namespace Libra.Graphics
 
         public sealed class SamplerStateCollection
         {
-            /// <summary>
-            /// </summary>
-            /// <remarks>
-            /// D3D11.h: D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT ( 16 )
-            /// </remarks>
-            public int Count = 16;
+            public int Count = D3D11Constants.CommnonShaderSamplerSlotCount;
 
             DeviceContext context;
 
@@ -270,19 +260,9 @@ namespace Libra.Graphics
 
         #endregion
 
-        /// <summary>
-        /// </summary>
-        /// <remarks>
-        /// D3D11.h: D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT
-        /// </remarks>
-        public const int InputResourceSlotCuont = 32;
+        protected const int InputSlotCount = D3D11Constants.IAVertexInputResourceSlotCount;
 
-        /// <summary>
-        /// </summary>
-        /// <remarks>
-        /// D3D11.h:  D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT。
-        /// </remarks>
-        public const int SimultaneousRenderTargetCount = 8;
+        protected const int RenderTargetCount = D3D11Constants.SimultaneousRenderTargetCount;
 
         static readonly Color DiscardColor = Color.Purple;
 
@@ -469,10 +449,9 @@ namespace Libra.Graphics
             //Device.BackBuffersResetting += OnDeviceBackBuffersResetting;
             //Device.BackBuffersReset += OnDeviceBackBuffersReset;
 
-            vertexBufferBindings = new VertexBufferBinding[InputResourceSlotCuont];
-            AutoResolveInputLayout = true;
+            vertexBufferBindings = new VertexBufferBinding[InputSlotCount];
 
-            activeRenderTargetViews = new RenderTargetView[SimultaneousRenderTargetCount];
+            activeRenderTargetViews = new RenderTargetView[RenderTargetCount];
 
             VertexShaderConstantBuffers = new ConstantBufferCollection(this, ShaderStage.Vertex);
             PixelShaderConstantBuffers = new ConstantBufferCollection(this, ShaderStage.Pixel);
@@ -480,6 +459,8 @@ namespace Libra.Graphics
             PixelShaderSamplers = new SamplerStateCollection(this, ShaderStage.Pixel);
 
             PixelShaderResources = new ShaderResourceCollection(this, ShaderStage.Pixel);
+
+            AutoResolveInputLayout = true;
         }
 
         //void OnDeviceBackBuffersReset(object sender, EventArgs e)
@@ -494,51 +475,43 @@ namespace Libra.Graphics
 
         public VertexBufferBinding GetVertexBuffer(int slot)
         {
-            if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
+            if ((uint) InputSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
 
             return vertexBufferBindings[slot];
         }
 
-        public void GetVertexBuffers(int startSlot, int count, VertexBufferBinding[] bindings)
+        public VertexBufferBinding[] GetVertexBuffers()
         {
-            if (bindings == null) throw new ArgumentNullException("bindings");
-            if ((uint) InputResourceSlotCuont <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
-            if ((uint) (InputResourceSlotCuont - startSlot) < (uint) count ||
-                bindings.Length < count) throw new ArgumentOutOfRangeException("count");
+            return (VertexBufferBinding[]) vertexBufferBindings.Clone();
+        }
 
-            Array.Copy(vertexBufferBindings, startSlot, bindings, 0, count);
+        public void SetVertexBuffer(VertexBuffer buffer, int offset = 0)
+        {
+            SetVertexBuffer(0, new VertexBufferBinding(buffer, offset));
         }
 
         public void SetVertexBuffer(int slot, VertexBuffer buffer, int offset = 0)
         {
-            if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
-            if (offset < 0) throw new ArgumentOutOfRangeException("offset");
-
-            var binding = new VertexBufferBinding(buffer, offset);
-            vertexBufferBindings[slot] = binding;
-
-            SetVertexBufferCore(slot, binding);
+            SetVertexBuffer(slot, new VertexBufferBinding(buffer, offset));
         }
 
         public void SetVertexBuffer(int slot, VertexBufferBinding binding)
         {
-            if ((uint) InputResourceSlotCuont < (uint) slot) throw new ArgumentOutOfRangeException("slot");
+            if ((uint) InputSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
 
             vertexBufferBindings[slot] = binding;
 
             SetVertexBufferCore(slot, binding);
         }
 
-        public void SetVertexBuffers(int startSlot, int count, VertexBufferBinding[] bindings)
+        public void SetVertexBuffers(params VertexBufferBinding[] bindings)
         {
             if (bindings == null) throw new ArgumentNullException("bindings");
-            if ((uint) InputResourceSlotCuont <= (uint) startSlot) throw new ArgumentOutOfRangeException("startSlot");
-            if ((uint) (InputResourceSlotCuont - startSlot) < (uint) count ||
-                bindings.Length < count) throw new ArgumentOutOfRangeException("count");
+            if ((uint) InputSlotCount < (uint) bindings.Length) throw new ArgumentOutOfRangeException("bindings.Length");
 
-            Array.Copy(bindings, 0, vertexBufferBindings, startSlot, count);
+            Array.Copy(bindings, 0, vertexBufferBindings, 0, bindings.Length);
 
-            SetVertexBuffersCore(startSlot, count, bindings);
+            SetVertexBuffersCore(bindings);
         }
 
         protected abstract void OnInputLayoutChanged();
@@ -549,7 +522,7 @@ namespace Libra.Graphics
 
         protected abstract void SetVertexBufferCore(int slot, VertexBufferBinding binding);
 
-        protected abstract void SetVertexBuffersCore(int startSlot, int count, VertexBufferBinding[] bindings);
+        protected abstract void SetVertexBuffersCore(VertexBufferBinding[] bindings);
 
         protected abstract void OnRasterizerStateChanged();
 
@@ -599,7 +572,7 @@ namespace Libra.Graphics
         public void SetRenderTargets(params RenderTargetView[] renderTargetViews)
         {
             if (renderTargetViews == null) throw new ArgumentNullException("renderTargetViews");
-            if (SimultaneousRenderTargetCount < renderTargetViews.Length)
+            if (RenderTargetCount < renderTargetViews.Length)
                 throw new ArgumentOutOfRangeException("renderTargetViews");
             if (renderTargetViews.Length == 0)
                 throw new ArgumentException("renderTargetViews is empty", "renderTargets");
@@ -607,8 +580,8 @@ namespace Libra.Graphics
                 throw new ArgumentException(string.Format("renderTargetViews[{0}] is null.", 0), "renderTargetViews");
 
             Array.Copy(renderTargetViews, activeRenderTargetViews, renderTargetViews.Length);
-            if (renderTargetViews.Length < SimultaneousRenderTargetCount)
-                Array.Clear(activeRenderTargetViews, renderTargetViews.Length, (SimultaneousRenderTargetCount - renderTargetViews.Length));
+            if (renderTargetViews.Length < RenderTargetCount)
+                Array.Clear(activeRenderTargetViews, renderTargetViews.Length, (RenderTargetCount - renderTargetViews.Length));
 
             SetRenderTargetsCore(renderTargetViews);
 
@@ -708,9 +681,20 @@ namespace Libra.Graphics
             DrawIndexedCore(indexCount, startIndexLocation, baseVertexLocation);
         }
 
+        public void DrawInstanced(int vertexCountPerInstance, int instanceCount,
+            int startVertexLocation = 0, int startInstanceLocation = 0)
+        {
+            ApplyState();
+
+            DrawInstancedCore(vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation);
+        }
+
         protected abstract void DrawCore(int vertexCount, int startVertexLocation);
 
         protected abstract void DrawIndexedCore(int indexCount, int startIndexLocation, int baseVertexLocation);
+
+        protected abstract void DrawInstancedCore(int vertexCountPerInstance, int instanceCount,
+            int startVertexLocation, int startInstanceLocation);
 
         internal protected abstract MappedSubresource Map(Resource resource, int subresource, MapMode mapMode);
 
@@ -724,30 +708,26 @@ namespace Libra.Graphics
         {
             if (AutoResolveInputLayout)
             {
-                // 入力レイアウト自動解決 ON ならば、
-                // 頂点シェーダと頂点宣言の組で入力レイアウトを決定して設定。
-                // 仮に明示的に入力レイアウトを設定していたとしても、
-                // それは上書き設定する。
-
-                // TODO
-                // スロット #0 は確定なのか否か。
-
+                // 入力レイアウト自動解決は、入力スロット #0 の頂点バッファの頂点宣言を参照。
                 var vertexBuffer = vertexBufferBindings[0].VertexBuffer;
-                if (vertexBuffer == null)
-                    throw new InvalidOperationException("VertexBuffer is null in slot 0");
-
-                var inputLayout = vertexShader.GetInputLayout(vertexBuffer.VertexDeclaration);
-                InputLayout = inputLayout;
+                if (vertexBuffer != null)
+                {
+                    var inputLayout = vertexShader.GetInputLayout(vertexBuffer.VertexDeclaration);
+                    InputLayout = inputLayout;
+                }
             }
 
-            // ConstantBuffers
+            // 状態検査。
+            if (InputLayout == null) throw new InvalidOperationException("InputLayout is null.");
+
+            // 定数バッファの反映。
             VertexShaderConstantBuffers.Apply();
             PixelShaderConstantBuffers.Apply();
 
-            // Samplers
+            // サンプラ ステートの反映。
             PixelShaderSamplers.Apply();
 
-            // ShaderResources
+            // シェーダ リソースの反映。
             PixelShaderResources.Apply();
         }
 

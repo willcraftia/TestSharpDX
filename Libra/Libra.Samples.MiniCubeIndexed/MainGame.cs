@@ -102,7 +102,7 @@ namespace Libra.Samples.MiniCubeIndexed
             pixelShader.Initialize(psBytecode);
             
             inputLayout = Device.CreateInputLayout();
-            inputLayout.Initialize<VertexPositionColor>(vsBytecode);
+            inputLayout.Initialize<VertexPositionColor>(vertexShader);
 
             vertexBuffer = Device.CreateVertexBuffer();
             vertexBuffer.Usage = ResourceUsage.Immutable;
@@ -124,11 +124,11 @@ namespace Libra.Samples.MiniCubeIndexed
 
             context.Clear(Color.CornflowerBlue);
 
-            // テストのために入力レイアウト自動解決を OFF に設定。
+            // 入力レイアウト自動解決 OFF。
             context.AutoResolveInputLayout = false;
             context.InputLayout = inputLayout;
             context.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.SetVertexBuffer(0, vertexBuffer);
+            context.SetVertexBuffer(vertexBuffer);
             context.IndexBuffer = indexBuffer;
 
             context.VertexShader = vertexShader;

@@ -7,41 +7,20 @@ using System.Collections.Generic;
 
 namespace Libra.Graphics
 {
-    public abstract class VertexShader : IDisposable
+    public abstract class VertexShader : Shader
     {
-        bool initialized;
-
         // VertexShader の破棄と同時に InputLayout も破棄したいため、
         // VertexShader で InputLayout のキャッシュを管理。
 
         Dictionary<VertexDeclaration, InputLayout> inputLayoutMap;
 
-        public IDevice Device { get; private set; }
-
-        public string Name { get; set; }
-
-        protected internal byte[] ShaderBytecode { get; private set; }
-
         protected VertexShader(IDevice device)
+            : base(device)
         {
-            if (device == null) throw new ArgumentNullException("device");
-
-            Device = device;
-
             inputLayoutMap = new Dictionary<VertexDeclaration, InputLayout>();
         }
 
-        public void Initialize(byte[] shaderBytecode)
-        {
-            if (initialized) throw new InvalidOperationException("Already initialized.");
-            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
-
-            ShaderBytecode = shaderBytecode;
-
-            InitializeCore();
-
-            initialized = true;
-        }
+        // 入力スロット #0 のみを対象とした入力レイアウトの自動解決とキャッシュ。
 
         public InputLayout GetInputLayout(VertexDeclaration vertexDeclaration)
         {
@@ -53,8 +32,11 @@ namespace Libra.Graphics
                 InputLayout inputLayout;
                 if (!inputLayoutMap.TryGetValue(vertexDeclaration, out inputLayout))
                 {
+                    // 入力スロット #0 固定。
+                    var inputElements = vertexDeclaration.GetInputElements(0);
+
                     inputLayout = Device.CreateInputLayout();
-                    inputLayout.Initialize(ShaderBytecode, vertexDeclaration.Elements);
+                    inputLayout.Initialize(ShaderBytecode, inputElements);
 
                     inputLayoutMap[vertexDeclaration] = inputLayout;
                 }
@@ -62,35 +44,5 @@ namespace Libra.Graphics
                 return inputLayout;
             }
         }
-
-        protected abstract void InitializeCore();
-
-        #region IDisposable
-
-        public bool IsDisposed { get; private set; }
-
-        ~VertexShader()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void DisposeOverride(bool disposing) { }
-
-        void Dispose(bool disposing)
-        {
-            if (IsDisposed) return;
-
-            DisposeOverride(disposing);
-
-            IsDisposed = true;
-        }
-
-        #endregion
     }
 }

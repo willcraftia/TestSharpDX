@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Libra.Games;
 using Libra.Games.SharpDX;
 using Libra.Graphics;
+using Libra.Graphics.Compiler;
 using Libra.Input;
 using Libra.Xnb;
 
@@ -14,6 +15,8 @@ namespace Libra.Samples.InstancedModel
 {
     public sealed class MainGame : Game
     {
+        #region InstancingTechnique
+
         public enum InstancingTechnique
         {
             HardwareInstancing,
@@ -21,11 +24,45 @@ namespace Libra.Samples.InstancedModel
             NoInstancingOrStateBatching
         }
 
+        #endregion
+
+        #region Constants
+
+        struct Constants
+        {
+            public Matrix World;
+
+            public Matrix View;
+
+            public Matrix Projection;
+
+            // シェーダでは float3 だがバイトの並びを合わせるために Vector4。
+            public Vector4 LightDirection;
+
+            // シェーダでは float3 だがバイトの並びを合わせるために Vector4。
+            public Vector4 DiffuseLight;
+
+            // シェーダでは float3 だがバイトの並びを合わせるために Vector4。
+            public Vector4 AmbientLight;
+        }
+
+        #endregion
+
         IGamePlatform platform;
 
         GraphicsManager graphics;
 
         XnbManager content;
+
+        VertexShader instanceVertexShader;
+
+        VertexShader vertexShader;
+
+        PixelShader pixelShader;
+
+        ConstantBuffer constantBuffer;
+
+        Constants constants;
 
         SpriteBatch spriteBatch;
 
@@ -46,11 +83,13 @@ namespace Libra.Samples.InstancedModel
         VertexBuffer instanceVertexBuffer;
 
         static VertexDeclaration instanceVertexDeclaration = new VertexDeclaration(
-            new InputElement("TRANSFORM", InputElementFormat.Vector4, 0,  0, true, 1),
-            new InputElement("TRANSFORM", InputElementFormat.Vector4, 1, 16, true, 1),
-            new InputElement("TRANSFORM", InputElementFormat.Vector4, 2, 32, true, 1),
-            new InputElement("TRANSFORM", InputElementFormat.Vector4, 3, 48, true, 1)
+            new VertexElement("TRANSFORM", 0, InputElementFormat.Vector4,  0, true, 1),
+            new VertexElement("TRANSFORM", 1, InputElementFormat.Vector4, 16, true, 1),
+            new VertexElement("TRANSFORM", 2, InputElementFormat.Vector4, 32, true, 1),
+            new VertexElement("TRANSFORM", 3, InputElementFormat.Vector4, 48, true, 1)
             );
+
+        InputLayout instanceInputLayout;
 
         int frameRate;
         
@@ -69,7 +108,6 @@ namespace Libra.Samples.InstancedModel
         KeyboardState currentKeyboardState;
         
         JoystickState currentGamePadState;
-
 
         public MainGame()
         {
@@ -93,6 +131,41 @@ namespace Libra.Samples.InstancedModel
 
         protected override void LoadContent()
         {
+            var compiler = new ShaderCompiler();
+            compiler.RootPath = "../../Shaders/";
+
+            var instanceVsBytecode = compiler.CompileVertexShader("InstancedModel.fx", "HWInstancingVS");
+            var vsBytecode = compiler.CompileVertexShader("InstancedModel.fx", "NoInstancingVS");
+            var psBytecode = compiler.CompilePixelShader("InstancedModel.fx", "PS");
+
+            instanceVertexShader = Device.CreateVertexShader();
+            instanceVertexShader.Initialize(instanceVsBytecode);
+
+            vertexShader = Device.CreateVertexShader();
+            vertexShader.Initialize(vsBytecode);
+
+            pixelShader = Device.CreatePixelShader();
+            pixelShader.Initialize(psBytecode);
+
+            constantBuffer = Device.CreateConstantBuffer();
+            constantBuffer.Usage = ResourceUsage.Dynamic;
+            constantBuffer.Initialize<Constants>();
+
+            constants.LightDirection = Vector3.Normalize(new Vector3(-1, -1, -1)).ToVector4();
+            constants.DiffuseLight = new Vector4(1.25f, 1.25f, 1.25f, 0);
+            constants.AmbientLight = new Vector4(0.25f, 0.25f, 0.25f, 0);
+
+            instanceInputLayout = Device.CreateInputLayout();
+            instanceInputLayout.Initialize(instanceVertexShader,
+                new InputElement("SV_Position", 0, InputElementFormat.Vector4, 0),
+                new InputElement("NORMAL", 0, InputElementFormat.Vector3, 0),
+                new InputElement("TEXCOORD", 0, InputElementFormat.Vector2, 0),
+                new InputElement("TRANSFORM", 0, InputElementFormat.Vector4, 1,  0, true, 1),
+                new InputElement("TRANSFORM", 1, InputElementFormat.Vector4, 1, 16, true, 1),
+                new InputElement("TRANSFORM", 2, InputElementFormat.Vector4, 1, 32, true, 1),
+                new InputElement("TRANSFORM", 3, InputElementFormat.Vector4, 1, 48, true, 1)
+                );
+
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
             
             spriteFont = content.Load<SpriteFont>("Font");
@@ -132,13 +205,14 @@ namespace Libra.Samples.InstancedModel
 
             context.Clear(Color.CornflowerBlue);
 
-            var view = Matrix.CreateLookAt(new Vector3(0, 0, 15),
-                                              Vector3.Zero, Vector3.Up);
-
+            var view = Matrix.CreateLookAt(new Vector3(0, 0, 15), Vector3.Zero, Vector3.Up);
             var projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, context.Viewport.AspectRatio, 1,  100);
 
             context.BlendState = BlendState.Opaque;
             context.DepthStencilState = DepthStencilState.Default;
+            context.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            context.PixelShader = pixelShader;
+            context.VertexShaderConstantBuffers[0] = constantBuffer;
 
             Array.Resize(ref instanceTransforms, instances.Count);
 
@@ -176,8 +250,7 @@ namespace Libra.Samples.InstancedModel
             if (instances.Length == 0)
                 return;
 
-            if ((instanceVertexBuffer == null) ||
-                (instances.Length > instanceVertexBuffer.VertexCount))
+            if ((instanceVertexBuffer == null) || (instances.Length > instanceVertexBuffer.VertexCount))
             {
                 if (instanceVertexBuffer != null)
                     instanceVertexBuffer.Dispose();
@@ -189,6 +262,10 @@ namespace Libra.Samples.InstancedModel
 
             instanceVertexBuffer.SetData(context, instances, 0, instances.Length, SetDataOptions.Discard);
 
+            context.AutoResolveInputLayout = false;
+            context.InputLayout = instanceInputLayout;
+            context.VertexShader = instanceVertexShader;
+
             foreach (var mesh in model.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
@@ -198,15 +275,17 @@ namespace Libra.Samples.InstancedModel
                     //    new VertexBufferBinding(instanceVertexBuffer, 0, 1)
                     //);
 
+                    context.SetVertexBuffer(0, meshPart.VertexBuffer);
+                    context.SetVertexBuffer(1, instanceVertexBuffer);
                     context.IndexBuffer = meshPart.IndexBuffer;
+                    context.PixelShaderResources[0] = (meshPart.Effect as BasicEffect).Texture;
 
-                    //Effect effect = meshPart.Effect;
+                    Matrix.Transpose(ref modelBones[mesh.ParentBone.Index], out constants.World);
+                    Matrix.Transpose(ref view, out constants.View);
+                    Matrix.Transpose(ref projection, out constants.Projection);
+                    constantBuffer.SetData(context, constants);
 
-                    //effect.CurrentTechnique = effect.Techniques["HardwareInstancing"];
-
-                    //effect.Parameters["World"].SetValue(modelBones[mesh.ParentBone.Index]);
-                    //effect.Parameters["View"].SetValue(view);
-                    //effect.Parameters["Projection"].SetValue(projection);
+                    context.DrawInstanced(meshPart.IndexBuffer.IndexCount, instances.Length, meshPart.VertexOffset);
 
                     //foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                     //{
@@ -224,70 +303,74 @@ namespace Libra.Samples.InstancedModel
         {
             var context = Device.ImmediateContext;
 
+            context.AutoResolveInputLayout = true;
+            context.VertexShader = vertexShader;
+
             foreach (var mesh in model.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    //context.SetVertexBuffer(meshPart.VertexBuffer, meshPart.VertexOffset);
+                    context.SetVertexBuffer(meshPart.VertexBuffer);
                     context.IndexBuffer = meshPart.IndexBuffer;
+                    context.PixelShaderResources[0] = (meshPart.Effect as BasicEffect).Texture;
 
-                    //Effect effect = meshPart.Effect;
+                    Matrix.Transpose(ref view, out constants.View);
+                    Matrix.Transpose(ref projection, out constants.Projection);
 
-                    //effect.CurrentTechnique = effect.Techniques["NoInstancing"];
+                    for (int i = 0; i < instances.Length; i++)
+                    {
+                        Matrix world;
+                        Matrix.Multiply(ref modelBones[mesh.ParentBone.Index], ref instances[i], out world);
+                        Matrix.Transpose(ref world, out constants.World);
+                        constantBuffer.SetData(context, constants);
 
-                    //effect.Parameters["View"].SetValue(view);
-                    //effect.Parameters["Projection"].SetValue(projection);
-
-                    //EffectParameter transformParameter = effect.Parameters["World"];
-
-                    //for (int i = 0; i < instances.Length; i++)
-                    //{
-                    //    transformParameter.SetValue(modelBones[mesh.ParentBone.Index] * instances[i]);
-
-                    //    foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                    //    {
-                    //        pass.Apply();
-
-                    //        GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                    //                                             meshPart.NumVertices, meshPart.StartIndex,
-                    //                                             meshPart.PrimitiveCount);
-                    //    }
-                    //}
+                        context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
+                    }
                 }
             }
         }
 
         void DrawModelNoInstancingOrStateBatching(Model model, Matrix[] modelBones, Matrix[] instances, Matrix view, Matrix projection)
         {
+            var context = Device.ImmediateContext;
+
+            context.AutoResolveInputLayout = true;
+            context.VertexShader = vertexShader;
+
             for (int i = 0; i < instances.Length; i++)
             {
-                //foreach (var mesh in model.Meshes)
-                //{
-                //    foreach (Effect effect in mesh.Effects)
-                //    {
-                //        effect.CurrentTechnique = effect.Techniques["NoInstancing"];
+                foreach (var mesh in model.Meshes)
+                {
+                    foreach (var meshPart in mesh.MeshParts)
+                    {
+                        context.SetVertexBuffer(meshPart.VertexBuffer);
+                        context.IndexBuffer = meshPart.IndexBuffer;
+                        context.PixelShaderResources[0] = (meshPart.Effect as BasicEffect).Texture;
 
-                //        effect.Parameters["World"].SetValue(modelBones[mesh.ParentBone.Index] * instances[i]);
-                //        effect.Parameters["View"].SetValue(view);
-                //        effect.Parameters["Projection"].SetValue(projection);
-                //    }
+                        Matrix world;
+                        Matrix.Multiply(ref modelBones[mesh.ParentBone.Index], ref instances[i], out world);
+                        Matrix.Transpose(ref world, out constants.World);
+                        Matrix.Transpose(ref view, out constants.View);
+                        Matrix.Transpose(ref projection, out constants.Projection);
+                        constantBuffer.SetData(context, constants);
 
-                //    mesh.Draw();
-                //}
+                        context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
+                    }
+                }
             }
         }
 
         void DrawOverlayText()
         {
-            string text = string.Format("Frames per second: {0}\n" +
-                                        "Instances: {1}\n" +
-                                        "Technique: {2}\n\n" +
-                                        "A = Change technique\n" +
-                                        "X = Add instances\n" +
-                                        "Y = Remove instances\n",
-                                        frameRate,
-                                        instances.Count,
-                                        instancingTechnique);
+            var text = string.Format("Frames per second: {0}\n" +
+                                     "Instances: {1}\n" +
+                                     "Technique: {2}\n\n" +
+                                     "A = Change technique\n" +
+                                     "X = Add instances\n" +
+                                     "Y = Remove instances\n",
+                                     frameRate,
+                                     instances.Count,
+                                     instancingTechnique);
 
             spriteBatch.Begin();
 

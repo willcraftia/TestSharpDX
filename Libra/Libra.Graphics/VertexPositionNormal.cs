@@ -12,7 +12,7 @@ namespace Libra.Graphics
     public struct VertexPositionNormal : IVertexType, IEquatable<VertexPositionNormal>
     {
         public static readonly VertexDeclaration VertexDeclaration =
-            new VertexDeclaration(InputElement.SVPosition, InputElement.Normal);
+            new VertexDeclaration(VertexElement.SVPosition, VertexElement.Normal);
 
         public Vector3 Position;
 

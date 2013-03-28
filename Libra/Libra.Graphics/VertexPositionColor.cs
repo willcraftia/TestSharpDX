@@ -12,7 +12,7 @@ namespace Libra.Graphics
     public struct VertexPositionColor : IVertexType, IEquatable<VertexPositionColor>
     {
         public static readonly VertexDeclaration VertexDeclaration =
-            new VertexDeclaration(InputElement.SVPosition, InputElement.Color);
+            new VertexDeclaration(VertexElement.SVPosition, VertexElement.Color);
 
         public Vector3 Position;
 

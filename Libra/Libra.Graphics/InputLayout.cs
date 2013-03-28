@@ -9,6 +9,8 @@ namespace Libra.Graphics
 {
     public abstract class InputLayout : IDisposable
     {
+        protected int InputSlotCount = D3D11Constants.IAVertexInputResourceSlotCount;
+
         bool initialized;
 
         public IDevice Device { get; private set; }
@@ -20,6 +22,14 @@ namespace Libra.Graphics
             if (device == null) throw new ArgumentNullException("device");
 
             Device = device;
+        }
+
+        public void Initialize(Shader shader, params InputElement[] elements)
+        {
+            AssertNotInitialized();
+            if (shader == null) throw new ArgumentNullException("shader");
+
+            Initialize(shader.ShaderBytecode, elements);
         }
 
         public void Initialize(byte[] shaderBytecode, params InputElement[] elements)
@@ -38,20 +48,37 @@ namespace Libra.Graphics
             initialized = true;
         }
 
-        public void Initialize(byte[] shaderBytecode, VertexDeclaration vertexDeclaration)
+        public void Initialize(Shader shader, VertexDeclaration vertexDeclaration, int slot = 0)
         {
             AssertNotInitialized();
+            if (shader == null) throw new ArgumentNullException("shader");
+
+            Initialize(shader.ShaderBytecode, vertexDeclaration, slot);
+        }
+
+        public void Initialize(byte[] shaderBytecode, VertexDeclaration vertexDeclaration, int slot = 0)
+        {
+            AssertNotInitialized();
+            if ((uint) InputSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
 
             InputStride = vertexDeclaration.Stride;
 
-            InitializeCore(shaderBytecode, vertexDeclaration.Elements);
+            InitializeCore(shaderBytecode, vertexDeclaration.GetInputElements(slot));
 
             initialized = true;
         }
 
-        public void Initialize<T>(byte[] shaderBytecode) where T : IVertexType, new()
+        public void Initialize<T>(Shader shader, int slot = 0) where T : IVertexType, new()
         {
-            Initialize(shaderBytecode, new T().VertexDeclaration);
+            AssertNotInitialized();
+            if (shader == null) throw new ArgumentNullException("shader");
+
+            Initialize<T>(shader.ShaderBytecode, slot);
+        }
+
+        public void Initialize<T>(byte[] shaderBytecode, int slot = 0) where T : IVertexType, new()
+        {
+            Initialize(shaderBytecode, new T().VertexDeclaration, slot);
         }
 
         protected abstract void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements);

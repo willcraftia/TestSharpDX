@@ -41,6 +41,8 @@ namespace Libra.Graphics.SharpDX
         // 作業用配列。
         D3D11RenderTargetView[] d3d11RenderTargetViews;
 
+        D3D11VertexBufferBinding[] d3d11VertexBufferBindings;
+
         public override bool Deferred
         {
             get { return deferred; }
@@ -58,7 +60,8 @@ namespace Libra.Graphics.SharpDX
 
             deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
-            d3d11RenderTargetViews = new D3D11RenderTargetView[SimultaneousRenderTargetCount];
+            d3d11RenderTargetViews = new D3D11RenderTargetView[RenderTargetCount];
+            d3d11VertexBufferBindings = new D3D11VertexBufferBinding[InputSlotCount];
         }
 
         protected override void OnInputLayoutChanged()
@@ -94,15 +97,9 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.InputAssembler.SetVertexBuffers(slot, d3d11VertexBufferBinding);
         }
 
-        protected override void SetVertexBuffersCore(int startSlot, int count, VertexBufferBinding[] bindings)
+        protected override void SetVertexBuffersCore(VertexBufferBinding[] bindings)
         {
-            // D3D11 のポインタ渡しインタフェースが公開されているため、
-            // stackalloc を利用して配列をヒープに作らずに済む方法もあるが、
-            // 将来の SharpDX の更新によりインタフェースが隠蔽される可能性もあるため、
-            // 配列複製で対応する。
-
-            var d3d11VertexBufferBindings = new D3D11VertexBufferBinding[count];
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < bindings.Length; i++)
             {
                 d3d11VertexBufferBindings[i] = new D3D11VertexBufferBinding
                 {
@@ -112,7 +109,7 @@ namespace Libra.Graphics.SharpDX
                 };
             }
 
-            D3D11DeviceContext.InputAssembler.SetVertexBuffers(startSlot, d3d11VertexBufferBindings);
+            D3D11DeviceContext.InputAssembler.SetVertexBuffers(0, d3d11VertexBufferBindings);
         }
 
         protected override void OnRasterizerStateChanged()
@@ -336,6 +333,12 @@ namespace Libra.Graphics.SharpDX
         protected override void DrawIndexedCore(int indexCount, int startIndexLocation, int baseVertexLocation)
         {
             D3D11DeviceContext.DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
+        }
+
+        protected override void DrawInstancedCore(int vertexCountPerInstance, int instanceCount,
+            int startVertexLocation, int startInstanceLocation)
+        {
+            D3D11DeviceContext.DrawInstanced(vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation);
         }
 
         protected override MappedSubresource Map(Resource resource, int subresource, MapMode mapMode)

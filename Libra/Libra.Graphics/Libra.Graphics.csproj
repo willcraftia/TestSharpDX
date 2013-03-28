@@ -142,6 +142,7 @@
     <Compile Include="ComparisonFunction.cs" />
     <Compile Include="ConstantBuffer.cs" />
     <Compile Include="CullMode.cs" />
+    <Compile Include="D3D11Constants.cs" />
     <Compile Include="DepthFormat.cs" />
     <Compile Include="DepthStencil.cs" />
     <Compile Include="DepthStencilState.cs" />
@@ -171,6 +172,8 @@
     <Compile Include="InputElementFormat.cs" />
     <Compile Include="InputLayout.cs" />
     <Compile Include="OcclusionQuery.cs" />
+    <Compile Include="Shader.cs" />
+    <Compile Include="VertexElement.cs" />
     <Compile Include="VertexPositionColor.cs" />
     <Compile Include="VertexPositionColorTexture.cs" />
     <Compile Include="VertexPositionNormal.cs" />

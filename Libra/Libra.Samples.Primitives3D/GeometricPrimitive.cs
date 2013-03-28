@@ -17,7 +17,7 @@ namespace Libra.Samples.Primitives3D
         VertexBuffer vertexBuffer;
         
         IndexBuffer indexBuffer;
-        
+
         BasicEffect basicEffect;
 
         protected IDevice Device { get; private set; }
@@ -65,7 +65,7 @@ namespace Libra.Samples.Primitives3D
         public void Draw(DeviceContext context, IEffect effect)
         {
             context.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.SetVertexBuffer(0, vertexBuffer);
+            context.SetVertexBuffer(vertexBuffer);
             context.IndexBuffer = indexBuffer;
 
             effect.Apply(context);

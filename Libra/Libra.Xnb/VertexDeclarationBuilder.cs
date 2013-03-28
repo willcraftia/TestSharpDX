@@ -12,11 +12,11 @@ namespace Libra.Xnb
     {
         int vertexStride;
 
-        InputElement[] elements;
+        VertexElement[] elements;
 
         int currentElementIndex;
 
-        InputElement currentElement;
+        VertexElement currentElement;
 
         protected override void SetVertexStride(uint value)
         {
@@ -25,12 +25,12 @@ namespace Libra.Xnb
 
         protected override void SetElementCount(uint value)
         {
-            elements = new InputElement[value];
+            elements = new VertexElement[value];
         }
 
         protected override void BeginElement(int index)
         {
-            currentElement = new InputElement();
+            currentElement = new VertexElement();
             currentElementIndex = index;
         }
 
