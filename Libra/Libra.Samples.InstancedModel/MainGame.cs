@@ -285,7 +285,8 @@ namespace Libra.Samples.InstancedModel
                     Matrix.Transpose(ref projection, out constants.Projection);
                     constantBuffer.SetData(context, constants);
 
-                    context.DrawInstanced(meshPart.IndexBuffer.IndexCount, instances.Length, meshPart.VertexOffset);
+                    context.DrawIndexedInstanced(meshPart.PrimitiveCount * 3, instances.Length, meshPart.StartIndex, meshPart.VertexOffset);
+                    //context.DrawInstanced(meshPart.PrimitiveCount * 3, instances.Length);
 
                     //foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                     //{
