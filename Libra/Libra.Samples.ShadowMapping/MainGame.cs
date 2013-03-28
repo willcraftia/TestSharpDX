@@ -332,7 +332,7 @@ namespace Libra.Samples.ShadowMapping
                         context.PixelShaderResources[0] = (meshPart.Effect as BasicEffect).Texture;
                     }
 
-                    context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
+                    context.DrawIndexed(meshPart.IndexCount, meshPart.StartIndexLocation, meshPart.BaseVertexLocation);
                 }
             }
 

@@ -284,7 +284,8 @@ namespace Libra.Samples.InstancedModel
                     Matrix.Transpose(ref projection, out constants.Projection);
                     constantBuffer.SetData(context, constants);
 
-                    context.DrawIndexedInstanced(meshPart.PrimitiveCount * 3, instances.Length, meshPart.StartIndex, meshPart.VertexOffset);
+                    context.DrawIndexedInstanced(
+                        meshPart.IndexCount, instances.Length, meshPart.StartIndexLocation, meshPart.BaseVertexLocation);
                 }
             }
         }
@@ -314,7 +315,7 @@ namespace Libra.Samples.InstancedModel
                         Matrix.Transpose(ref world, out constants.World);
                         constantBuffer.SetData(context, constants);
 
-                        context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
+                        context.DrawIndexed(meshPart.IndexCount, meshPart.StartIndexLocation, meshPart.BaseVertexLocation);
                     }
                 }
             }
@@ -344,7 +345,7 @@ namespace Libra.Samples.InstancedModel
                         Matrix.Transpose(ref projection, out constants.Projection);
                         constantBuffer.SetData(context, constants);
 
-                        context.DrawIndexed(meshPart.PrimitiveCount * 3, meshPart.StartIndex, meshPart.VertexOffset);
+                        context.DrawIndexed(meshPart.IndexCount, meshPart.StartIndexLocation, meshPart.BaseVertexLocation);
                     }
                 }
             }

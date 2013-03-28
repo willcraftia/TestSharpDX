@@ -202,22 +202,22 @@ namespace Libra.Xnb
 
         protected override void SetMeshPartVertexOffset(uint value)
         {
-            currentMeshPart.VertexOffset = (int) value;
+            currentMeshPart.BaseVertexLocation = (int) value;
         }
 
         protected override void SetMeshPartNumVertices(uint value)
         {
-            currentMeshPart.NumVertices = (int) value;
+            currentMeshPart.VertexCount = (int) value;
         }
 
         protected override void SetMeshPartStartIndex(uint value)
         {
-            currentMeshPart.StartIndex = (int) value;
+            currentMeshPart.StartIndexLocation = (int) value;
         }
 
         protected override void SetMeshPartPrimitiveCount(uint value)
         {
-            currentMeshPart.PrimitiveCount = (int) value;
+            currentMeshPart.IndexCount = (int) value * 3;
         }
 
         protected override void SetMeshPartTag(object value)

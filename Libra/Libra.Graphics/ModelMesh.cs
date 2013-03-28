@@ -26,18 +26,15 @@ namespace Libra.Graphics
             {
                 var part = MeshParts[i];
 
-                if (part.PrimitiveCount != 0)
+                if (part.IndexCount != 0)
                 {
-                    var vertexStride = part.VertexBuffer.VertexDeclaration.Stride;
-                    var offset = part.VertexOffset * vertexStride;
-
                     context.PrimitiveTopology = PrimitiveTopology.TriangleList;
-                    context.SetVertexBuffer(0, part.VertexBuffer, offset);
+                    context.SetVertexBuffer(part.VertexBuffer);
                     context.IndexBuffer = part.IndexBuffer;
 
                     part.Effect.Apply(context);
 
-                    context.DrawIndexed(part.PrimitiveCount * 3, part.StartIndex);
+                    context.DrawIndexed(part.IndexCount, part.StartIndexLocation, part.BaseVertexLocation);
                 }
             }
         }
