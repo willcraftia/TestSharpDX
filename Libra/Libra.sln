@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.ShadowMapping
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.InstancedModel", "Libra.Samples.InstancedModel\Libra.Samples.InstancedModel.csproj", "{54F6FEA5-1959-4D19-A991-2FDC798A0712}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.InstancedModelContent", "Libra.Samples.InstancedModelContent\Libra.Samples.InstancedModelContent.contentproj", "{2DA36DEB-4547-4FE6-93BE-15C8A9D1BF69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.InstancedModelContent", "Libra.Samples.InstancedModelContent\Libra.Samples.InstancedModelContent.contentproj", "{2DA36DEB-4547-4FE6-93BE-15C8A9D1BF69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -297,8 +297,8 @@ Global
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Debug|x86.ActiveCfg = Debug|x86
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Debug|x86.Build.0 = Debug|x86
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|Any CPU.ActiveCfg = Release|x86
-		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|Mixed Platforms.ActiveCfg = Debug|x86
-		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|Mixed Platforms.Build.0 = Debug|x86
+		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|x86.ActiveCfg = Release|x86
 		{3FE2B232-5E03-4F41-BF9C-2228D03C9C21}.Release|x86.Build.0 = Release|x86
 		{DDE68D5D-CF0F-46C3-A33C-7BF9A31D9CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
