@@ -689,12 +689,23 @@ namespace Libra.Graphics
             DrawInstancedCore(vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation);
         }
 
+        public void DrawIndexedInstanced(int indexCountPerInstance, int instanceCount,
+            int startIndexLocation = 0, int baseVertexLocation = 0, int startInstanceLocation = 0)
+        {
+            ApplyState();
+
+            DrawIndexedInstancedCore(indexCountPerInstance, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
+        }
+
         protected abstract void DrawCore(int vertexCount, int startVertexLocation);
 
         protected abstract void DrawIndexedCore(int indexCount, int startIndexLocation, int baseVertexLocation);
 
         protected abstract void DrawInstancedCore(int vertexCountPerInstance, int instanceCount,
             int startVertexLocation, int startInstanceLocation);
+
+        protected abstract void DrawIndexedInstancedCore(int indexCountPerInstance, int instanceCount,
+            int startIndexLocation = 0, int baseVertexLocation = 0, int startInstanceLocation = 0);
 
         internal protected abstract MappedSubresource Map(Resource resource, int subresource, MapMode mapMode);
 

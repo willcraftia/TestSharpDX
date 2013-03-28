@@ -341,6 +341,13 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.DrawInstanced(vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation);
         }
 
+        protected override void DrawIndexedInstancedCore(int indexCountPerInstance, int instanceCount,
+            int startIndexLocation = 0, int baseVertexLocation = 0, int startInstanceLocation = 0)
+        {
+            D3D11DeviceContext.DrawIndexedInstanced(
+                indexCountPerInstance, instanceCount, startIndexLocation, baseVertexLocation, startInstanceLocation);
+        }
+
         protected override MappedSubresource Map(Resource resource, int subresource, MapMode mapMode)
         {
             var d3d11Resource = GetD3D11Resource(resource);
