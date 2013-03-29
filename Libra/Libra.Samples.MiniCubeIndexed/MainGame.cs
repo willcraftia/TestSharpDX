@@ -91,6 +91,9 @@ namespace Libra.Samples.MiniCubeIndexed
         {
             var compiler = new ShaderCompiler();
             compiler.RootPath = "Shaders";
+            compiler.EnableStrictness = true;
+            compiler.OptimizationLevel = OptimizationLevels.Level3;
+            compiler.WarningsAreErrors = true;
 
             var vsBytecode = compiler.CompileVertexShader("MiniCube.fx", "VS");
             var psBytecode = compiler.CompilePixelShader("MiniCube.fx", "PS");

@@ -186,6 +186,9 @@ namespace Libra.Samples.ShadowMapping
         {
             var compiler = new ShaderCompiler();
             compiler.RootPath = "../../Shaders/";
+            compiler.EnableStrictness = true;
+            compiler.OptimizationLevel = OptimizationLevels.Level3;
+            compiler.WarningsAreErrors = true;
 
             createShadowMapShader = new CreateShadowMapShader(Device, compiler);
             drawModelShader = new DrawModelShader(Device, compiler);

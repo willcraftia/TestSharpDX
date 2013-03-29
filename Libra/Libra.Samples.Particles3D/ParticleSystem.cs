@@ -168,6 +168,9 @@ namespace Libra.Samples.Particles3D
 
             var compiler = new ShaderCompiler();
             compiler.RootPath = "Shaders";
+            compiler.EnableStrictness = true;
+            compiler.OptimizationLevel = OptimizationLevels.Level3;
+            compiler.WarningsAreErrors = true;
 
             var vsBytecode = compiler.CompileVertexShader("ParticleEffect.fx", "ParticleVertexShader");
             var psBytecode = compiler.CompilePixelShader("ParticleEffect.fx", "ParticlePixelShader");

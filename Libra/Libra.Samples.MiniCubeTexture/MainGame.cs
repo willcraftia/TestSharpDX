@@ -93,6 +93,9 @@ namespace Libra.Samples.MiniCubeTexture
             var compiler = new ShaderCompiler();
             compiler.RootPath = "Shaders";
             compiler.PackMatrixRowMajor = true;
+            compiler.EnableStrictness = true;
+            compiler.OptimizationLevel = OptimizationLevels.Level3;
+            compiler.WarningsAreErrors = true;
 
             var vsBytecode = compiler.CompileVertexShader("MiniCubeTexture.fx", "VS");
             var psBytecode = compiler.CompilePixelShader("MiniCubeTexture.fx", "PS");
