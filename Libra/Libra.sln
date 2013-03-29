@@ -65,6 +65,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.InstancedMode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.InstancedModelContent", "Libra.Samples.InstancedModelContent\Libra.Samples.InstancedModelContent.contentproj", "{2DA36DEB-4547-4FE6-93BE-15C8A9D1BF69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Libra.Samples.BloomPostprocess", "Libra.Samples.BloomPostprocess\Libra.Samples.BloomPostprocess.csproj", "{28AD6255-1235-4DDC-8690-29457AFE6A45}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Libra.Samples.BloomPostprocessContent", "Libra.Samples.BloomPostprocessContent\Libra.Samples.BloomPostprocessContent.contentproj", "{16EF5249-2180-4432-9F07-65AAF4D9AA37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -371,6 +375,22 @@ Global
 		{2DA36DEB-4547-4FE6-93BE-15C8A9D1BF69}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{2DA36DEB-4547-4FE6-93BE-15C8A9D1BF69}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{2DA36DEB-4547-4FE6-93BE-15C8A9D1BF69}.Release|x86.ActiveCfg = Debug|Any CPU
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Debug|x86.ActiveCfg = Debug|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Debug|x86.Build.0 = Debug|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Release|Any CPU.ActiveCfg = Release|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Release|Mixed Platforms.Build.0 = Release|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Release|x86.ActiveCfg = Release|x86
+		{28AD6255-1235-4DDC-8690-29457AFE6A45}.Release|x86.Build.0 = Release|x86
+		{16EF5249-2180-4432-9F07-65AAF4D9AA37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16EF5249-2180-4432-9F07-65AAF4D9AA37}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16EF5249-2180-4432-9F07-65AAF4D9AA37}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16EF5249-2180-4432-9F07-65AAF4D9AA37}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{16EF5249-2180-4432-9F07-65AAF4D9AA37}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16EF5249-2180-4432-9F07-65AAF4D9AA37}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
