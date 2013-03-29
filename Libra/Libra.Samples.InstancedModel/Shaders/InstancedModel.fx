@@ -43,7 +43,7 @@ VSOutput VSCommon(VSInput input, float4x4 instanceTransform)
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
 
-    float3 worldNormal = mul(input.Normal, instanceTransform);
+    float3 worldNormal = mul(float4(input.Normal, 0), instanceTransform).xyz;
 
     float diffuseAmount = max(-dot(worldNormal, LightDirection), 0);
 
