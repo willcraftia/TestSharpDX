@@ -17,6 +17,8 @@ namespace Libra.Graphics
 
         public int InputStride { get; private set; }
 
+        protected InputElement[] Elements { get; private set; }
+
         protected InputLayout(IDevice device)
         {
             if (device == null) throw new ArgumentNullException("device");
@@ -43,7 +45,9 @@ namespace Libra.Graphics
                 InputStride += element.SizeInBytes;
             }
 
-            InitializeCore(shaderBytecode, elements);
+            Elements = (InputElement[]) elements.Clone();
+
+            InitializeCore(shaderBytecode);
 
             initialized = true;
         }
@@ -63,7 +67,9 @@ namespace Libra.Graphics
 
             InputStride = vertexDeclaration.Stride;
 
-            InitializeCore(shaderBytecode, vertexDeclaration.GetInputElements(slot));
+            Elements = vertexDeclaration.GetInputElements(slot);
+
+            InitializeCore(shaderBytecode);
 
             initialized = true;
         }
@@ -81,7 +87,7 @@ namespace Libra.Graphics
             Initialize(shaderBytecode, new T().VertexDeclaration, slot);
         }
 
-        protected abstract void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements);
+        protected abstract void InitializeCore(byte[] shaderBytecode);
 
         void AssertNotInitialized()
         {

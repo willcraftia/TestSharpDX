@@ -25,27 +25,24 @@ namespace Libra.Graphics.SharpDX
             D3D11Device = device.D3D11Device;
         }
 
-        protected override void InitializeCore(byte[] shaderBytecode, InputElement[] inputElements)
+        protected override void InitializeCore(byte[] shaderBytecode)
         {
-            if (shaderBytecode == null) throw new ArgumentNullException("shaderBytecode");
-            if (inputElements == null) throw new ArgumentNullException("inputElements");
-
-            var d3d11InputElements = new D3D11InputElement[inputElements.Length];
-            for (int i = 0; i < inputElements.Length; i++)
+            var d3d11InputElements = new D3D11InputElement[Elements.Length];
+            for (int i = 0; i < d3d11InputElements.Length; i++)
             {
                 var d3d11InputClassification = D3D11InputClassification.PerVertexData;
-                if (inputElements[i].PerInstance)
+                if (Elements[i].PerInstance)
                     d3d11InputClassification = D3D11InputClassification.PerInstanceData;
 
                 d3d11InputElements[i] = new D3D11InputElement
                 {
-                    SemanticName = inputElements[i].SemanticName,
-                    SemanticIndex = inputElements[i].SemanticIndex,
-                    Format = (DXGIFormat) inputElements[i].Format,
-                    Slot = inputElements[i].InputSlot,
-                    AlignedByteOffset = inputElements[i].AlignedByteOffset,
+                    SemanticName = Elements[i].SemanticName,
+                    SemanticIndex = Elements[i].SemanticIndex,
+                    Format = (DXGIFormat) Elements[i].Format,
+                    Slot = Elements[i].InputSlot,
+                    AlignedByteOffset = Elements[i].AlignedByteOffset,
                     Classification = d3d11InputClassification,
-                    InstanceDataStepRate = inputElements[i].InstanceDataStepRate
+                    InstanceDataStepRate = Elements[i].InstanceDataStepRate
                 };
             }
 
