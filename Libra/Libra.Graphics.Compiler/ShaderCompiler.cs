@@ -69,12 +69,101 @@ namespace Libra.Graphics.Compiler
         // http://msdn.microsoft.com/en-us/library/gg615083(v=vs.85).aspx
 
         /// <summary>
+        /// デバッグ情報を出力コードへ挿入するか否かを示す値を取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// デバッグ情報には file/line/type/symbol が挿入されます。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_DEBUG
+        /// </remarks>
+        public bool EnableDebug { get; set; }
+
+        /// <summary>
+        /// 生成されたコードの検査を行うか否かを示す値を取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// 過去にコンパイルが成功しているシェーダに対してのみ、検査をスキップすることをお薦めします。
+        /// DirectX は、デバイスへシェーダを設定する前に、常にシェーダを検査します。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_SKIP_VALIDATION
+        /// </remarks>
+        public bool SkipValidation { get; set; }
+
+        /// <summary>
+        /// 最適化処理をスキップするか否かを示す値を取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// デバッグ目的でのみ、最適化処理をスキップすることをお薦めします。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_SKIP_OPTIMIZATION
+        /// </remarks>
+        public bool SkipOptimization { get; set; }
+
+        /// <summary>
         /// 行列を行優先 (row_major) とするか否かを示す値を取得または設定します。
         /// </summary>
         /// <remarks>
         /// HLSL で明示していない場合のデフォルトは列優先 (column_major) です。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_PACK_MATRIX_ROW_MAJOR
         /// </remarks>
         public bool PackMatrixRowMajor { get; set; }
+
+        /// <summary>
+        /// 行列を列優先 (column_major) とするか否かを示す値を取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// 列優先ではドット積をベクトル×行列で処理できるため、一般的にはより効率的です。
+        /// HLSL で明示していない場合のデフォルトは列優先 (column_major) です。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_PACK_MATRIX_COLUMN_MAJOR
+        /// </remarks>
+        public bool PackMatrixColumnMajor { get; set; }
+
+        /// <summary>
+        /// 厳密にコンパイルするか否かを示す値を取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// 厳密なコンパイルでは、古い非推奨な構文を許可しません。
+        /// デフォルトでは、非推奨な構文を許可します。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_ENABLE_STRICTNESS
+        /// </remarks>
+        public bool EnableStrictness { get; set; }
+
+        /// <summary>
+        /// 古いシェーダを 5_0 ターゲットでコンパイルするか否かを示す値を取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// D3DCompiler.h: D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY
+        /// </remarks>
+        public bool EnableBackwardsCompatibility { get; set; }
+
+        /// <summary>
+        /// 最適化レベルを取得または設定します。
+        /// </summary>
+        /// <remarks>
+        /// デフォルトは Level1 です。
+        /// 
+        /// D3DCompiler.h:
+        /// D3DCOMPILE_OPTIMIZATION_LEVEL0
+        /// D3DCOMPILE_OPTIMIZATION_LEVEL1
+        /// D3DCOMPILE_OPTIMIZATION_LEVEL2
+        /// D3DCOMPILE_OPTIMIZATION_LEVEL3
+        /// </remarks>
+        public OptimizationLevels OptimizationLevel { get; set; }
+
+        /// <summary>
+        /// コンパイル時の全ての警告をエラーとして処理します。
+        /// </summary>
+        /// <remarks>
+        /// 新しいシェーダ コードでは、全ての警告を解決し、
+        /// 発見が困難なコード上の問題を減らすために、
+        /// この設定を ON にすることをお薦めします。
+        /// 
+        /// D3DCompiler.h: D3DCOMPILE_WARNINGS_ARE_ERRORS
+        /// </remarks>
+        public bool WarningsAreErrors { get; set; }
 
         /// <summary>
         /// シェーダ ファイルのルート パスを取得または設定します。
@@ -87,10 +176,19 @@ namespace Libra.Graphics.Compiler
         /// </summary>
         public PathCollection SystemIncludePaths { get; private set; }
 
+        public VertexShaderProfile VertexShaderProfile { get; set; }
+
+        public PixelShaderProfile PixelShaderProfile { get; set; }
+
         public ShaderCompiler()
         {
             d3dcInclude = new D3DCIncludeImpl(this);
+
+            OptimizationLevel = OptimizationLevels.Level1;
+            
             SystemIncludePaths = new PathCollection();
+            VertexShaderProfile = VertexShaderProfile.vs_5_0;
+            PixelShaderProfile = PixelShaderProfile.ps_5_0;
         }
 
         public static byte[] ParseInputSignature(byte[] shaderBytecode)
@@ -108,14 +206,14 @@ namespace Libra.Graphics.Compiler
             return D3DCShaderSignature.GetInputOutputSignature(shaderBytecode).Data;
         }
 
-        public byte[] CompileVertexShader(Stream stream, string entrypoint, VertexShaderProfile profile = VertexShaderProfile.vs_5_0)
+        public byte[] CompileVertexShader(Stream stream, string entrypoint)
         {
-            return Compile(stream, entrypoint, ToString(profile));
+            return Compile(stream, entrypoint, ToString(VertexShaderProfile));
         }
 
-        public byte[] CompilePixelShader(Stream stream, string entrypoint, PixelShaderProfile profile = PixelShaderProfile.ps_5_0)
+        public byte[] CompilePixelShader(Stream stream, string entrypoint)
         {
-            return Compile(stream, entrypoint, ToString(profile));
+            return Compile(stream, entrypoint, ToString(PixelShaderProfile));
         }
 
         /// <summary>
@@ -158,14 +256,14 @@ namespace Libra.Graphics.Compiler
             return d3dCCompilationResult.Bytecode.Data;
         }
 
-        public byte[] CompileVertexShader(string path, string entrypoint, VertexShaderProfile profile = VertexShaderProfile.vs_5_0)
+        public byte[] CompileVertexShader(string path, string entrypoint)
         {
-            return CompileFromFile(path, entrypoint, ToString(profile));
+            return CompileFromFile(path, entrypoint, ToString(VertexShaderProfile));
         }
 
-        public byte[] CompilePixelShader(string path, string entrypoint, PixelShaderProfile profile = PixelShaderProfile.ps_5_0)
+        public byte[] CompilePixelShader(string path, string entrypoint)
         {
-            return CompileFromFile(path, entrypoint, ToString(profile));
+            return CompileFromFile(path, entrypoint, ToString(PixelShaderProfile));
         }
 
         /// <summary>
@@ -319,8 +417,45 @@ namespace Libra.Graphics.Compiler
         {
             var flags = D3DCShaderFlags.None;
 
+            if (EnableDebug)
+                flags |= D3DCShaderFlags.Debug;
+
+            if (SkipValidation)
+                flags |= D3DCShaderFlags.SkipValidation;
+
+            if (SkipOptimization)
+                flags |= D3DCShaderFlags.SkipOptimization;
+
             if (PackMatrixRowMajor)
                 flags |= D3DCShaderFlags.PackMatrixRowMajor;
+
+            if (PackMatrixColumnMajor)
+                flags |= D3DCShaderFlags.PackMatrixColumnMajor;
+
+            if (EnableStrictness)
+                flags |= D3DCShaderFlags.EnableStrictness;
+
+            if (EnableBackwardsCompatibility)
+                flags |= D3DCShaderFlags.EnableBackwardsCompatibility;
+
+            switch (OptimizationLevel)
+            {
+                case OptimizationLevels.Level0:
+                    flags |= D3DCShaderFlags.OptimizationLevel0;
+                    break;
+                case OptimizationLevels.Level1:
+                    flags |= D3DCShaderFlags.OptimizationLevel1;
+                    break;
+                case OptimizationLevels.Level2:
+                    flags |= D3DCShaderFlags.OptimizationLevel2;
+                    break;
+                case OptimizationLevels.Level3:
+                    flags |= D3DCShaderFlags.OptimizationLevel3;
+                    break;
+            }
+
+            if (WarningsAreErrors)
+                flags |= D3DCShaderFlags.WarningsAreErrors;
 
             return flags;
         }

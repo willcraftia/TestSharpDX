@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OptimizationLevels.cs" />
     <Compile Include="PixelShaderProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShaderCompiler.cs" />
