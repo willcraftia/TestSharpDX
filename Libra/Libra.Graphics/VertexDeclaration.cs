@@ -11,7 +11,7 @@ namespace Libra.Graphics
     {
         const int InputSlotCount = D3D11Constants.IAVertexInputResourceSlotCount;
 
-        VertexElement[] elements;
+        internal VertexElement[] Elements;
 
         public int Stride { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Libra.Graphics
             if (elements == null) throw new ArgumentNullException("elements");
             if (elements.Length == 0) throw new ArgumentException("elements is empty", "elements");
 
-            this.elements = elements;
+            this.Elements = elements;
 
             foreach (var element in elements)
             {
@@ -35,33 +35,12 @@ namespace Libra.Graphics
             if (elements.Length == 0) throw new ArgumentException("elements is empty", "elements");
 
             Stride = stride;
-            this.elements = elements;
+            this.Elements = elements;
         }
 
         public VertexElement[] GetVertexElements()
         {
-            return (VertexElement[]) elements.Clone();
-        }
-
-        public InputElement[] GetInputElements(int slot)
-        {
-            if ((uint) InputSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
-
-            var inputElements = new InputElement[elements.Length];
-
-            for (int i = 0; i < elements.Length; i++)
-            {
-                inputElements[i] = new InputElement(
-                    elements[i].SemanticName,
-                    elements[i].SemanticIndex,
-                    elements[i].Format,
-                    slot,
-                    elements[i].AlignedByteOffset,
-                    elements[i].PerInstance,
-                    elements[i].InstanceDataStepRate);
-            }
-
-            return inputElements;
+            return (VertexElement[]) Elements.Clone();
         }
     }
 }

@@ -158,22 +158,6 @@ namespace Libra.Samples.InstancedModel
             constants.DiffuseLight = new Vector4(1.25f, 1.25f, 1.25f, 0);
             constants.AmbientLight = new Vector4(0.25f, 0.25f, 0.25f, 0);
 
-            instanceInputLayout = Device.CreateInputLayout();
-            instanceInputLayout.Initialize(instanceVertexShader,
-                // 入力スロット #0
-                // TODO
-                // XNB からの VertexDeclaration の定義を合わせなければならない点が面倒。
-                // どうにかして自動的に適切な宣言にできないものか。
-                new InputElement("SV_Position", 0, InputElementFormat.Vector3, 0),
-                new InputElement("NORMAL",      0, InputElementFormat.Vector3, 0),
-                new InputElement("TEXCOORD",    0, InputElementFormat.Vector2, 0),
-                // 入力スロット #1
-                new InputElement("TRANSFORM",   0, InputElementFormat.Vector4, 1,  0, true, 1),
-                new InputElement("TRANSFORM",   1, InputElementFormat.Vector4, 1, 16, true, 1),
-                new InputElement("TRANSFORM",   2, InputElementFormat.Vector4, 1, 32, true, 1),
-                new InputElement("TRANSFORM",   3, InputElementFormat.Vector4, 1, 48, true, 1)
-                );
-
             spriteBatch = new SpriteBatch(Device.ImmediateContext);
             
             spriteFont = content.Load<SpriteFont>("Font");
@@ -181,6 +165,11 @@ namespace Libra.Samples.InstancedModel
             instancedModel = content.Load<Model>("Cats");
             instancedModelBones = new Matrix[instancedModel.Bones.Count];
             instancedModel.CopyAbsoluteBoneTransformsTo(instancedModelBones);
+
+            instanceInputLayout = Device.CreateInputLayout();
+            instanceInputLayout.Initialize(instanceVertexShader,
+                new VertexDeclarationBinding(instancedModel.Meshes[0].MeshParts[0].VertexBuffer.VertexDeclaration),
+                new VertexDeclarationBinding(instanceVertexDeclaration, 1));
 
             keyboard = platform.CreateKeyboard();
             joystick = platform.CreateJoystick();

@@ -13,11 +13,11 @@ namespace Libra.Graphics
 
         bool initialized;
 
+        protected InputElement[] Elements;
+
         public IDevice Device { get; private set; }
 
         public int InputStride { get; private set; }
-
-        protected InputElement[] Elements { get; private set; }
 
         protected InputLayout(IDevice device)
         {
@@ -67,7 +67,7 @@ namespace Libra.Graphics
 
             InputStride = vertexDeclaration.Stride;
 
-            Elements = vertexDeclaration.GetInputElements(slot);
+            Elements = CreateInputElements(vertexDeclaration, slot);
 
             InitializeCore(shaderBytecode);
 
@@ -76,7 +76,6 @@ namespace Libra.Graphics
 
         public void Initialize<T>(Shader shader, int slot = 0) where T : IVertexType, new()
         {
-            AssertNotInitialized();
             if (shader == null) throw new ArgumentNullException("shader");
 
             Initialize<T>(shader.ShaderBytecode, slot);
@@ -87,7 +86,64 @@ namespace Libra.Graphics
             Initialize(shaderBytecode, new T().VertexDeclaration, slot);
         }
 
+        public void Initialize(Shader shader, params VertexDeclarationBinding[] vertexDeclarationBindings)
+        {
+            if (shader == null) throw new ArgumentNullException("shader");
+
+            Initialize(shader.ShaderBytecode, vertexDeclarationBindings);
+        }
+
+        public void Initialize(byte[] shaderBytecode, params VertexDeclarationBinding[] vertexDeclarationBindings)
+        {
+            if (vertexDeclarationBindings == null) throw new ArgumentNullException("vertexDeclarationBindings");
+            if (vertexDeclarationBindings.Length == 0) throw new ArgumentOutOfRangeException("vertexDeclarationBindings.Length");
+
+            int elementCount = 0;
+            foreach (var bindings in vertexDeclarationBindings)
+            {
+                elementCount += bindings.VertexDeclaration.Elements.Length;
+            }
+
+            Elements = new InputElement[elementCount];
+
+            int index = 0;
+            foreach (var bindings in vertexDeclarationBindings)
+            {
+                var vertexElements = bindings.VertexDeclaration.Elements;
+                for (int i = 0; i < vertexElements.Length; i++)
+                {
+                    ToInputElement(ref vertexElements[i], bindings.Slot, out Elements[index++]);
+                }
+            }
+
+            InitializeCore(shaderBytecode);
+        }
+
         protected abstract void InitializeCore(byte[] shaderBytecode);
+
+        InputElement[] CreateInputElements(VertexDeclaration vertexDeclaration, int slot)
+        {
+            var inputElements = new InputElement[vertexDeclaration.Elements.Length];
+
+            for (int i = 0; i < vertexDeclaration.Elements.Length; i++)
+            {
+                ToInputElement(ref vertexDeclaration.Elements[i], slot, out inputElements[i]);
+            }
+
+            return inputElements;
+        }
+
+        void ToInputElement(ref VertexElement vertexElement, int slot, out InputElement result)
+        {
+            result = new InputElement(
+                vertexElement.SemanticName,
+                vertexElement.SemanticIndex,
+                vertexElement.Format,
+                slot,
+                vertexElement.AlignedByteOffset,
+                vertexElement.PerInstance,
+                vertexElement.InstanceDataStepRate);
+        }
 
         void AssertNotInitialized()
         {

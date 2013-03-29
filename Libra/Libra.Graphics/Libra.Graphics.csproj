@@ -173,6 +173,7 @@
     <Compile Include="InputLayout.cs" />
     <Compile Include="OcclusionQuery.cs" />
     <Compile Include="Shader.cs" />
+    <Compile Include="VertexDeclarationBinding.cs" />
     <Compile Include="VertexElement.cs" />
     <Compile Include="VertexPositionColor.cs" />
     <Compile Include="VertexPositionColorTexture.cs" />
