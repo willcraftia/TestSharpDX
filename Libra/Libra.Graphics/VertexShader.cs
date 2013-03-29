@@ -33,10 +33,8 @@ namespace Libra.Graphics
                 if (!inputLayoutMap.TryGetValue(vertexDeclaration, out inputLayout))
                 {
                     // 入力スロット #0 固定。
-                    var inputElements = vertexDeclaration.GetInputElements(0);
-
                     inputLayout = Device.CreateInputLayout();
-                    inputLayout.Initialize(ShaderBytecode, inputElements);
+                    inputLayout.Initialize(ShaderBytecode, vertexDeclaration, 0);
 
                     inputLayoutMap[vertexDeclaration] = inputLayout;
                 }
