@@ -118,7 +118,7 @@ VertexShaderOutput ParticleVertexShader(VertexShaderInput input)
     output.Position.xy += mul(input.Corner, rotation) * size * ViewportScale;
 
     output.Color = ComputeParticleColor(output.Position, input.Random.z, normalizedAge);
-    output.TextureCoordinate = (input.Corner + 1) / 2;
+    output.TextureCoordinate = ((float2) input.Corner + 1.0f) / 2.0f;
 
     return output;
 }
