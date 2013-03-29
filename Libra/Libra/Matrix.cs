@@ -285,7 +285,6 @@ namespace Libra
 
         public static void Multiply(ref Matrix left, ref Matrix right, out Matrix result)
         {
-            result = new Matrix();
             result.M11 = (left.M11 * right.M11) + (left.M12 * right.M21) + (left.M13 * right.M31) + (left.M14 * right.M41);
             result.M12 = (left.M11 * right.M12) + (left.M12 * right.M22) + (left.M13 * right.M32) + (left.M14 * right.M42);
             result.M13 = (left.M11 * right.M13) + (left.M12 * right.M23) + (left.M13 * right.M33) + (left.M14 * right.M43);
@@ -453,25 +452,12 @@ namespace Libra
 
         public static void Transpose(ref Matrix value, out Matrix result)
         {
-            var temp = new Matrix
-            {
-                M11 = value.M11,
-                M12 = value.M21,
-                M13 = value.M31,
-                M14 = value.M41,
-                M21 = value.M12,
-                M22 = value.M22,
-                M23 = value.M32,
-                M24 = value.M42,
-                M31 = value.M13,
-                M32 = value.M23,
-                M33 = value.M33,
-                M34 = value.M43,
-                M41 = value.M14,
-                M42 = value.M24,
-                M43 = value.M34,
-                M44 = value.M44
-            };
+            var temp = new Matrix(
+                value.M11, value.M21, value.M31, value.M41,
+                value.M12, value.M22, value.M32, value.M42,
+                value.M13, value.M23, value.M33, value.M43,
+                value.M14, value.M24, value.M34, value.M44
+                );
 
             result = temp;
         }
@@ -628,12 +614,13 @@ namespace Libra
 
         public static void CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane, out Matrix result)
         {
+            float zRange = 1.0f / (zNearPlane - zFarPlane);
             result = new Matrix
             {
                 M11 = 2.0f / width,
                 M22 = 2.0f / height,
-                M33 = 1.0f / (zNearPlane - zFarPlane),
-                M43 = zNearPlane / (zNearPlane - zFarPlane),
+                M33 = zRange,
+                M43 = zNearPlane * zRange,
                 M44 = 1.0f
             };
         }
@@ -648,14 +635,15 @@ namespace Libra
         public static void CreateOrthographicOffCenter(float left, float right, float bottom, float top,
                                                        float zNearPlane, float zFarPlane, out Matrix result)
         {
+            float zRange = 1.0f / (zNearPlane - zFarPlane);
             result = new Matrix
             {
                 M11 = 2.0f / (right - left),
                 M22 = 2.0f / (top - bottom),
-                M33 = 1.0f / (zNearPlane - zFarPlane),
+                M33 = zRange,
                 M41 = (left + right) / (left - right),
                 M42 = (top + bottom) / (bottom - top),
-                M43 = zNearPlane / (zNearPlane - zFarPlane),
+                M43 = zNearPlane * zRange,
                 M44 = 1.0f
             };
         }
@@ -672,11 +660,15 @@ namespace Libra
                                              float nearPlaneDistance, float farPlaneDistance,
                                              out Matrix result)
         {
-            float halfWidth = width * 0.5f;
-            float halfHeight = height * 0.5f;
-
-            CreatePerspectiveOffCenter(-halfWidth, halfWidth, -halfHeight, halfHeight,
-                                       nearPlaneDistance, farPlaneDistance, out result);
+            float zRange = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+            result = new Matrix
+            {
+                M11 = (2.0f * nearPlaneDistance) / width,
+                M22 = (2.0f * nearPlaneDistance) / height,
+                M33 = zRange,
+                M34 = -1.0f,
+                M43 = nearPlaneDistance * zRange
+            };
         }
 
         public static Matrix CreatePerspective(float width, float height,
@@ -691,22 +683,16 @@ namespace Libra
                                                         float nearPlaneDistance, float farPlaneDistance,
                                                         out Matrix result)
         {
-            if (fieldOfView <= 0 || MathHelper.Pi <= fieldOfView) throw new ArgumentOutOfRangeException("fieldOfView");
-            if (aspectRatio <= 0) throw new ArgumentOutOfRangeException("aspectRatio");
-            if (nearPlaneDistance <= 0) throw new ArgumentOutOfRangeException("nearPlaneDistance");
-            if (farPlaneDistance <= 0) throw new ArgumentOutOfRangeException("farPlaneDistance");
-            if (farPlaneDistance <= nearPlaneDistance) throw new ArgumentException("farPlaneDistance <= nearPlaneDistance");
-
             float yScale = (float) (1.0f / Math.Tan(fieldOfView * 0.5f));
             float xScale = yScale / aspectRatio;
-
+            float zRange = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
             result = new Matrix
             {
                 M11 = xScale,
                 M22 = yScale,
-                M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance),
+                M33 = zRange,
                 M34 = -1.0f,
-                M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance)
+                M43 = nearPlaneDistance * zRange
             };
         }
 
@@ -722,19 +708,16 @@ namespace Libra
                                                       float nearPlaneDistance, float farPlaneDistance,
                                                       out Matrix result)
         {
-            if (nearPlaneDistance <= 0) throw new ArgumentOutOfRangeException("nearPlaneDistance");
-            if (farPlaneDistance <= 0) throw new ArgumentOutOfRangeException("farPlaneDistance");
-            if (farPlaneDistance <= nearPlaneDistance) throw new ArgumentException("farPlaneDistance <= nearPlaneDistance");
-
+            float zRange = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
             result = new Matrix
             {
                 M11 = 2.0f * nearPlaneDistance / (right - left),
                 M22 = 2.0f * nearPlaneDistance / (top - bottom),
                 M31 = (left + right) / (right - left),
                 M32 = (top + bottom) / (top - bottom),
-                M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance),
+                M33 = zRange,
                 M34 = -1.0f,
-                M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance)
+                M43 = nearPlaneDistance * zRange
             };
         }
 
