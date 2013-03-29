@@ -260,8 +260,14 @@ namespace Libra.Graphics
 
         #endregion
 
-        protected const int InputSlotCount = D3D11Constants.IAVertexInputResourceSlotCount;
+        /// <summary>
+        /// 頂点入力スロットの数。
+        /// </summary>
+        protected const int VertexInputResourceSlotCount = D3D11Constants.IAVertexInputResourceSlotCount;
 
+        /// <summary>
+        /// 同時利用が可能なレンダ ターゲットの数。
+        /// </summary>
         protected const int RenderTargetCount = D3D11Constants.SimultaneousRenderTargetCount;
 
         static readonly Color DiscardColor = Color.Purple;
@@ -449,7 +455,7 @@ namespace Libra.Graphics
             //Device.BackBuffersResetting += OnDeviceBackBuffersResetting;
             //Device.BackBuffersReset += OnDeviceBackBuffersReset;
 
-            vertexBufferBindings = new VertexBufferBinding[InputSlotCount];
+            vertexBufferBindings = new VertexBufferBinding[VertexInputResourceSlotCount];
 
             activeRenderTargetViews = new RenderTargetView[RenderTargetCount];
 
@@ -475,7 +481,7 @@ namespace Libra.Graphics
 
         public VertexBufferBinding GetVertexBuffer(int slot)
         {
-            if ((uint) InputSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
+            if ((uint) VertexInputResourceSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
 
             return vertexBufferBindings[slot];
         }
@@ -497,7 +503,7 @@ namespace Libra.Graphics
 
         public void SetVertexBuffer(int slot, VertexBufferBinding binding)
         {
-            if ((uint) InputSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
+            if ((uint) VertexInputResourceSlotCount < (uint) slot) throw new ArgumentOutOfRangeException("slot");
 
             vertexBufferBindings[slot] = binding;
 
@@ -507,7 +513,7 @@ namespace Libra.Graphics
         public void SetVertexBuffers(params VertexBufferBinding[] bindings)
         {
             if (bindings == null) throw new ArgumentNullException("bindings");
-            if ((uint) InputSlotCount < (uint) bindings.Length) throw new ArgumentOutOfRangeException("bindings.Length");
+            if ((uint) VertexInputResourceSlotCount < (uint) bindings.Length) throw new ArgumentOutOfRangeException("bindings.Length");
 
             Array.Copy(bindings, 0, vertexBufferBindings, 0, bindings.Length);
 
@@ -662,7 +668,7 @@ namespace Libra.Graphics
                 var renderTarget = activeRenderTargetViews[i];
                 if (renderTarget != null)
                 {
-                    ClearRenderTargetView(renderTarget, options, color, depth, stencil);
+                    ClearRenderTargetCore(renderTarget, options, color, depth, stencil);
                 }
             }
         }

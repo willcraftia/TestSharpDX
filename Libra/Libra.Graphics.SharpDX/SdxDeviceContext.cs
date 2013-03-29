@@ -61,7 +61,7 @@ namespace Libra.Graphics.SharpDX
             deferred = (d3d11DeviceContext.TypeInfo == D3D11DeviceContextType.Deferred);
 
             d3d11RenderTargetViews = new D3D11RenderTargetView[RenderTargetCount];
-            d3d11VertexBufferBindings = new D3D11VertexBufferBinding[InputSlotCount];
+            d3d11VertexBufferBindings = new D3D11VertexBufferBinding[VertexInputResourceSlotCount];
         }
 
         protected override void OnInputLayoutChanged()
