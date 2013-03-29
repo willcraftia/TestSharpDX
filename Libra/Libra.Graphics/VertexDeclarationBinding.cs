@@ -12,10 +12,17 @@ namespace Libra.Graphics
 
         public int Slot;
 
-        public VertexDeclarationBinding(VertexDeclaration vertexDeclaration, int slot = 0)
+        public bool PerInstance;
+
+        public int InstanceDataStepRate;
+
+        public VertexDeclarationBinding(VertexDeclaration vertexDeclaration, int slot = 0,
+            bool perInstance = false, int instanceDataStepRate = 0)
         {
             VertexDeclaration = vertexDeclaration;
             Slot = slot;
+            PerInstance = perInstance;
+            InstanceDataStepRate = instanceDataStepRate;
         }
     }
 }

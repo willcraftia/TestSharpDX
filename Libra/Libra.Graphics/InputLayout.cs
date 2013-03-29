@@ -67,7 +67,7 @@ namespace Libra.Graphics
 
             InputStride = vertexDeclaration.Stride;
 
-            Elements = CreateInputElements(vertexDeclaration, slot);
+            Elements = CreateInputElements(vertexDeclaration, slot, false, 0);
 
             InitializeCore(shaderBytecode);
 
@@ -112,7 +112,10 @@ namespace Libra.Graphics
                 var vertexElements = bindings.VertexDeclaration.Elements;
                 for (int i = 0; i < vertexElements.Length; i++)
                 {
-                    ToInputElement(ref vertexElements[i], bindings.Slot, out Elements[index++]);
+                    ToInputElement(
+                        ref vertexElements[i], bindings.Slot,
+                        bindings.PerInstance, bindings.InstanceDataStepRate,
+                        out Elements[index++]);
                 }
             }
 
@@ -121,19 +124,19 @@ namespace Libra.Graphics
 
         protected abstract void InitializeCore(byte[] shaderBytecode);
 
-        InputElement[] CreateInputElements(VertexDeclaration vertexDeclaration, int slot)
+        InputElement[] CreateInputElements(VertexDeclaration vertexDeclaration, int slot, bool perInstance, int instanceDataStepRate)
         {
             var inputElements = new InputElement[vertexDeclaration.Elements.Length];
 
             for (int i = 0; i < vertexDeclaration.Elements.Length; i++)
             {
-                ToInputElement(ref vertexDeclaration.Elements[i], slot, out inputElements[i]);
+                ToInputElement(ref vertexDeclaration.Elements[i], slot, perInstance, instanceDataStepRate, out inputElements[i]);
             }
 
             return inputElements;
         }
 
-        void ToInputElement(ref VertexElement vertexElement, int slot, out InputElement result)
+        void ToInputElement(ref VertexElement vertexElement, int slot, bool perInstance, int instanceDataStepRate, out InputElement result)
         {
             result = new InputElement(
                 vertexElement.SemanticName,
@@ -141,8 +144,8 @@ namespace Libra.Graphics
                 vertexElement.Format,
                 slot,
                 vertexElement.AlignedByteOffset,
-                vertexElement.PerInstance,
-                vertexElement.InstanceDataStepRate);
+                perInstance,
+                instanceDataStepRate);
         }
 
         void AssertNotInitialized()

@@ -28,37 +28,27 @@ namespace Libra.Graphics
 
         public int AlignedByteOffset;
 
-        public bool PerInstance;
-
-        public int InstanceDataStepRate;
-
         public int SizeInBytes
         {
             get { return FormatHelper.SizeInBytes(Format); }
         }
 
         public VertexElement(string semanticName, InputElementFormat format,
-            int alignedByteOffset = InputElement.AppendAlignedElement,
-            bool perInstance = false, int instanceDataStepRate = 0)
+            int alignedByteOffset = InputElement.AppendAlignedElement)
         {
             SemanticName = semanticName;
             SemanticIndex = 0;
             Format = format;
             AlignedByteOffset = alignedByteOffset;
-            PerInstance = perInstance;
-            InstanceDataStepRate = instanceDataStepRate;
         }
 
         public VertexElement(string semanticName, int semanticIndex, InputElementFormat format,
-            int alignedByteOffset = InputElement.AppendAlignedElement,
-            bool perInstance = false, int instanceDataStepRate = 0)
+            int alignedByteOffset = InputElement.AppendAlignedElement)
         {
             SemanticName = semanticName;
             SemanticIndex = semanticIndex;
             Format = format;
             AlignedByteOffset = alignedByteOffset;
-            PerInstance = perInstance;
-            InstanceDataStepRate = instanceDataStepRate;
         }
 
         #region Equatable
@@ -76,8 +66,7 @@ namespace Libra.Graphics
         public bool Equals(VertexElement other)
         {
             return SemanticName == other.SemanticName && SemanticIndex == other.SemanticIndex &&
-                Format == other.Format && AlignedByteOffset == other.AlignedByteOffset &&
-                PerInstance == other.PerInstance && InstanceDataStepRate == other.InstanceDataStepRate;
+                Format == other.Format && AlignedByteOffset == other.AlignedByteOffset;
         }
 
         public override bool Equals(object obj)
@@ -90,8 +79,7 @@ namespace Libra.Graphics
         public override int GetHashCode()
         {
             return SemanticName.GetHashCode() ^ SemanticIndex.GetHashCode() ^
-                Format.GetHashCode() ^ AlignedByteOffset.GetHashCode() ^
-                PerInstance.GetHashCode() ^ InstanceDataStepRate.GetHashCode();
+                Format.GetHashCode() ^ AlignedByteOffset.GetHashCode();
         }
 
         #endregion
@@ -102,7 +90,6 @@ namespace Libra.Graphics
         {
             return "{SemanticName:" + SemanticName + " SemanticIndex:" + SemanticIndex +
                 " Format:" + Format + " AlignedByteOffset:" + AlignedByteOffset +
-                " PerInstance:" + PerInstance + " InstanceDataStepRate:" + InstanceDataStepRate +
                 "]";
         }
 

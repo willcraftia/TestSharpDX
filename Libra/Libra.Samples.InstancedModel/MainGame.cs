@@ -83,10 +83,10 @@ namespace Libra.Samples.InstancedModel
         VertexBuffer instanceVertexBuffer;
 
         static VertexDeclaration instanceVertexDeclaration = new VertexDeclaration(
-            new VertexElement("TRANSFORM", 0, InputElementFormat.Vector4,  0, true, 1),
-            new VertexElement("TRANSFORM", 1, InputElementFormat.Vector4, 16, true, 1),
-            new VertexElement("TRANSFORM", 2, InputElementFormat.Vector4, 32, true, 1),
-            new VertexElement("TRANSFORM", 3, InputElementFormat.Vector4, 48, true, 1)
+            new VertexElement("TRANSFORM", 0, InputElementFormat.Vector4,  0),
+            new VertexElement("TRANSFORM", 1, InputElementFormat.Vector4, 16),
+            new VertexElement("TRANSFORM", 2, InputElementFormat.Vector4, 32),
+            new VertexElement("TRANSFORM", 3, InputElementFormat.Vector4, 48)
             );
 
         InputLayout instanceInputLayout;
@@ -169,7 +169,7 @@ namespace Libra.Samples.InstancedModel
             instanceInputLayout = Device.CreateInputLayout();
             instanceInputLayout.Initialize(instanceVertexShader,
                 new VertexDeclarationBinding(instancedModel.Meshes[0].MeshParts[0].VertexBuffer.VertexDeclaration),
-                new VertexDeclarationBinding(instanceVertexDeclaration, 1));
+                new VertexDeclarationBinding(instanceVertexDeclaration, 1, true, 1));
 
             keyboard = platform.CreateKeyboard();
             joystick = platform.CreateJoystick();

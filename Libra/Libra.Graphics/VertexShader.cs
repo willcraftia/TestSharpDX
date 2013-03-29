@@ -34,7 +34,7 @@ namespace Libra.Graphics
                 {
                     // 入力スロット #0 固定。
                     inputLayout = Device.CreateInputLayout();
-                    inputLayout.Initialize(ShaderBytecode, vertexDeclaration, 0);
+                    inputLayout.Initialize(ShaderBytecode, vertexDeclaration);
 
                     inputLayoutMap[vertexDeclaration] = inputLayout;
                 }
