@@ -47,7 +47,7 @@ VSOutput VS(VSInput input)
     float4x4 WorldViewProj = mul(mul(World, View), Projection);
 
     output.Position = mul(input.Position, WorldViewProj);
-    output.Normal =  normalize(mul(input.Normal, World));
+    output.Normal =  normalize(mul(float4(input.Normal, 0), World)).xyz;
     output.TexCoord = input.TexCoord;
 
     output.WorldPos = mul(input.Position, World);
