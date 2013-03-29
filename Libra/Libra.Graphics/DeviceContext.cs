@@ -507,7 +507,7 @@ namespace Libra.Graphics
 
             vertexBufferBindings[slot] = binding;
 
-            SetVertexBufferCore(slot, binding);
+            SetVertexBufferCore(slot, ref binding);
         }
 
         public void SetVertexBuffers(params VertexBufferBinding[] bindings)
@@ -526,7 +526,7 @@ namespace Libra.Graphics
 
         protected abstract void OnIndexBufferChanged();
 
-        protected abstract void SetVertexBufferCore(int slot, VertexBufferBinding binding);
+        protected abstract void SetVertexBufferCore(int slot, ref VertexBufferBinding binding);
 
         protected abstract void SetVertexBuffersCore(VertexBufferBinding[] bindings);
 
@@ -639,11 +639,11 @@ namespace Libra.Graphics
         {
             if (renderTarget == null) throw new ArgumentNullException("renderTarget");
 
-            ClearRenderTargetCore(renderTarget, options, color, depth, stencil);
+            ClearRenderTargetCore(renderTarget, options, ref color, depth, stencil);
         }
 
         protected abstract void ClearRenderTargetCore(
-            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil);
+            RenderTargetView renderTarget, ClearOptions options, ref Vector4 color, float depth, byte stencil);
 
         public void Clear(Color color)
         {
@@ -668,7 +668,7 @@ namespace Libra.Graphics
                 var renderTarget = activeRenderTargetViews[i];
                 if (renderTarget != null)
                 {
-                    ClearRenderTargetCore(renderTarget, options, color, depth, stencil);
+                    ClearRenderTargetCore(renderTarget, options, ref color, depth, stencil);
                 }
             }
         }

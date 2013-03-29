@@ -85,7 +85,7 @@ namespace Libra.Graphics.SharpDX
             D3D11DeviceContext.InputAssembler.SetIndexBuffer(d3d11Buffer, (DXGIFormat) IndexBuffer.Format, 0);
         }
 
-        protected override void SetVertexBufferCore(int slot, VertexBufferBinding binding)
+        protected override void SetVertexBufferCore(int slot, ref VertexBufferBinding binding)
         {
             var d3d11VertexBufferBinding = new D3D11VertexBufferBinding
             {
@@ -295,7 +295,7 @@ namespace Libra.Graphics.SharpDX
         }
 
         protected override void ClearRenderTargetCore(
-            RenderTargetView renderTarget, ClearOptions options, Vector4 color, float depth, byte stencil)
+            RenderTargetView renderTarget, ClearOptions options, ref Vector4 color, float depth, byte stencil)
         {
             if ((options & ClearOptions.Target) != 0)
             {
