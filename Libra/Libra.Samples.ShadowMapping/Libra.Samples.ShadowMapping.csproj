@@ -124,6 +124,9 @@
   <ItemGroup>
     <None Include="Shaders\CreateShadowMap.fx" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v4.0\Microsoft.Xna.GameStudio.Content.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
