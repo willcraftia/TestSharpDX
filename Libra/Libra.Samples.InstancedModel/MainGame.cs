@@ -133,6 +133,9 @@ namespace Libra.Samples.InstancedModel
         {
             var compiler = new ShaderCompiler();
             compiler.RootPath = "../../Shaders/";
+            compiler.EnableStrictness = true;
+            compiler.OptimizationLevel = OptimizationLevels.Level3;
+            compiler.WarningsAreErrors = true;
 
             var instanceVsBytecode = compiler.CompileVertexShader("InstancedModel.fx", "HWInstancingVS");
             var vsBytecode = compiler.CompileVertexShader("InstancedModel.fx", "NoInstancingVS");
